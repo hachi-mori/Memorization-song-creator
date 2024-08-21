@@ -1,0 +1,59 @@
+﻿{
+  "__type": "VoiceVoxNotes:#voxsay.Base.VoiceVox",
+  "notes": [
+    {
+      "frame_length": 2,
+      "key": null,
+      "lyric": "",
+      "notelen": "R"
+    },
+    {
+      "frame_length": 46,
+      "key": 60,
+      "lyric": "て",
+      "notelen": "C4"
+    },
+    {
+      "frame_length": 46,
+      "key": 62,
+      "lyric": "す",
+      "notelen": "D4"
+    },
+    {
+      "frame_length": 46,
+      "key": 64,
+      "lyric": "と",
+      "notelen": "E4"
+    },
+    {
+      "frame_length": 46,
+      "key": 65,
+      "lyric": "て",
+      "notelen": "F4"
+    },
+    {
+      "frame_length": 46,
+      "key": 67,
+      "lyric": "す",
+      "notelen": "G4"
+    },
+    {
+      "frame_length": 46,
+      "key": 69,
+      "lyric": "と",
+      "notelen": "A4"
+    },
+    {
+      "frame_length": 46,
+      "key": 71,
+      "lyric": "て",
+      "notelen": "B4"
+    },
+    {
+      "frame_length": 46,
+      "key": 72,
+      "lyric": "す",
+      "notelen": "C4"
+    }
+  ]
+}
