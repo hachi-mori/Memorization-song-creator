@@ -1,4 +1,5 @@
-﻿#include "stdafx.h"
+﻿//Gitのテスト
+#include "stdafx.h"
 
 using App = SceneManager<String>;
 using App = SceneManager<String>;
