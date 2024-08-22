@@ -1,6 +1,13 @@
 # ② 高専プロコン2024 自由部門「覚え歌つくるくん」リポジトリ 2
 
-## 構成図
+### 前のリポジトリ
+[Procon2024_jiyu](https://github.com/nitsc-proclub/Procon2024_jiyu)
+### Googleドライブ
+[高専プロコン自由部門2024](https://drive.google.com/drive/folders/1HmZsJvoMT-5zhSHq9_fHqYmKP89a_8km?usp=sharing)
+### Googleドキュメント
+[プロコン自由部門](https://docs.google.com/document/d/14RA8oUoEWT44qQ685kf_xuRA-mvPgYWn0L0EnTpojF0/edit)
+
+## 構成図 (一部省略)
 <pre>
 覚え歌つくるくん/
 ├ Button.cpp
