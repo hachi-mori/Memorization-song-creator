@@ -1,6 +1,8 @@
 ﻿#include "Scene2.hpp"
 
-const Array<double> Scene2::minColumnWidths = { 50, 300, 300, 300, 300 };
+//スプレッドシートの左上の座標を(900,150)にしたいのに座標を決める場所がわかりません！！！
+
+const Array<double> Scene2::minColumnWidths = { 50, 200, 200, 200, 200 };
 const Array<String> Scene2::columnNames = { U"", U"", U"", U"", U"" };
 
 Scene2::Scene2(const InitData& init)
@@ -58,20 +60,32 @@ void Scene2::update()
 		listBoxNeedsUpdate = false; // 更新完了
 	}
 
-	SimpleGUI::ListBox(listBoxState, Vec2{ 50, 250 }, 480, 600);
+	SimpleGUI::ListBox(listBoxState, Vec2{ 450, 200 }, 480, 600);
 
 	// ボタンの処理
-	if (Button(Rect{ 50, 950, 300, 80 }, font, U"OPに戻る", true))
+	if (Button(Rect{ 0, 200, 350, 150 }, font, U"OP", true))
 	{
 		changeScene(U"Scene1");
 	}
 
-	if (Button(Rect{ 1570, 950, 300, 80 }, font, U"曲選択", true))
+	if (Button(Rect{ 0, 600, 350, 150 }, font, U"曲選択", true))
 	{
 		changeScene(U"Scene3");
 	}
 
-	if (Button(Rect{ 1220, 950, 300, 80 }, font, U"保存", true))
+	if (Button(Rect{ 0, 800, 350, 150 }, font, U"動画再生", true))
+	{
+		changeScene(U"Scene4");
+	}
+
+
+	Rect{ 0, 400, 350, 150 }.draw();
+
+	font(U"語句入力").draw(40, Vec2{ 100, 445 }, ColorF{ 0.3, 0.7, 1.0 });
+
+
+
+	if (Button(Rect{ 1570, 950, 300, 80 }, font, U"保存", true))
 	{
 		TextWriter writer(U"lyrics/test.csv");
 		if (!writer)
@@ -90,7 +104,7 @@ void Scene2::update()
 		writer.close();
 	}
 
-	if (Button(Rect{ 50, 130, 300, 80 }, font, U"新規作成", true))
+	if (Button(Rect{ 450, 820, 300, 80 }, font, U"新規作成", true))
 	{
 		AddNewRow();
 	}
@@ -200,16 +214,17 @@ void Scene2::update()
 void Scene2::draw() const
 {
 	font(U"ファイル選択")
-		.draw(50, Rect{ 20, 20, 480, 200 }, Palette::Black);
+		.draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
 	font(U"語句入力")
-		.draw(50, Rect{ 625, 20, 480, 200 }, Palette::Black);
+		.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 	font(U"語句(必須)")
-		.draw(30, Rect{ 750, 100, 480, 200 }, Palette::Black);
+		.draw(30, Rect{ 950, 150, 480, 200 }, Palette::Black);
 	font(U"読み(必須)")
-		.draw(30, Rect{ 1050, 100, 480, 200 }, Palette::Black);
+		.draw(30, Rect{ 1150, 150, 480, 200 }, Palette::Black);
 	font(U"付加１(任意)")
-		.draw(30, Rect{ 1335, 100, 480, 200 }, Palette::Black);
+		.draw(30, Rect{ 1350, 150, 480, 200 }, Palette::Black);
 	font(U"付加２(任意)")
-		.draw(30, Rect{ 1650, 100, 480, 200 }, Palette::Black);
+		.draw(30, Rect{ 1550, 150, 480, 200 }, Palette::Black);
 
 }
+
