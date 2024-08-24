@@ -13,23 +13,28 @@ Scene4::Scene4(const InitData& init)
 
 void Scene4::update()
 {
-	if (Button(Rect{ 870, 950, 300, 80 }, font, U"OPに戻る", true))
+	if (Button(Rect{ 0, 200, 350, 150 }, font, U"OP", true))
 	{
 		changeScene(U"Scene1");
 	}
 
-	if (Button(Rect{ 1220, 950, 300, 80 }, font, U"語句入力に戻る", true))
+	if (Button(Rect{ 0, 400, 350, 150 }, font, U"語句入力", true))
 	{
 		changeScene(U"Scene2");
 	}
 
-	if (Button(Rect{ 1570, 950, 300, 80 }, font, U"曲選択に戻る", true))
+	if (Button(Rect{ 0, 600, 350, 150 }, font, U"曲選択", true))
 	{
 		changeScene(U"Scene3");
 	}
 
+	Rect{ 0, 800, 350, 150 }.draw();
+
+	font(U"動画再生").draw(40, Vec2{ 100, 845 }, ColorF{ 0.3, 0.7, 1.0 });
+
+
 	// リストボックスを描画し、選択が変更された場合にtrueを返す
-	if (SimpleGUI::ListBox(listBoxState, Vec2{ 80, 250 }, 500, 600))
+	if (SimpleGUI::ListBox(listBoxState, Vec2{ 450, 250 }, 350, 600))
 	{
 		// 選択が変更された場合の処理
 		if (listBoxState.selectedItemIndex.has_value())
@@ -46,11 +51,12 @@ void Scene4::update()
 
 void Scene4::draw() const
 {
-	Rect{ 700, 200, 1000, 600 }.draw();
-
+	Rect{ 900, 315, 800, 450 }.draw();
+	font(U"ファイル選択")
+		.draw(30, Rect{ 450, 200, 480, 200 }, Palette::Black);
 	font(U"動画")
-		.draw(100, Rect{ 1100, 435, 480, 200 }, Palette::Black);
+		.draw(100, Rect{ 1170, 485, 550, 300 }, Palette::Black);
 
 	font(U"動画再生")
-		.draw(50, Rect{ 20, 20, 480, 200 }, Palette::Black);
+		.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 }
