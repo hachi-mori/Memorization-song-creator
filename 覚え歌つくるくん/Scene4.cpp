@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 Scene4::Scene4(const InitData& init)
 	: IScene{ init }, audio1{ U"" }

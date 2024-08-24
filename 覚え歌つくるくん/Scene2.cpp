@@ -1,10 +1,8 @@
 ﻿#include "Scene2.hpp"
 
-//スプレッドシートの左上の座標を(900,150)にしたいのに座標を決める場所がわかりません！！！
-
 const Array<double> Scene2::minColumnWidths = { 50, 200, 200, 200, 200 };
-const Array<String> Scene2::columnNames = { U"", U"", U"", U"", U"" };
-
+//const Array<String> Scene2::columnNames = { U"", U"", U"", U"", U"" };
+const Array<String> Scene2::columnNames = { U"番号", U"語句 (必須)", U"読み (必須)", U"付加 1 (任意)", U"付加 2 (任意)" };
 Scene2::Scene2(const InitData& init)
 	: IScene{ init },
 	table{ minColumnWidths, {
@@ -78,12 +76,9 @@ void Scene2::update()
 		changeScene(U"Scene4");
 	}
 
-
 	Rect{ 0, 400, 350, 150 }.draw();
 
 	font(U"語句入力").draw(40, Vec2{ 100, 445 }, ColorF{ 0.3, 0.7, 1.0 });
-
-
 
 	if (Button(Rect{ 1570, 950, 300, 80 }, font, U"保存", true))
 	{
@@ -109,7 +104,8 @@ void Scene2::update()
 		AddNewRow();
 	}
 
-	const Rect tableViewport = Scene::Rect().stretched(-150).movedBy(455, 0);
+	//スプレッドシートの座標
+	const Rect tableViewport = Scene::Rect().stretched(-150).movedBy(810, 0);
 
 	tableScrollBar.updateLayout(tableViewport);
 	tableScrollBar.updateConstraints(0, table.height(), tableViewport.h);
@@ -217,14 +213,15 @@ void Scene2::draw() const
 		.draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
 	font(U"語句入力")
 		.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
+	/*
 	font(U"語句(必須)")
-		.draw(30, Rect{ 950, 150, 480, 200 }, Palette::Black);
+		.draw(30, Rect{ 1050, 100, 480, 200 }, Palette::Black);
 	font(U"読み(必須)")
-		.draw(30, Rect{ 1150, 150, 480, 200 }, Palette::Black);
+		.draw(30, Rect{ 1250, 100, 480, 200 }, Palette::Black);
 	font(U"付加１(任意)")
-		.draw(30, Rect{ 1350, 150, 480, 200 }, Palette::Black);
+		.draw(30, Rect{ 1450, 100, 480, 200 }, Palette::Black);
 	font(U"付加２(任意)")
-		.draw(30, Rect{ 1550, 150, 480, 200 }, Palette::Black);
-
+		.draw(30, Rect{ 1650, 100, 480, 200 }, Palette::Black);
+	*/
 }
 

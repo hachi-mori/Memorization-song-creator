@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 Scene1::Scene1(const InitData& init)
 	: IScene{ init }

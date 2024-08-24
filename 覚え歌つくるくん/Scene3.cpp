@@ -60,22 +60,25 @@ bool Scene3::Button(const Rect& rect, const String& text, bool enabled)
 
 void Scene3::update()
 {
-	if (Button(Rect{ 50, 950, 300, 80 }, U"OPに戻る", true))
+	if (Button(Rect{ 0, 200, 350, 150 }, U"OP", true))
 	{
 		changeScene(U"Scene1");
 	}
 
-	if (Button(Rect{ 400, 950, 300, 80 }, U"語句入力に戻る", true))
+	if (Button(Rect{ 0, 400, 350, 150 }, U"語句入力", true))
 	{
 		changeScene(U"Scene2");
 	}
 
-	if (Button(Rect{ 1570, 950, 300, 80 }, U"動画再生", true))
+	if (Button(Rect{ 0, 800, 350, 150 }, U"動画再生", true))
 	{
 		changeScene(U"Scene4");
 	}
 
-	if (Button(Rect{ 1220, 950, 300, 80 }, U"保存", true))
+	Rect{ 0, 600, 350, 150 }.draw();
+	font(U"曲設定").draw(40, Vec2{ 110, 645 }, ColorF{ 0.3, 0.7, 1.0 });
+
+	if (Button(Rect{ 1570, 950, 300, 80 }, U"保存", true))
 	{
 		Optional<int32> selectedSpeakerID;
 		if (listBoxState3.selectedItemIndex)
@@ -108,8 +111,8 @@ void Scene3::update()
 	}
 
 	//リストボックスを描画
-	SimpleGUI::ListBox(listBoxState1, Vec2{ 100, 250 }, 300, 600);
-	SimpleGUI::ListBox(listBoxState2, Vec2{ 470, 250 }, 300, 600);
+	SimpleGUI::ListBox(listBoxState1, Vec2{ 500, 250 }, 300, 600);
+	SimpleGUI::ListBox(listBoxState2, Vec2{ 1010, 250 }, 300, 600);
 	//選択が変更された場合にtrueを返す
 	if (SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100))
 	{
@@ -164,9 +167,9 @@ void Scene3::update()
 
 void Scene3::draw() const
 {
-	font(U"曲設定").draw(50, Vec2{ 20, 20 }, Palette::Black);
-	font(U"ファイル選択").draw(30, Vec2{ 100, 200 }, Palette::Black);
-	font(U"曲選択").draw(30, Vec2{ 470, 200 }, Palette::Black);
+	font(U"曲設定").draw(70, Vec2{ 20, 20 }, Palette::Black);
+	font(U"ファイル選択").draw(30, Vec2{ 500, 200 }, Palette::Black);
+	font(U"曲選択").draw(30, Vec2{ 1010, 200 }, Palette::Black);
 	font(U"キャラクター選択").draw(30, Vec2{ 1520, 200 }, Palette::Black);
 	textureRect.draw(ColorF{ 0.0, 0.0, 0.0, 0.0 });
 	texture.draw(1520, 380);
