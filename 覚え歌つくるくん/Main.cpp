@@ -1,4 +1,5 @@
 ﻿//Gitのテスト
+//test!!!
 #include "stdafx.h"
 
 using App = SceneManager<String>;
