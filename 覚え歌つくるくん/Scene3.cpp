@@ -1,7 +1,7 @@
 ﻿#include "Scene3.hpp"
 
 Scene3::Scene3(const InitData& init)
-	: IScene{ init }, texture{ U"シルエット.png" }, selectListBox3{ false }
+	: IScene{ init }, texture{ U"Character/シルエット.png" }, selectListBox3{ false }
 {
 	// Initialize the list of files and speakers
 	InitializeLists();
@@ -120,16 +120,16 @@ void Scene3::update()
 			Character = speakerIDs[*listBoxState3.selectedItemIndex];
 			switch (Character) {
 			case 2:
-				texture = Texture{ U"四国めたん_1.png" };
+				texture = Texture{ U"Character/四国めたん_1.png" };
 				break;
 			case 3:
-				texture = Texture{ U"ずんだもん_1.png" };
+				texture = Texture{ U"Character/ずんだもん_1.png" };
 				break;
 			case 8:
-				texture = Texture{ U"春日部つむぎ_1.png" };
+				texture = Texture{ U"Character/春日部つむぎ_1.png" };
 				break;
 			default:
-				texture = Texture{ U"シルエット.png" };
+				texture = Texture{ U"Character/シルエット.png" };
 				break;
 			}
 		}
@@ -144,19 +144,19 @@ void Scene3::update()
 		Character = speakerIDs[*listBoxState3.selectedItemIndex];
 		switch (Character) {
 		case 2:
-			texture = Texture{ U"四国めたん_2.png" };
+			texture = Texture{ U"Character/四国めたん_2.png" };
 			audio1.play();
 			break;
 		case 3:
-			texture = Texture{ U"ずんだもん_2.png" };
+			texture = Texture{ U"Character/ずんだもん_2.png" };
 			audio2.play();
 			break;
 		case 8:
-			texture = Texture{ U"春日部つむぎ_2.png" };
+			texture = Texture{ U"Character/春日部つむぎ_2.png" };
 			audio3.play();
 			break;
 		default:
-			texture = Texture{ U"シルエット.png" };
+			texture = Texture{ U"Character/シルエット.png" };
 			break;
 		}
 	}
