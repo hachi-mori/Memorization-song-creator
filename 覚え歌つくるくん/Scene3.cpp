@@ -1,7 +1,7 @@
 ﻿#include "Scene3.hpp"
 
 Scene3::Scene3(const InitData& init)
-	: IScene{ init }
+	: IScene{ init }, texture{ U"シルエット.png" }, selectListBox3{ false }
 {
 	// Initialize the list of files and speakers
 	InitializeLists();
@@ -107,9 +107,59 @@ void Scene3::update()
 		}
 	}
 
+	//リストボックスを描画
 	SimpleGUI::ListBox(listBoxState1, Vec2{ 100, 250 }, 300, 600);
 	SimpleGUI::ListBox(listBoxState2, Vec2{ 470, 250 }, 300, 600);
-	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
+	//選択が変更された場合にtrueを返す
+	if (SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100))
+	{
+		selectListBox3 = true;
+		// 選択が変更された場合の処理
+		if (listBoxState3.selectedItemIndex.has_value())
+		{
+			Character = speakerIDs[*listBoxState3.selectedItemIndex];
+			switch (Character) {
+			case 2:
+				texture = Texture{ U"四国めたん_1.png" };
+				break;
+			case 3:
+				texture = Texture{ U"ずんだもん_1.png" };
+				break;
+			case 8:
+				texture = Texture{ U"春日部つむぎ_1.png" };
+				break;
+			default:
+				texture = Texture{ U"シルエット.png" };
+				break;
+			}
+		}
+	}
+	if (selectListBox3 && textureRect.mouseOver())
+	{
+		// マウスカーソルを手の形に
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (textureRect.leftClicked())
+	{
+		Character = speakerIDs[*listBoxState3.selectedItemIndex];
+		switch (Character) {
+		case 2:
+			texture = Texture{ U"四国めたん_2.png" };
+			audio1.play();
+			break;
+		case 3:
+			texture = Texture{ U"ずんだもん_2.png" };
+			audio2.play();
+			break;
+		case 8:
+			texture = Texture{ U"春日部つむぎ_2.png" };
+			audio3.play();
+			break;
+		default:
+			texture = Texture{ U"シルエット.png" };
+			break;
+		}
+	}
 }
 
 void Scene3::draw() const
@@ -118,4 +168,6 @@ void Scene3::draw() const
 	font(U"ファイル選択").draw(30, Vec2{ 100, 200 }, Palette::Black);
 	font(U"曲選択").draw(30, Vec2{ 470, 200 }, Palette::Black);
 	font(U"キャラクター選択").draw(30, Vec2{ 1520, 200 }, Palette::Black);
+	textureRect.draw(ColorF{ 0.0, 0.0, 0.0, 0.0 });
+	texture.draw(1520, 380);
 }

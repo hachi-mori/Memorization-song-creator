@@ -21,6 +21,14 @@ private:
 	Array<String> speakers;
 	Array<int32> speakerIDs;
 
+	Texture texture{};
+	Rect textureRect{ 1540, 390, 280, 460 };
+	int Character;
+	bool selectListBox3;
+	Audio audio1{ U"四国めたん_ららららら.wav" };
+	Audio audio2{ U"ずんだもん_ららららら.wav" };
+	Audio audio3{ U"春日部つむぎ_ららららら.wav" };
+
 	void InitializeLists();
 	bool Button(const Rect& rect, const String& text, bool enabled);
 };
