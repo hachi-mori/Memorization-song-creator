@@ -8,7 +8,10 @@ using App = SceneManager<String>;
 
 void Main()
 {
+	Window::SetTitle(U"覚え歌つくるくん");
 	Window::Resize(1920, 1080);
+	Scene::SetResizeMode(ResizeMode::Keep);
+	Window::SetFullscreen(true);
 	Scene::SetBackground(ColorF{ 0.8, 0.9, 1.0 });
 
 	App manager;
