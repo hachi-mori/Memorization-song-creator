@@ -28,8 +28,10 @@ void Scene3::InitializeLists()
 	{
 		for (const auto& style : speaker.styles)
 		{
-			speakers << U"{}（{}）"_fmt(speaker.name, style.name);
-			speakerIDs << style.id;
+			if (style.id == 2|| style.id == 3 || style.id == 8) {
+				speakers << U"{}"_fmt(speaker.name);
+				speakerIDs << style.id;
+			}
 		}
 	}
 	listBoxState3 = ListBoxState{ speakers };
@@ -107,7 +109,7 @@ void Scene3::update()
 
 	SimpleGUI::ListBox(listBoxState1, Vec2{ 100, 250 }, 300, 600);
 	SimpleGUI::ListBox(listBoxState2, Vec2{ 470, 250 }, 300, 600);
-	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 600);
+	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
 }
 
 void Scene3::draw() const
