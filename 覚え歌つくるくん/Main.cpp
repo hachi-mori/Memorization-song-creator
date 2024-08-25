@@ -1,10 +1,8 @@
 ﻿//Gitのテスト
-//test!!!
+
+
 #include "stdafx.h"
 
-using App = SceneManager<String>;
-using App = SceneManager<String>;
-using App = SceneManager<String>;
 using App = SceneManager<String>;
 
 void Main()
