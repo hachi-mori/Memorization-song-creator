@@ -29,11 +29,10 @@ void Scene1::update()
 	Rect{ 0, 200, 350, 150 }.draw();
 
 	font(U"OP").draw(40, Vec2{ 150, 245 }, ColorF{ 0.3, 0.7, 1.0 });
-}
 
-void Scene1::draw() const
-{
 	font(U"オープニング")
 		.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 	texture.draw(760, 130);
 }
+
+

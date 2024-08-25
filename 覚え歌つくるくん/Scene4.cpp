@@ -47,16 +47,14 @@ void Scene4::update()
 			audio1.play();
 		}
 	}
-}
 
-void Scene4::draw() const
-{
 	Rect{ 900, 315, 800, 450 }.draw();
 	font(U"ファイル選択")
 		.draw(30, Rect{ 450, 200, 480, 200 }, Palette::Black);
 	font(U"動画")
-		.draw(100, Rect{ 1170, 485, 550, 300 }, Palette::Black);
+		.draw(100, Rect{ 1180, 480, 550, 300 }, Palette::Black);
 
 	font(U"動画再生")
 		.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 }
+
