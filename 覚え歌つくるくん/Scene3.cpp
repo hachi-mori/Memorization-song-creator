@@ -75,10 +75,7 @@ void Scene3::update()
 		changeScene(U"Scene4");
 	}
 
-<<<<<<< HEAD
 
-=======
->>>>>>> d2592c961451a9a112cb7faae6d514b1144c9388
 
 	Rect{ 0, 600, 350, 150 }.draw();
 
