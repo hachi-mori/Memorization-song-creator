@@ -223,3 +223,6 @@ void Scene2::update()
 	*/
 }
 
+void Scene2::draw() const
+{
+}

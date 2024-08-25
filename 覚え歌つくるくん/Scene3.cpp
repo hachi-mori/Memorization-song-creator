@@ -189,3 +189,6 @@ void Scene3::update()
 	texture.draw(1520, 380);
 }
 
+void Scene3::draw() const
+{
+}

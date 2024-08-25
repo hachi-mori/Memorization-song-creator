@@ -34,3 +34,7 @@ void Scene1::update()
 		.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 	texture.draw(760, 130);
 }
+
+void Scene1::draw() const
+{
+}

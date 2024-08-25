@@ -52,15 +52,12 @@ void Scene4::update()
 	font(U"ファイル選択")
 		.draw(30, Rect{ 450, 200, 480, 200 }, Palette::Black);
 	font(U"動画")
-<<<<<<< HEAD
-
 		.draw(100, Rect{ 1180, 480, 550, 300 }, Palette::Black);
-
-
-=======
-		.draw(100, Rect{ 1180, 480, 550, 300 }, Palette::Black);
->>>>>>> d2592c961451a9a112cb7faae6d514b1144c9388
 	font(U"動画再生")
 		.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 
+}
+
+void Scene4::draw() const
+{
 }
