@@ -181,7 +181,7 @@ void Scene3::update()
 		}
 	}
 
-	font(U"曲設定").draw(70, Vec2{ 20, 20 }, Palette::Black);
+	font(U"曲設定").draw(70, Vec2{ 20, 20 }, Palette::White);
 	font(U"ファイル選択").draw(30, Vec2{ 500, 200 }, Palette::Black);
 	font(U"曲選択").draw(30, Vec2{ 1010, 200 }, Palette::Black);
 	font(U"キャラクター選択").draw(30, Vec2{ 1520, 200 }, Palette::Black);
