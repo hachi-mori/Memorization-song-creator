@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 
 Scene4::Scene4(const InitData& init)
-	: IScene{ init }, audio1{ U"" }
+	: IScene{ init }, audio1{ U"" },previousSelectedIndex{ s3d::none }
 {
 	// Load Voice file names
 	for (const auto& path : FileSystem::DirectoryContents(U"Voice"))
@@ -13,29 +13,24 @@ Scene4::Scene4(const InitData& init)
 
 void Scene4::update()
 {
-	if (Button(Rect{ 0, 200, 350, 150 }, font, U"OP", true))
+	// ボタンの処理
+	if (Scene1Button.mouseOver() && MouseL.down())
 	{
 		changeScene(U"Scene1");
 	}
-
-	if (Button(Rect{ 0, 400, 350, 150 }, font, U"語句入力", true))
+	if (Scene2Button.mouseOver() && MouseL.down())
 	{
 		changeScene(U"Scene2");
 	}
-
-	if (Button(Rect{ 0, 600, 350, 150 }, font, U"曲選択", true))
+	if (Scene3Button.mouseOver() && MouseL.down())
 	{
 		changeScene(U"Scene3");
 	}
 
-	Rect{ 0, 800, 350, 150 }.draw();
-
-	font(U"動画再生").draw(40, Vec2{ 100, 845 }, ColorF{ 0.3, 0.7, 1.0 });
-
-
-	// リストボックスを描画し、選択が変更された場合にtrueを返す
-	if (SimpleGUI::ListBox(listBoxState, Vec2{ 450, 250 }, 350, 600))
+	// リストボックスの選択が変更された場合にtrueを返す
+	if (listBoxState.selectedItemIndex != previousSelectedIndex)
 	{
+		previousSelectedIndex = listBoxState.selectedItemIndex;
 		// 選択が変更された場合の処理
 		if (listBoxState.selectedItemIndex.has_value())
 		{
@@ -47,17 +42,30 @@ void Scene4::update()
 			audio1.play();
 		}
 	}
-
-	Rect{ 900, 315, 800, 450 }.draw();
-	font(U"ファイル選択")
-		.draw(30, Rect{ 450, 200, 480, 200 }, Palette::Black);
-	font(U"動画")
-		.draw(100, Rect{ 1180, 480, 550, 300 }, Palette::Black);
-	font(U"動画再生")
-		.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
-
 }
 
 void Scene4::draw() const
 {
+	//動画再生
+	Rect{ 0, 800, 350, 150 }.draw();
+	font(U"動画再生").draw(40, Vec2{ 100, 845 }, ColorF{ 0.3, 0.7, 1.0 });
+
+	Rect{ 900, 315, 800, 450 }.draw();
+	font(U"ファイル選択").draw(30, Rect{ 450, 200, 480, 200 }, Palette::Black);
+	font(U"動画").draw(100, Rect{ 1180, 480, 550, 300 }, Palette::Black);
+	font(U"動画再生").draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
+
+	//Scene1Button
+	Scene1Button.draw(buttonColor);
+	font(U"OP").drawAt(Vec2{ Scene1Button.center() }, Palette::White);
+
+	// Scene2Button
+	Scene2Button.draw(buttonColor);
+	font(U"語句入力").drawAt(Scene2Button.center(), Palette::White);
+
+	// Scene3Button
+	Scene3Button.draw(buttonColor);
+	font(U"曲選択").drawAt(Scene3Button.center(), Palette::White);
+
+	SimpleGUI::ListBox(listBoxState, Vec2{ 450, 250 }, 350, 600);
 }

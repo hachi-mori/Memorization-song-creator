@@ -12,9 +12,9 @@ public:
 
 private:
 	const Font font{ FontMethod::MSDF, 48, Typeface::Bold };
-	ListBoxState listBoxState1;
-	ListBoxState listBoxState2;
-	ListBoxState listBoxState3;
+	mutable ListBoxState listBoxState1;
+	mutable ListBoxState listBoxState2;
+	mutable ListBoxState listBoxState3;
 
 	Array<String> lyricsfileNames;
 	Array<String> OriginalScoresfileNames;
@@ -29,6 +29,15 @@ private:
 	Audio audio2{ U"Character/ずんだもん_ららららら.wav" };
 	Audio audio3{ U"Character/春日部つむぎ_ららららら.wav" };
 
+	s3d::Optional<uint64> previousSelectedIndex;
+
 	void InitializeLists();
 	bool Button(const Rect& rect, const String& text, bool enabled);
+
+	const Rect Scene1Button{ 0, 200, 350, 150 };
+	const Rect Scene2Button{ 0, 400, 350, 150 };
+	const Rect Scene4Button{ 0, 800, 350, 150 };
+	const Rect SaveButton{ 1570, 950, 300, 80 };
+
+	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
 };

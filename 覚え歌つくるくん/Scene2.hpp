@@ -33,7 +33,7 @@ private:
 	SasaGUI::ScrollBar tableScrollBar{ SasaGUI::Orientation::Vertical };
 
 	// リストボックスの状態
-	ListBoxState listBoxState;
+	mutable ListBoxState listBoxState;
 	bool listBoxNeedsUpdate = true;
 
 	// 編集状態
@@ -46,4 +46,13 @@ private:
 	static const int32 InitialCellCountY = 15;
 	static const Array<double> minColumnWidths;
 	static const Array<String> columnNames;
+
+	// ボタン
+	const Rect Scene1Button{ 0, 200, 350, 150 };
+	const Rect Scene3Button{ 0, 600, 350, 150 };
+	const Rect Scene4Button{ 0, 800, 350, 150 };
+	const Rect SaveButton{ 1570, 950, 300, 80 };
+	const Rect CreateButton{ 450, 820, 300, 80 };
+
+	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
 };

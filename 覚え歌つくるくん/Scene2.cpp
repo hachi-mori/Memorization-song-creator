@@ -3,6 +3,7 @@
 const Array<double> Scene2::minColumnWidths = { 50, 200, 200, 200, 200 };
 //const Array<String> Scene2::columnNames = { U"", U"", U"", U"", U"" };
 const Array<String> Scene2::columnNames = { U"番号", U"語句 (必須)", U"読み (必須)", U"付加 1 (任意)", U"付加 2 (任意)" };
+
 Scene2::Scene2(const InitData& init)
 	: IScene{ init },
 	table{ minColumnWidths, {
@@ -58,29 +59,23 @@ void Scene2::update()
 		listBoxNeedsUpdate = false; // 更新完了
 	}
 
-	SimpleGUI::ListBox(listBoxState, Vec2{ 450, 200 }, 480, 600);
-
 	// ボタンの処理
-	if (Button(Rect{ 0, 200, 350, 150 }, font, U"OP", true))
+	if (Scene1Button.mouseOver() && MouseL.down())
 	{
 		changeScene(U"Scene1");
 	}
 
-	if (Button(Rect{ 0, 600, 350, 150 }, font, U"曲選択", true))
+	if (Scene3Button.mouseOver() && MouseL.down())
 	{
 		changeScene(U"Scene3");
 	}
 
-	if (Button(Rect{ 0, 800, 350, 150 }, font, U"動画再生", true))
+	if (Scene4Button.mouseOver() && MouseL.down())
 	{
 		changeScene(U"Scene4");
 	}
 
-	Rect{ 0, 400, 350, 150 }.draw();
-
-	font(U"語句入力").draw(40, Vec2{ 100, 445 }, ColorF{ 0.3, 0.7, 1.0 });
-
-	if (Button(Rect{ 1570, 950, 300, 80 }, font, U"保存", true))
+	if (SaveButton.mouseOver() && MouseL.down())
 	{
 		TextWriter writer(U"lyrics/test.csv");
 		if (!writer)
@@ -99,7 +94,7 @@ void Scene2::update()
 		writer.close();
 	}
 
-	if (Button(Rect{ 450, 820, 300, 80 }, font, U"新規作成", true))
+	if (CreateButton.mouseOver() && MouseL.down())
 	{
 		AddNewRow();
 	}
@@ -203,14 +198,40 @@ void Scene2::update()
 			}
 		}
 	}
+}
+
+void Scene2::draw() const
+{
+	SimpleGUI::ListBox(listBoxState, Vec2{ 450, 200 }, 480, 600);
+
+	// 語句入力
+	Rect{ 0, 400, 350, 150 }.draw();
+	font(U"語句入力").draw(40, Vec2{ 100, 445 }, ColorF{ 0.3, 0.7, 1.0 });
 
 	tableScrollBar.draw();
+	font(U"ファイル選択").draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
+	font(U"語句入力")	.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 
+	//Scene1Button
+	Scene1Button.draw(buttonColor);
+	font(U"OP").drawAt(Vec2{ Scene1Button.center() }, Palette::White);
 
-	font(U"ファイル選択")
-		.draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
-	font(U"語句入力")
-		.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
+	//Scene3Button
+	Scene3Button.draw(buttonColor);
+	font(U"曲選択").drawAt(Vec2{ Scene3Button.center() }, Palette::White);
+
+	//Scene4Button
+	Scene4Button.draw(buttonColor);
+	font(U"動画再生").drawAt(Vec2{ Scene4Button.center() }, Palette::White);
+
+	//SaveButton
+	SaveButton.draw(buttonColor);
+	font(U"保存").drawAt(Vec2{ SaveButton.center() }, Palette::White);
+
+	//CreateButton
+	CreateButton.draw(buttonColor);
+	font(U"新規作成").drawAt(Vec2{ CreateButton.center() }, Palette::White);
+
 	/*
 	font(U"語句(必須)")
 		.draw(30, Rect{ 1050, 100, 480, 200 }, Palette::Black);
@@ -221,8 +242,4 @@ void Scene2::update()
 	font(U"付加２(任意)")
 		.draw(30, Rect{ 1650, 100, 480, 200 }, Palette::Black);
 	*/
-}
-
-void Scene2::draw() const
-{
 }
