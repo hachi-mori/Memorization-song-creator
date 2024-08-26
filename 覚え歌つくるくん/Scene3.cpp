@@ -1,7 +1,11 @@
 ﻿#include "Scene3.hpp"
 
 Scene3::Scene3(const InitData& init)
-	: IScene{ init }, texture{ U"Character/シルエット.png" }, selectListBox3{ false }
+	: IScene{ init },
+	texture{ U"Character/シルエット.png" },
+	textureRect{ 1540, 390, 280, 460 },
+	selectListBox3{ false },
+	previousSelectedIndex{ s3d::none }
 {
 	// Initialize the list of files and speakers
 	InitializeLists();
@@ -28,7 +32,7 @@ void Scene3::InitializeLists()
 	{
 		for (const auto& style : speaker.styles)
 		{
-			if (style.id == 2|| style.id == 3 || style.id == 8) {
+			if (style.id == 2 || style.id == 3 || style.id == 8) {
 				speakers << U"{}"_fmt(speaker.name);
 				speakerIDs << style.id;
 			}
@@ -60,35 +64,20 @@ bool Scene3::Button(const Rect& rect, const String& text, bool enabled)
 
 void Scene3::update()
 {
-	if (Button(Rect{ 0, 200, 350, 150 }, U"OP", true))
+	if (Scene1Button.mouseOver() && MouseL.down())
 	{
 		changeScene(U"Scene1");
 	}
-
-	if (Button(Rect{ 0, 400, 350, 150 }, U"語句入力", true))
+	if (Scene2Button.mouseOver() && MouseL.down())
 	{
 		changeScene(U"Scene2");
 	}
-
-	if (Button(Rect{ 0, 800, 350, 150 }, U"動画再生", true))
+	if (Scene4Button.mouseOver() && MouseL.down())
 	{
 		changeScene(U"Scene4");
 	}
 
-
-
-	Rect{ 0, 600, 350, 150 }.draw();
-
-	font(U"曲設定").draw(40, Vec2{ 110, 645 }, ColorF{ 0.3, 0.7, 1.0 });
-
-
-
-
-	Rect{ 0, 600, 350, 150 }.draw();
-	font(U"曲設定").draw(40, Vec2{ 110, 645 }, ColorF{ 0.3, 0.7, 1.0 });
-
-
-	if (Button(Rect{ 1570, 950, 300, 80 }, U"保存", true))
+	if (SaveButton.mouseOver() && MouseL.down())
 	{
 		Optional<int32> selectedSpeakerID;
 		if (listBoxState3.selectedItemIndex)
@@ -108,7 +97,7 @@ void Scene3::update()
 		// JSONファイルを更新
 		UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
 
-		if (s3d::VOICEVOX::SynthesizeVoiceFromScore(createscoreFilePath, outputAudioFilePath, *selectedSpeakerID))
+		if (VOICEVOX::SynthesizeVoiceFromScore(createscoreFilePath, outputAudioFilePath, *selectedSpeakerID))
 		{
 			Print(U"音声合成が成功しました。");
 			const Audio audio{ outputAudioFilePath };
@@ -120,23 +109,10 @@ void Scene3::update()
 		}
 	}
 
-
-	SimpleGUI::ListBox(listBoxState1, Vec2{ 500, 250 }, 300, 600);
-	SimpleGUI::ListBox(listBoxState2, Vec2{ 1010, 250 }, 300, 600);
-	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
-
-	font(U"曲設定").draw(70, Vec2{ 20, 20 }, Palette::White);
-
-	//リストボックスを描画
-	SimpleGUI::ListBox(listBoxState1, Vec2{ 500, 250 }, 300, 600);
-	SimpleGUI::ListBox(listBoxState2, Vec2{ 1010, 250 }, 300, 600);
-	//選択が変更された場合にtrueを返す
-	if (SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100))
+	if (listBoxState3.selectedItemIndex != previousSelectedIndex)
 	{
 		selectListBox3 = true;
-		// 選択が変更された場合の処理
-		if (listBoxState3.selectedItemIndex.has_value())
-		{
+		previousSelectedIndex = listBoxState3.selectedItemIndex;
 			Character = speakerIDs[*listBoxState3.selectedItemIndex];
 			switch (Character) {
 			case 2:
@@ -152,11 +128,10 @@ void Scene3::update()
 				texture = Texture{ U"Character/シルエット.png" };
 				break;
 			}
-		}
+
 	}
 	if (selectListBox3 && textureRect.mouseOver())
 	{
-		// マウスカーソルを手の形に
 		Cursor::RequestStyle(CursorStyle::Hand);
 	}
 	if (textureRect.leftClicked())
@@ -180,12 +155,42 @@ void Scene3::update()
 			break;
 		}
 	}
+}
 
-	font(U"曲設定").draw(70, Vec2{ 20, 20 }, Palette::Black);
+void Scene3::draw() const
+{
+	//リストボックスを描画
+	SimpleGUI::ListBox(listBoxState1, Vec2{ 500, 250 }, 300, 600);
+	SimpleGUI::ListBox(listBoxState2, Vec2{ 1010, 250 }, 300, 600);
+	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
+
+	// 曲設定
+	Rect{ 0, 600, 350, 150 }.draw();
+	font(U"曲設定").draw(40, Vec2{ 110, 645 }, ColorF{ 0.3, 0.7, 1.0 });
+
+	font(U"曲設定").draw(70, Vec2{ 20, 20 }, Palette::White);
+
 	font(U"ファイル選択").draw(30, Vec2{ 500, 200 }, Palette::Black);
 	font(U"曲選択").draw(30, Vec2{ 1010, 200 }, Palette::Black);
 	font(U"キャラクター選択").draw(30, Vec2{ 1520, 200 }, Palette::Black);
+
+	// Charactertexture
 	textureRect.draw(ColorF{ 0.0, 0.0, 0.0, 0.0 });
 	texture.draw(1520, 380);
-}
 
+	//Scene1Button
+	Scene1Button.draw(buttonColor);
+	font(U"OP").drawAt(Vec2{ Scene1Button.center() }, Palette::White);
+
+	// Scene2Button
+	Scene2Button.draw(buttonColor);
+	font(U"語句入力").drawAt(Scene2Button.center(), Palette::White);
+
+	//Scene4Button
+	Scene4Button.draw(buttonColor);
+	font(U"動画再生").drawAt(Vec2{ Scene4Button.center() }, Palette::White);
+
+	//SaveButton
+	SaveButton.draw(buttonColor);
+	font(U"保存").drawAt(Vec2{ SaveButton.center() }, Palette::White);
+}
