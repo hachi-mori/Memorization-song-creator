@@ -49,3 +49,7 @@ void Scene1::draw() const {
 	Scene4Button.draw(buttonColor);
 	font(U"動画再生").drawAt(Scene4Button.center(), Palette::White);
 }
+
+void Scene1::draw() const
+{
+}
