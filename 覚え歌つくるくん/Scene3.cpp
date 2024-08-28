@@ -155,6 +155,13 @@ void Scene3::update()
 			break;
 		}
 	}
+
+	font(U"曲設定").draw(70, Vec2{ 20, 20 }, Palette::White);
+	font(U"ファイル選択").draw(30, Vec2{ 500, 200 }, Palette::Black);
+	font(U"曲選択").draw(30, Vec2{ 1010, 200 }, Palette::Black);
+	font(U"キャラクター選択").draw(30, Vec2{ 1520, 200 }, Palette::Black);
+	textureRect.draw(ColorF{ 0.0, 0.0, 0.0, 0.0 });
+	texture.draw(1520, 380);
 }
 
 void Scene3::draw() const
