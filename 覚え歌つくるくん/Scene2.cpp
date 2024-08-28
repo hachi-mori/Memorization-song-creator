@@ -176,6 +176,7 @@ void Scene2::update()
 		UpdateListBoxState();
 		InitializeTable();
 		te.text = U"";
+		previousSelectedIndex = { s3d::none };
 	}
 
 	//スプレッドシートの座標
