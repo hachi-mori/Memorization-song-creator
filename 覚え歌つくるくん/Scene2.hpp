@@ -26,6 +26,12 @@ private:
 	// テーブルの行追加
 	void AddNewRow();
 
+	// リストボックスの更新
+	void UpdateListBoxState();
+
+	// CSVファイルの内容をスプレッドシートに表示
+	void LoadCSVToTable(const String& filePath);
+
 	// テーブルオブジェクト
 	SimpleTable table;
 
@@ -52,7 +58,12 @@ private:
 	const Rect Scene3Button{ 0, 600, 350, 150 };
 	const Rect Scene4Button{ 0, 800, 350, 150 };
 	const Rect SaveButton{ 1570, 950, 300, 80 };
-	const Rect CreateButton{ 450, 820, 300, 80 };
+	const Rect CreateButton{ 450, 820, 200, 80 };
+	const Rect DeleteButton{ 700, 820, 100, 80 };
+
+	// テキストボックス
+	mutable TextEditState te;
+	s3d::Optional<uint64> previousSelectedIndex;
 
 	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
 };

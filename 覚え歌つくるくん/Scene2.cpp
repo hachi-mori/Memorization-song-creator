@@ -1,17 +1,17 @@
 ﻿#include "Scene2.hpp"
 
 const Array<double> Scene2::minColumnWidths = { 50, 200, 200, 200, 200 };
-//const Array<String> Scene2::columnNames = { U"", U"", U"", U"", U"" };
 const Array<String> Scene2::columnNames = { U"番号", U"語句 (必須)", U"読み (必須)", U"付加 1 (任意)", U"付加 2 (任意)" };
 
 Scene2::Scene2(const InitData& init)
-	: IScene{ init },
+	: IScene{ init }, previousSelectedIndex{ s3d::none },
 	table{ minColumnWidths, {
 		.cellHeight = 45,
 		.variableWidth = true,
 	} }
 {
 	InitializeTable();
+	UpdateListBoxState();
 	// 初期化
 	listBoxNeedsUpdate = true; // リストボックスの更新が必要なフラグを初期化
 }
@@ -22,6 +22,7 @@ Scene2::~Scene2()
 
 void Scene2::InitializeTable()
 {
+	table.clear();
 	table.push_back_row(columnNames, Array<int32>(CellCountX + 1, 0));
 	table.setRowBackgroundColor(0, ColorF{ 0.9 });
 
@@ -44,19 +45,50 @@ void Scene2::AddNewRow()
 	table.setBackgroundColor(rowIdx, 0, ColorF{ 0.9 });
 }
 
+void Scene2::UpdateListBoxState()
+{
+	Array<String> lyricsfileNames;
+	for (const auto& path : FileSystem::DirectoryContents(U"lyrics"))
+	{
+		lyricsfileNames << FileSystem::BaseName(path);
+	}
+
+	listBoxState = ListBoxState(lyricsfileNames);
+}
+
+void Scene2::LoadCSVToTable(const String& filePath)
+{
+	// テーブルを初期化してから、CSVファイルの内容を読み込む
+	InitializeTable();  // 既存のテーブルをクリア
+
+	TextReader reader(filePath);
+	String line;
+	int32 rowIdx = 0;
+	// 行ごとに読み込む
+	while (reader.readLine(line))
+	{
+		Array<String> cells = line.split(U',');
+		for (int32 colIdx = 0; colIdx < cells.size(); ++colIdx)
+		{
+			if (rowIdx + 1 > 15 && colIdx + 1 == 1)
+			{
+				AddNewRow();
+			}
+			table.setText(Point{ colIdx + 1, rowIdx + 1 }, cells[colIdx]);
+		}
+		++rowIdx;
+	}
+}
+
 void Scene2::update()
 {
-	// リストボックスの状態を更新
-	if (listBoxNeedsUpdate)
+	if (listBoxState.selectedItemIndex && listBoxState.selectedItemIndex != previousSelectedIndex)
 	{
-		Array<String> lyricsfileNames;
-		for (const auto& path : FileSystem::DirectoryContents(U"lyrics"))
-		{
-			lyricsfileNames << FileSystem::BaseName(path);
-		}
-
-		listBoxState = ListBoxState(lyricsfileNames);
-		listBoxNeedsUpdate = false; // 更新完了
+		// te の内容を選択された要素の名前に変更
+		te.text = listBoxState.items[*listBoxState.selectedItemIndex];
+		previousSelectedIndex = listBoxState.selectedItemIndex;
+		// スプレッドシートに内容を表示
+		LoadCSVToTable(U"lyrics/" + listBoxState.items[*listBoxState.selectedItemIndex] + U".csv");
 	}
 
 	// ボタンの処理
@@ -77,7 +109,7 @@ void Scene2::update()
 
 	if (SaveButton.mouseOver() && MouseL.down())
 	{
-		TextWriter writer(U"lyrics/test.csv");
+		TextWriter writer(U"lyrics/" + te.text + U".csv");
 		if (!writer)
 		{
 			throw Error{ U"Failed to open test.csv" };
@@ -92,11 +124,58 @@ void Scene2::update()
 			}
 		}
 		writer.close();
+		UpdateListBoxState();
+
+		// リストボックスで保存したファイル名を選択している状態にする
+		for (size_t i = 0; i < listBoxState.items.size(); ++i)
+		{
+			if (listBoxState.items[i] == te.text)
+			{
+				listBoxState.selectedItemIndex = static_cast<int32>(i);
+				break;
+			}
+		}
 	}
 
 	if (CreateButton.mouseOver() && MouseL.down())
 	{
-		AddNewRow();
+		String baseName = U"新しいファイル";
+		String fileName;
+		int index = 1;
+
+		// 「新しいファイル」から始めて、存在するファイルがあれば番号を追加
+		do
+		{
+			fileName = baseName + (index == 1 ? U"" : U"{}"_fmt(index));
+			index++;
+		} while (FileSystem::Exists(U"lyrics/" + fileName + U".csv"));
+
+		// 新しいファイル名でファイルを作成
+		TextWriter writer(U"lyrics/" + fileName + U".csv");
+		writer.close();
+
+		UpdateListBoxState();
+		InitializeTable();
+
+		// リストボックスで新しいファイル名を選択している状態にする
+		for (size_t i = 0; i < listBoxState.items.size(); ++i)
+		{
+			if (listBoxState.items[i] == fileName)
+			{
+				listBoxState.selectedItemIndex = static_cast<int32>(i);
+				break;
+			}
+		}
+	}
+
+	// ファイルの削除
+	if (DeleteButton.mouseOver() && MouseL.down())
+	{
+		//FileSystem::Remove(U"lyric/" + listBoxState.items[*listBoxState.selectedItemIndex] + U".csv");
+		FileSystem::Remove(U"lyrics/" + listBoxState.items[*listBoxState.selectedItemIndex] + U".csv");
+		UpdateListBoxState();
+		InitializeTable();
+		te.text = U"";
 	}
 
 	//スプレッドシートの座標
@@ -141,6 +220,8 @@ void Scene2::update()
 					textEditState.cursorPos = textEditState.text.length();
 					textEditState.active = true;
 					MouseL.clearInput();
+					// テキストボックスを非アクティブにする
+					te.active = false;
 				}
 			}
 		}
@@ -231,6 +312,13 @@ void Scene2::draw() const
 	//CreateButton
 	CreateButton.draw(buttonColor);
 	font(U"新規作成").drawAt(Vec2{ CreateButton.center() }, Palette::White);
+
+	//DeleteButton
+	DeleteButton.draw(buttonColor);
+	font(U"削除").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
+
+	// TextBox
+	SimpleGUI::TextBox(te, Vec2{ 1024, 100}, 400);
 
 	/*
 	font(U"語句(必須)")
