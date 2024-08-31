@@ -134,7 +134,7 @@ void Scene3::update()
 	{
 		Cursor::RequestStyle(CursorStyle::Hand);
 	}
-	if (textureRect.leftClicked())
+	if (selectListBox3 && textureRect.leftClicked())
 	{
 		Character = speakerIDs[*listBoxState3.selectedItemIndex];
 		switch (Character) {
