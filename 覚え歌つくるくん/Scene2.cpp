@@ -109,31 +109,41 @@ void Scene2::update()
 
 	if (SaveButton.mouseOver() && MouseL.down())
 	{
-		TextWriter writer(U"lyrics/" + te.text + U".csv");
-		if (!writer)
-		{
-			throw Error{ U"Failed to open test.csv" };
-		}
+		if (listBoxState.selectedItemIndex) {
+			if (te.text) {
+				TextWriter writer(U"lyrics/" + te.text + U".csv");
+				if (!writer)
+				{
+					throw Error{ U"Failed to open test.csv" };
+				}
 
-		for (int32 a = 1; a < table.rows(); ++a)
-		{
-			for (int32 b = 1; b < CellCountX + 1; ++b)
-			{
-				writer.write(table.getItem(Point{ b, a }).text);
-				writer.write(b < CellCountX ? U"," : U"\n");
+				for (int32 a = 1; a < table.rows(); ++a)
+				{
+					for (int32 b = 1; b < CellCountX + 1; ++b)
+					{
+						writer.write(table.getItem(Point{ b, a }).text);
+						writer.write(b < CellCountX ? U"," : U"\n");
+					}
+				}
+				writer.close();
+				UpdateListBoxState();
+
+				// リストボックスで保存したファイル名を選択している状態にする
+				for (size_t i = 0; i < listBoxState.items.size(); ++i)
+				{
+					if (listBoxState.items[i] == te.text)
+					{
+						listBoxState.selectedItemIndex = static_cast<int32>(i);
+						break;
+					}
+				}
+			}
+			else {
+				System::MessageBoxOK(U"", U"ファイル名を入力してから保存してください");
 			}
 		}
-		writer.close();
-		UpdateListBoxState();
-
-		// リストボックスで保存したファイル名を選択している状態にする
-		for (size_t i = 0; i < listBoxState.items.size(); ++i)
-		{
-			if (listBoxState.items[i] == te.text)
-			{
-				listBoxState.selectedItemIndex = static_cast<int32>(i);
-				break;
-			}
+		else {
+			System::MessageBoxOK(U"", U"ファイルを新規作成→選択してから保存してください");
 		}
 	}
 
@@ -183,108 +193,109 @@ void Scene2::update()
 			previousSelectedIndex = { s3d::none };
 		}
 	}
+	if (listBoxState.selectedItemIndex) {
+		//スプレッドシートの座標
+		const Rect tableViewport = Scene::Rect().stretched(-150).movedBy(810, 0);
 
-	//スプレッドシートの座標
-	const Rect tableViewport = Scene::Rect().stretched(-150).movedBy(810, 0);
-
-	tableScrollBar.updateLayout(tableViewport);
-	tableScrollBar.updateConstraints(0, table.height(), tableViewport.h);
-	if (tableViewport.mouseOver())
-	{
-		tableScrollBar.scroll(Mouse::Wheel() * 100);
-	}
-	tableScrollBar.update(tableViewport.mouseOver() ? Cursor::PosF() : MakeOptional<Vec2>());
-
-	if (nextActiveIndex)
-	{
-		activeIndex = *nextActiveIndex;
-		textEditState = TextEditState{ table.getItem(*activeIndex).text };
-		textEditState.cursorPos = textEditState.text.length();
-		textEditState.active = true;
-		nextActiveIndex.reset();
-	}
-
-	{
-		ScopedViewport2D vp{ tableViewport };
-
-		Transformer2D tf{
-			Mat3x2::Translate(0, -tableScrollBar.value()),
-			Mat3x2::Translate(tableViewport.pos.movedBy(0, -tableScrollBar.value()))
-		};
-
-		if (MouseL.down())
+		tableScrollBar.updateLayout(tableViewport);
+		tableScrollBar.updateConstraints(0, table.height(), tableViewport.h);
+		if (tableViewport.mouseOver())
 		{
-			const auto newActiveIndex = table.cellIndex({ 0, 0 }, Cursor::Pos());
+			tableScrollBar.scroll(Mouse::Wheel() * 100);
+		}
+		tableScrollBar.update(tableViewport.mouseOver() ? Cursor::PosF() : MakeOptional<Vec2>());
 
-			if (newActiveIndex != activeIndex)
+		if (nextActiveIndex)
+		{
+			activeIndex = *nextActiveIndex;
+			textEditState = TextEditState{ table.getItem(*activeIndex).text };
+			textEditState.cursorPos = textEditState.text.length();
+			textEditState.active = true;
+			nextActiveIndex.reset();
+		}
+
+		{
+			ScopedViewport2D vp{ tableViewport };
+
+			Transformer2D tf{
+				Mat3x2::Translate(0, -tableScrollBar.value()),
+				Mat3x2::Translate(tableViewport.pos.movedBy(0, -tableScrollBar.value()))
+			};
+
+			if (MouseL.down())
 			{
-				activeIndex = newActiveIndex;
+				const auto newActiveIndex = table.cellIndex({ 0, 0 }, Cursor::Pos());
 
-				if (activeIndex)
+				if (newActiveIndex != activeIndex)
 				{
-					textEditState = TextEditState{ table.getItem(*activeIndex).text };
-					textEditState.cursorPos = textEditState.text.length();
-					textEditState.active = true;
-					MouseL.clearInput();
-					// テキストボックスを非アクティブにする
-					te.active = false;
+					activeIndex = newActiveIndex;
+
+					if (activeIndex)
+					{
+						textEditState = TextEditState{ table.getItem(*activeIndex).text };
+						textEditState.cursorPos = textEditState.text.length();
+						textEditState.active = true;
+						MouseL.clearInput();
+						// テキストボックスを非アクティブにする
+						te.active = false;
+					}
+				}
+			}
+
+			table.draw();
+
+			if (activeIndex && (activeIndex->x != 0 && activeIndex->y != 0))
+			{
+				const RectF cellRegion = table.cellRegion({ 0, 0 }, *activeIndex);
+
+				if (SimpleGUI::TextBox(textEditState, cellRegion.pos, cellRegion.w))
+				{
+					table.setText(*activeIndex, textEditState.text);
+				}
+
+				if (textEditState.enterKey)
+				{
+					nextActiveIndex = Point{ activeIndex->x, (activeIndex->y + 1) };
+
+					if (nextActiveIndex->y == table.rows())
+					{
+						AddNewRow();
+					}
+				}
+
+				if ((1 < activeIndex->y) && KeyUp.down())
+				{
+					nextActiveIndex = Point{ activeIndex->x, (activeIndex->y - 1) };
+				}
+
+				if ((activeIndex->y < table.rows()) && KeyDown.down())
+				{
+					nextActiveIndex = Point{ activeIndex->x, (activeIndex->y + 1) };
+
+					if (nextActiveIndex->y == table.rows())
+					{
+						AddNewRow();
+					}
+				}
+
+				if ((1 < activeIndex->x) && KeyLeft.down())
+				{
+					nextActiveIndex = Point{ (activeIndex->x - 1), activeIndex->y };
+				}
+
+				if ((activeIndex->x < CellCountX) && KeyRight.down())
+				{
+					nextActiveIndex = Point{ (activeIndex->x + 1), activeIndex->y };
+				}
+
+				if (KeyDelete.down())
+				{
+					textEditState.clear();
+					table.setText(*activeIndex, U"");
 				}
 			}
 		}
-
-		table.draw();
-
-		if (activeIndex && (activeIndex->x != 0 && activeIndex->y != 0))
-		{
-			const RectF cellRegion = table.cellRegion({ 0, 0 }, *activeIndex);
-
-			if (SimpleGUI::TextBox(textEditState, cellRegion.pos, cellRegion.w))
-			{
-				table.setText(*activeIndex, textEditState.text);
-			}
-
-			if (textEditState.enterKey)
-			{
-				nextActiveIndex = Point{ activeIndex->x, (activeIndex->y + 1) };
-
-				if (nextActiveIndex->y == table.rows())
-				{
-					AddNewRow();
-				}
-			}
-
-			if ((1 < activeIndex->y) && KeyUp.down())
-			{
-				nextActiveIndex = Point{ activeIndex->x, (activeIndex->y - 1) };
-			}
-
-			if ((activeIndex->y < table.rows()) && KeyDown.down())
-			{
-				nextActiveIndex = Point{ activeIndex->x, (activeIndex->y + 1) };
-
-				if (nextActiveIndex->y == table.rows())
-				{
-					AddNewRow();
-				}
-			}
-
-			if ((1 < activeIndex->x) && KeyLeft.down())
-			{
-				nextActiveIndex = Point{ (activeIndex->x - 1), activeIndex->y };
-			}
-
-			if ((activeIndex->x < CellCountX) && KeyRight.down())
-			{
-				nextActiveIndex = Point{ (activeIndex->x + 1), activeIndex->y };
-			}
-
-			if (KeyDelete.down())
-			{
-				textEditState.clear();
-				table.setText(*activeIndex, U"");
-			}
-		}
-	}
+	}	
 }
 
 void Scene2::draw() const
