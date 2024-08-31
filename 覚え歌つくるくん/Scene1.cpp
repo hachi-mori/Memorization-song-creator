@@ -25,6 +25,11 @@ void Scene1::update()
 	{
 		changeScene(U"Scene4");
 	}
+
+	if (CreditButton.mouseOver() && MouseL.down())
+	{
+		changeScene(U"CreditScene");
+	}
 }
 
 void Scene1::draw() const {
@@ -48,4 +53,8 @@ void Scene1::draw() const {
 	// Scene4Button
 	Scene4Button.draw(buttonColor);
 	font(U"動画再生").drawAt(Scene4Button.center(), Palette::White);
+
+	// Scene4Button
+	CreditButton.draw(buttonColor);
+	font(U"クレジット").drawAt(CreditButton.center(), Palette::White);
 }

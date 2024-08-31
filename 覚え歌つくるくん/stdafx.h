@@ -10,4 +10,4 @@
 # include "Scene2.hpp"
 # include "Scene3.hpp"
 # include "Scene4.hpp"
-
+# include "CreditScene.hpp"

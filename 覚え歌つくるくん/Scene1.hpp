@@ -25,6 +25,7 @@ private:
 	const Rect Scene2Button{ 0, 400, 350, 150 };
 	const Rect Scene3Button{ 0, 600, 350, 150 };
 	const Rect Scene4Button{ 0, 800, 350, 150 };
+	const Rect CreditButton{ 1580, 930, 300, 100 };
 
 	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
 };

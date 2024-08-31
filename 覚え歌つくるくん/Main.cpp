@@ -19,6 +19,7 @@ void Main()
 	manager.add<Scene2>(U"Scene2");
 	manager.add<Scene3>(U"Scene3");
 	manager.add<Scene4>(U"Scene4");
+	manager.add<CreditScene>(U"CreditScene");
 	// 他のシーンも同様に登録する
 
 	while (System::Update())
