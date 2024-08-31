@@ -171,12 +171,17 @@ void Scene2::update()
 	// ファイルの削除
 	if (DeleteButton.mouseOver() && MouseL.down())
 	{
-		//FileSystem::Remove(U"lyric/" + listBoxState.items[*listBoxState.selectedItemIndex] + U".csv");
-		FileSystem::Remove(U"lyrics/" + listBoxState.items[*listBoxState.selectedItemIndex] + U".csv");
-		UpdateListBoxState();
-		InitializeTable();
-		te.text = U"";
-		previousSelectedIndex = { s3d::none };
+		const MessageBoxResult result = System::MessageBoxOKCancel(U"",U"「" + listBoxState.items[*listBoxState.selectedItemIndex] + U"」\nこのファイルを削除しますか？");
+
+		// OK が選ばれたら
+		if (result == MessageBoxResult::OK)
+		{
+			FileSystem::Remove(U"lyrics/" + listBoxState.items[*listBoxState.selectedItemIndex] + U".csv");
+			UpdateListBoxState();
+			InitializeTable();
+			te.text = U"";
+			previousSelectedIndex = { s3d::none };
+		}
 	}
 
 	//スプレッドシートの座標
@@ -319,6 +324,7 @@ void Scene2::draw() const
 	font(U"削除").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
 
 	// TextBox
+	font(U"ファイル名（変更可能です）").drawAt(25, Vec2{ 1190, 80 }, Palette::Black);
 	SimpleGUI::TextBox(te, Vec2{ 1024, 100}, 400);
 
 	/*
