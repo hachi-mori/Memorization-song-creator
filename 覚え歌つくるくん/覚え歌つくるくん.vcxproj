@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CreateScore.cpp" />
+    <ClCompile Include="CreditScene.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Scene1.cpp" />
     <ClCompile Include="Scene2.cpp" />
@@ -335,6 +336,7 @@
   <ItemGroup>
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="CreateScore.hpp" />
+    <ClInclude Include="CreditScene.hpp" />
     <ClInclude Include="Scene1.hpp" />
     <ClInclude Include="Scene2.hpp" />
     <ClInclude Include="Scene3.hpp" />
