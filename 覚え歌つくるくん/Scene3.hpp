@@ -21,6 +21,14 @@ private:
 	Array<String> speakers;
 	Array<int32> speakerIDs;
 
+	bool isloading;
+	Rect loadingRect{ 0, 0, 1920, 1080 };
+	Texture loadingtexture{ U"loading.png"};
+	// 回転速度（ラジアン / 秒）
+	const double angularVelocity = 360_deg;
+	// 回転角度
+	double angle = 0_deg;
+
 	Texture texture{};
 	Rect textureRect{ 1540, 390, 280, 460 };
 	int Character;
@@ -40,4 +48,7 @@ private:
 	const Rect SaveButton{ 1570, 950, 300, 80 };
 
 	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
+
+	// 非同期タスク
+	AsyncTask<bool> task;
 };

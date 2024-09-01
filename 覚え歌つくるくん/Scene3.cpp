@@ -5,7 +5,8 @@ Scene3::Scene3(const InitData& init)
 	texture{ U"Character/シルエット.png" },
 	textureRect{ 1540, 390, 280, 460 },
 	selectListBox3{ false },
-	previousSelectedIndex{ s3d::none }
+	previousSelectedIndex{ s3d::none },
+	isloading{ false }
 {
 	// Initialize the list of files and speakers
 	InitializeLists();
@@ -77,36 +78,55 @@ void Scene3::update()
 		changeScene(U"Scene4");
 	}
 
-	if (SaveButton.mouseOver() && MouseL.down())
+	if (SaveButton.mouseOver() && MouseL.down() && !task.isValid())
 	{
-		Optional<int32> selectedSpeakerID;
-		if (listBoxState3.selectedItemIndex)
+		isloading = true;
+
+		// 非同期タスクを開始
+		task = Async([this]()
 		{
-			selectedSpeakerID = speakerIDs[*listBoxState3.selectedItemIndex] + 3000;
-		}
+			Optional<int32> selectedSpeakerID;
+			if (listBoxState3.selectedItemIndex)
+			{
+				selectedSpeakerID = speakerIDs[*listBoxState3.selectedItemIndex] + 3000;
+			}
 
-		String selectedlyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
-		String selectedScoreName = OriginalScoresfileNames[listBoxState2.selectedItemIndex.value()];
-		String selectedCharacterName = speakers[listBoxState3.selectedItemIndex.value()];
+			String selectedlyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
+			String selectedScoreName = OriginalScoresfileNames[listBoxState2.selectedItemIndex.value()];
+			String selectedCharacterName = speakers[listBoxState3.selectedItemIndex.value()];
 
-		const FilePath lyricsFilePath = U"lyrics/{}.csv"_fmt(selectedlyricsName);
-		const FilePath scoreFilePath = U"OriginalScores/{}.json"_fmt(selectedScoreName);
-		const FilePath outputAudioFilePath = U"Voice/{}-{}-{}.wav"_fmt(selectedlyricsName, selectedScoreName, selectedCharacterName);
-		const FilePath createscoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedlyricsName, selectedScoreName);
+			const FilePath lyricsFilePath = U"lyrics/{}.csv"_fmt(selectedlyricsName);
+			const FilePath scoreFilePath = U"OriginalScores/{}.json"_fmt(selectedScoreName);
+			const FilePath outputAudioFilePath = U"Voice/{}-{}-{}.wav"_fmt(selectedlyricsName, selectedScoreName, selectedCharacterName);
+			const FilePath createscoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedlyricsName, selectedScoreName);
 
-		// JSONファイルを更新
-		UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
+			// JSONファイルを更新
+			UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
 
-		if (VOICEVOX::SynthesizeVoiceFromScore(createscoreFilePath, outputAudioFilePath, *selectedSpeakerID))
+			// 音声合成
+			return VOICEVOX::SynthesizeVoiceFromScore(createscoreFilePath, outputAudioFilePath, *selectedSpeakerID);
+		});
+	}
+
+	// 非同期タスクが完了したかをチェック
+	if (task.isReady())
+	{
+		// 結果を取得
+		bool synthesisSuccess = task.get();
+		if (synthesisSuccess)
 		{
 			Print(U"音声合成が成功しました。");
-			const Audio audio{ outputAudioFilePath };
-			audio.play();
 		}
 		else
 		{
 			Print(U"音声合成に失敗しました。");
 		}
+		isloading = false;
+	}
+
+	if (isloading)
+	{
+		angle += (Scene::DeltaTime() * angularVelocity);
 	}
 
 	if (listBoxState3.selectedItemIndex != previousSelectedIndex)
@@ -156,12 +176,6 @@ void Scene3::update()
 		}
 	}
 
-	font(U"曲設定").draw(70, Vec2{ 20, 20 }, Palette::White);
-	font(U"ファイル選択").draw(30, Vec2{ 500, 200 }, Palette::Black);
-	font(U"曲選択").draw(30, Vec2{ 1010, 200 }, Palette::Black);
-	font(U"キャラクター選択").draw(30, Vec2{ 1520, 200 }, Palette::Black);
-	textureRect.draw(ColorF{ 0.0, 0.0, 0.0, 0.0 });
-	texture.draw(1520, 380);
 }
 
 void Scene3::draw() const
@@ -200,4 +214,10 @@ void Scene3::draw() const
 	//SaveButton
 	SaveButton.draw(buttonColor);
 	font(U"保存").drawAt(Vec2{ SaveButton.center() }, Palette::White);
+
+	// loding
+	if (isloading) {
+		loadingRect.draw(ColorF{ 0.0, 0.5 });
+		loadingtexture.rotated(angle).draw(860, 440);
+	}
 }
