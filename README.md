@@ -18,6 +18,8 @@
 ├ VoiceVoxSynthesizer.hpp
 ├ CreateScore.cpp
 ├ CreateScore.hpp
+├ CreditScene.cpp
+├ CreditScene.hpp
 ├ Scene1.cpp
 ├ Scene1.hpp
 ├ Scene2.cpp
@@ -50,4 +52,8 @@
 　│　└ 語句2-チューリップ-春日部つむぎ.wav
 　│　└	…
 　└ 覚え歌つくるくん.exe
+
+<更新情報>
+2024.08.31 : CreditScene.cpp, CreditScene.hpp を追加
+
 </pre>
