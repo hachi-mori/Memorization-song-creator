@@ -19,8 +19,8 @@ void Main()
 	manager.add<CreditScene>(U"CreditScene");
 	// 他のシーンも同様に登録する
 
-	FontAsset::Register(U"MainFont", 48, U"example/font/DotGothic16/DotGothic16-Regular.ttf");
-	
+	FontAsset::Register(U"MainFont", 48, U"font/rounded-mplus-20150529/rounded-mplus-1c-heavy.ttf");
+
 	while (System::Update())
 	{
 		if (not manager.update())
