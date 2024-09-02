@@ -304,38 +304,38 @@ void Scene2::draw() const
 
 	// 語句入力
 	Rect{ 0, 400, 350, 150 }.draw();
-	font(U"語句入力").draw(40, Vec2{ 100, 445 }, ColorF{ 0.3, 0.7, 1.0 });
+	FontAsset(U"MainFont")(U"語句入力").draw(40, Vec2{ 100, 445 }, ColorF{ 0.3, 0.7, 1.0 });
 
 	tableScrollBar.draw();
-	font(U"ファイル選択").draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
-	font(U"語句入力")	.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
+	FontAsset(U"MainFont")(U"ファイル選択").draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"語句入力")	.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 
 	//Scene1Button
 	Scene1Button.draw(buttonColor);
-	font(U"OP").drawAt(Vec2{ Scene1Button.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"OP").drawAt(Vec2{ Scene1Button.center() }, Palette::White);
 
 	//Scene3Button
 	Scene3Button.draw(buttonColor);
-	font(U"曲選択").drawAt(Vec2{ Scene3Button.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"曲選択").drawAt(Vec2{ Scene3Button.center() }, Palette::White);
 
 	//Scene4Button
 	Scene4Button.draw(buttonColor);
-	font(U"動画再生").drawAt(Vec2{ Scene4Button.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"動画再生").drawAt(Vec2{ Scene4Button.center() }, Palette::White);
 
 	//SaveButton
 	SaveButton.draw(buttonColor);
-	font(U"保存").drawAt(Vec2{ SaveButton.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"保存").drawAt(Vec2{ SaveButton.center() }, Palette::White);
 
 	//CreateButton
 	CreateButton.draw(buttonColor);
-	font(U"新規作成").drawAt(Vec2{ CreateButton.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"新規作成").drawAt(Vec2{ CreateButton.center() }, Palette::White);
 
 	//DeleteButton
 	DeleteButton.draw(buttonColor);
-	font(U"削除").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"削除").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
 
 	// TextBox
-	font(U"ファイル名（変更可能です）").drawAt(25, Vec2{ 1190, 80 }, Palette::Black);
+	FontAsset(U"MainFont")(U"ファイル名（変更可能です）").drawAt(25, Vec2{ 1190, 80 }, Palette::Black);
 	SimpleGUI::TextBox(te, Vec2{ 1024, 100}, 400);
 
 	/*

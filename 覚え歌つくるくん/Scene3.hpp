@@ -11,7 +11,6 @@ public:
 	void draw() const override;
 
 private:
-	const Font font{ FontMethod::MSDF, 48, Typeface::Bold };
 	mutable ListBoxState listBoxState1;
 	mutable ListBoxState listBoxState2;
 	mutable ListBoxState listBoxState3;

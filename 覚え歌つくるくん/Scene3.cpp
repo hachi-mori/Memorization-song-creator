@@ -42,27 +42,6 @@ void Scene3::InitializeLists()
 	listBoxState3 = ListBoxState{ speakers };
 }
 
-bool Scene3::Button(const Rect& rect, const String& text, bool enabled)
-{
-	if (enabled && rect.mouseOver())
-	{
-		Cursor::RequestStyle(CursorStyle::Hand);
-	}
-
-	if (enabled)
-	{
-		rect.draw(ColorF{ 0.3, 0.7, 1.0 });
-		font(text).drawAt(rect.center(), Palette::White);
-	}
-	else
-	{
-		rect.draw(ColorF{ 0.5 });
-		font(text).drawAt(rect.center(), ColorF{ 0.7 });
-	}
-
-	return (enabled && rect.leftClicked());
-}
-
 void Scene3::update()
 {
 	if (Scene1Button.mouseOver() && MouseL.down())
@@ -187,13 +166,13 @@ void Scene3::draw() const
 
 	// 曲設定
 	Rect{ 0, 600, 350, 150 }.draw();
-	font(U"曲設定").draw(40, Vec2{ 110, 645 }, ColorF{ 0.3, 0.7, 1.0 });
+	FontAsset(U"MainFont")(U"曲設定").draw(40, Vec2{ 110, 645 }, ColorF{ 0.3, 0.7, 1.0 });
 
-	font(U"曲設定").draw(70, Vec2{ 20, 20 }, Palette::White);
+	FontAsset(U"MainFont")(U"曲設定").draw(70, Vec2{ 20, 20 }, Palette::White);
 
-	font(U"ファイル選択").draw(30, Vec2{ 500, 200 }, Palette::Black);
-	font(U"曲選択").draw(30, Vec2{ 1010, 200 }, Palette::Black);
-	font(U"キャラクター選択").draw(30, Vec2{ 1520, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"ファイル選択").draw(30, Vec2{ 500, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"曲選択").draw(30, Vec2{ 1010, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"キャラクター選択").draw(30, Vec2{ 1520, 200 }, Palette::Black);
 
 	// Charactertexture
 	textureRect.draw(ColorF{ 0.0, 0.0, 0.0, 0.0 });
@@ -201,19 +180,19 @@ void Scene3::draw() const
 
 	//Scene1Button
 	Scene1Button.draw(buttonColor);
-	font(U"OP").drawAt(Vec2{ Scene1Button.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"OP").drawAt(Vec2{ Scene1Button.center() }, Palette::White);
 
 	// Scene2Button
 	Scene2Button.draw(buttonColor);
-	font(U"語句入力").drawAt(Scene2Button.center(), Palette::White);
+	FontAsset(U"MainFont")(U"語句入力").drawAt(Scene2Button.center(), Palette::White);
 
 	//Scene4Button
 	Scene4Button.draw(buttonColor);
-	font(U"動画再生").drawAt(Vec2{ Scene4Button.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"動画再生").drawAt(Vec2{ Scene4Button.center() }, Palette::White);
 
 	//SaveButton
 	SaveButton.draw(buttonColor);
-	font(U"保存").drawAt(Vec2{ SaveButton.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"保存").drawAt(Vec2{ SaveButton.center() }, Palette::White);
 
 	// loding
 	if (isloading) {

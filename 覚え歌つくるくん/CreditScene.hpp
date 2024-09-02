@@ -19,7 +19,6 @@ public:
 private:
 	// メンバ変数
 	const Texture texture{ U"zunkyo.png" };
-	const Font font{ FontMethod::MSDF, 48, Typeface::Bold };
 
 	// ボタンの矩形と色
 	const Rect Scene1Button{ 1580, 930, 300, 100 };

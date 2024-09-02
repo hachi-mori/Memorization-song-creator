@@ -17,9 +17,6 @@ public:
 	void draw() const override;
 
 private:
-	// フォントの生成
-	const Font font{ FontMethod::MSDF, 48, Typeface::Bold };
-
 	// テーブルの初期設定
 	void InitializeTable();
 

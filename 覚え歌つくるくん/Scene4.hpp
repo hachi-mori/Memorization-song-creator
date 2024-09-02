@@ -13,7 +13,6 @@ public:
 
 private:
 
-	const Font font{ FontMethod::MSDF, 48, Typeface::Bold };
 	mutable ListBoxState listBoxState;
 	Array<String> VoicefileNames;
 	String selectedVoiceFile;

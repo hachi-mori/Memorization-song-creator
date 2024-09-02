@@ -863,5 +863,8 @@
     <ClInclude Include="VoiceVoxSynthesizer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CommonFonts.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

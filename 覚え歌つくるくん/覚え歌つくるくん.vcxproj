@@ -335,6 +335,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.hpp" />
+    <ClInclude Include="CommonFonts.hpp" />
     <ClInclude Include="CreateScore.hpp" />
     <ClInclude Include="CreditScene.hpp" />
     <ClInclude Include="Scene1.hpp" />

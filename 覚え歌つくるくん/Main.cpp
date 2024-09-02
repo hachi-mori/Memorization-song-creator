@@ -1,7 +1,4 @@
-﻿//Gitのテスト
-
-
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 using App = SceneManager<String>;
 
@@ -12,7 +9,7 @@ void Main()
 	Scene::SetResizeMode(ResizeMode::Keep);
 	Window::SetFullscreen(true);
 	Scene::SetBackground(ColorF{ 0.8, 0.9, 1.0 });
-
+	
 	App manager;
 
 	manager.add<Scene1>(U"Scene1");
@@ -21,6 +18,8 @@ void Main()
 	manager.add<Scene4>(U"Scene4");
 	manager.add<CreditScene>(U"CreditScene");
 	// 他のシーンも同様に登録する
+
+	FontAsset::Register(U"MainFont", 48, U"example/font/YasashisaGothicV2-B/YasashisaGothicBold-V2.otf");
 
 	while (System::Update())
 	{

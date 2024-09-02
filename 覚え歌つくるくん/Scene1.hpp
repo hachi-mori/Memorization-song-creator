@@ -19,7 +19,6 @@ public:
 private:
 	// メンバ変数
 	const Texture texture{ U"logo4.PNG" };
-	const Font font{ FontMethod::MSDF, 48, Typeface::Bold };
 
 	// ボタンの矩形と色
 	const Rect Scene2Button{ 0, 400, 350, 150 };
