@@ -150,6 +150,9 @@
     <ClCompile Include="CreateScore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CreditScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Scene1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -837,6 +840,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CreateScore.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreditScene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scene1.hpp">

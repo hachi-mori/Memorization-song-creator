@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{b824466d-ff4e-430f-8281-0dbdef7bae55}</ProjectGuid>
+    <ProjectGuid>{d77bd936-20b9-4c28-86e5-1fe581b69f72}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>覚え歌つくるくん</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
