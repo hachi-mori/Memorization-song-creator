@@ -47,8 +47,8 @@ void Scene4::update()
 void Scene4::draw() const
 {
 	//動画再生
-	Rect{ 0, 800, 350, 150 }.draw();
-	FontAsset(U"MainFont")(U"ながす").draw(48, Vec2{ 100, 845 }, ColorF{ 0.3, 0.7, 1.0 });
+	Rect{ 0, 630, 350, 150 }.draw();
+	FontAsset(U"MainFont")(U"ながす").draw(48, Vec2{ 100, 675 }, buttonColor);
 
 	Rect{ 900, 315, 800, 450 }.draw();
 	FontAsset(U"MainFont")(U"おぼえうた").draw(30, Rect{ 450, 200, 480, 200 }, Palette::Black);
@@ -56,8 +56,8 @@ void Scene4::draw() const
 	FontAsset(U"MainFont")(U"ながす").draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 
 	//Scene1Button
-	Scene1Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"OP").drawAt(Vec2{ Scene1Button.center() }, Palette::White);
+	Scene1Button.draw(Palette::Gray);
+	FontAsset(U"MainFont")(U"おわりにする").drawAt(30, Vec2{ Scene1Button.center() }, Palette::White);
 
 	// Scene2Button
 	Scene2Button.draw(buttonColor);

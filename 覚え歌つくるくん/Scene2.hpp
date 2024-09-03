@@ -51,9 +51,9 @@ private:
 	static const Array<String> columnNames;
 
 	// ボタン
-	const Rect Scene1Button{ 0, 200, 350, 150 };
-	const Rect Scene3Button{ 0, 600, 350, 150 };
-	const Rect Scene4Button{ 0, 800, 350, 150 };
+	const Rect Scene1Button{ 0, 900, 200, 100 };
+	const Rect Scene3Button{ 0, 430, 350, 150 };
+	const Rect Scene4Button{ 0, 630, 350, 150 };
 	const Rect SaveButton{ 1570, 950, 300, 80 };
 	const Rect CreateButton{ 450, 820, 400, 80 };
 	const Rect DeleteButton{ 450, 920, 100, 80 };

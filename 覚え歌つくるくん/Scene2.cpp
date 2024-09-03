@@ -303,16 +303,16 @@ void Scene2::draw() const
 	SimpleGUI::ListBox(listBoxState, Vec2{ 450, 200 }, 480, 600);
 
 	// 語句入力
-	Rect{ 0, 400, 350, 150 }.draw();
-	FontAsset(U"MainFont")(U"かく").draw(48, Vec2{ 135, 445 }, ColorF{ 0.3, 0.7, 1.0 });
+	Rect{ 0, 230, 350, 150 }.draw();
+	FontAsset(U"MainFont")(U"かく").draw(48, Vec2{ 135, 275 }, buttonColor);
 
 	tableScrollBar.draw();
 	FontAsset(U"MainFont")(U"かしのリスト").draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
 	FontAsset(U"MainFont")(U"かく")	.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 
 	//Scene1Button
-	Scene1Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"OP").drawAt(Vec2{ Scene1Button.center() }, Palette::White);
+	Scene1Button.draw(Palette::Gray);
+	FontAsset(U"MainFont")(U"おわりにする").drawAt(30,Vec2{ Scene1Button.center() }, Palette::White);
 
 	//Scene3Button
 	Scene3Button.draw(buttonColor);

@@ -1,4 +1,4 @@
-﻿#include "Scene3.hpp"
+﻿#include "stdafx.h"
 
 Scene3::Scene3(const InitData& init)
 	: IScene{ init },
@@ -165,8 +165,8 @@ void Scene3::draw() const
 	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
 
 	// 曲設定
-	Rect{ 0, 600, 350, 150 }.draw();
-	FontAsset(U"MainFont")(U"つくる").draw(48, Vec2{ 110, 645 }, ColorF{ 0.3, 0.7, 1.0 });
+	Rect{ 0, 430, 350, 150 }.draw();
+	FontAsset(U"MainFont")(U"つくる").draw(48, Vec2{ 110, 475 }, buttonColor);
 
 	FontAsset(U"MainFont")(U"つくる").draw(70, Vec2{ 20, 20 }, Palette::White);
 
@@ -179,8 +179,8 @@ void Scene3::draw() const
 	texture.draw(1520, 380);
 
 	//Scene1Button
-	Scene1Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"OP").drawAt(Vec2{ Scene1Button.center() }, Palette::White);
+	Scene1Button.draw(Palette::Gray);
+	FontAsset(U"MainFont")(U"おわりにする").drawAt(30, Vec2{ Scene1Button.center() }, Palette::White);
 
 	// Scene2Button
 	Scene2Button.draw(buttonColor);
