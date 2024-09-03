@@ -44,15 +44,15 @@ void Scene1::draw() const {
 
 	// Scene2Button
 	Scene2Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"語句入力").drawAt(Scene2Button.center(), Palette::White);
+	FontAsset(U"MainFont")(U"かく").drawAt(Scene2Button.center(), Palette::White);
 
 	// Scene3Button
 	Scene3Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"曲選択").drawAt(Scene3Button.center(), Palette::White);
+	FontAsset(U"MainFont")(U"つくる").drawAt(Scene3Button.center(), Palette::White);
 
 	// Scene4Button
 	Scene4Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"動画再生").drawAt(Scene4Button.center(), Palette::White);
+	FontAsset(U"MainFont")(U"ながす").drawAt(Scene4Button.center(), Palette::White);
 
 	// Scene4Button
 	CreditButton.draw(buttonColor);

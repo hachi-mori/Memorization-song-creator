@@ -48,12 +48,12 @@ void Scene4::draw() const
 {
 	//動画再生
 	Rect{ 0, 800, 350, 150 }.draw();
-	FontAsset(U"MainFont")(U"動画再生").draw(40, Vec2{ 100, 845 }, ColorF{ 0.3, 0.7, 1.0 });
+	FontAsset(U"MainFont")(U"ながす").draw(48, Vec2{ 100, 845 }, ColorF{ 0.3, 0.7, 1.0 });
 
 	Rect{ 900, 315, 800, 450 }.draw();
-	FontAsset(U"MainFont")(U"ファイル選択").draw(30, Rect{ 450, 200, 480, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"おぼえうた").draw(30, Rect{ 450, 200, 480, 200 }, Palette::Black);
 	FontAsset(U"MainFont")(U"動画").draw(100, Rect{ 1180, 480, 550, 300 }, Palette::Black);
-	FontAsset(U"MainFont")(U"動画再生").draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
+	FontAsset(U"MainFont")(U"ながす").draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 
 	//Scene1Button
 	Scene1Button.draw(buttonColor);
@@ -61,11 +61,11 @@ void Scene4::draw() const
 
 	// Scene2Button
 	Scene2Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"語句入力").drawAt(Scene2Button.center(), Palette::White);
+	FontAsset(U"MainFont")(U"かく").drawAt(Scene2Button.center(), Palette::White);
 
 	// Scene3Button
 	Scene3Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"曲選択").drawAt(Scene3Button.center(), Palette::White);
+	FontAsset(U"MainFont")(U"つくる").drawAt(Scene3Button.center(), Palette::White);
 
 	SimpleGUI::ListBox(listBoxState, Vec2{ 450, 250 }, 350, 600);
 }

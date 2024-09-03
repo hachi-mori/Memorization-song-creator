@@ -55,8 +55,8 @@ private:
 	const Rect Scene3Button{ 0, 600, 350, 150 };
 	const Rect Scene4Button{ 0, 800, 350, 150 };
 	const Rect SaveButton{ 1570, 950, 300, 80 };
-	const Rect CreateButton{ 450, 820, 200, 80 };
-	const Rect DeleteButton{ 700, 820, 100, 80 };
+	const Rect CreateButton{ 450, 820, 400, 80 };
+	const Rect DeleteButton{ 450, 920, 100, 80 };
 
 	// テキストボックス
 	mutable TextEditState te;

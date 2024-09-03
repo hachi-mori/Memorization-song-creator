@@ -1,7 +1,7 @@
 ﻿#include "Scene2.hpp"
 
 const Array<double> Scene2::minColumnWidths = { 50, 200, 200, 200, 200 };
-const Array<String> Scene2::columnNames = { U"番号", U"語句 (必須)", U"読み (必須)", U"付加 1 (任意)", U"付加 2 (任意)" };
+const Array<String> Scene2::columnNames = { U"番号", U"ことば*", U"よみ*", U"つけたし1", U"つけたし2" };
 
 Scene2::Scene2(const InitData& init)
 	: IScene{ init }, previousSelectedIndex{ s3d::none },
@@ -304,11 +304,11 @@ void Scene2::draw() const
 
 	// 語句入力
 	Rect{ 0, 400, 350, 150 }.draw();
-	FontAsset(U"MainFont")(U"語句入力").draw(40, Vec2{ 100, 445 }, ColorF{ 0.3, 0.7, 1.0 });
+	FontAsset(U"MainFont")(U"かく").draw(48, Vec2{ 135, 445 }, ColorF{ 0.3, 0.7, 1.0 });
 
 	tableScrollBar.draw();
-	FontAsset(U"MainFont")(U"ファイル選択").draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
-	FontAsset(U"MainFont")(U"語句入力")	.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
+	FontAsset(U"MainFont")(U"かしのリスト").draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"かく")	.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 
 	//Scene1Button
 	Scene1Button.draw(buttonColor);
@@ -316,26 +316,26 @@ void Scene2::draw() const
 
 	//Scene3Button
 	Scene3Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"曲選択").drawAt(Vec2{ Scene3Button.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"つくる").drawAt(Vec2{ Scene3Button.center() }, Palette::White);
 
 	//Scene4Button
 	Scene4Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"動画再生").drawAt(Vec2{ Scene4Button.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"ながす").drawAt(Vec2{ Scene4Button.center() }, Palette::White);
 
 	//SaveButton
 	SaveButton.draw(buttonColor);
-	FontAsset(U"MainFont")(U"保存").drawAt(Vec2{ SaveButton.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"ほぞん").drawAt(Vec2{ SaveButton.center() }, Palette::White);
 
 	//CreateButton
 	CreateButton.draw(buttonColor);
-	FontAsset(U"MainFont")(U"新規作成").drawAt(Vec2{ CreateButton.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"あたらしくつくる").drawAt(Vec2{ CreateButton.center() }, Palette::White);
 
 	//DeleteButton
 	DeleteButton.draw(buttonColor);
-	FontAsset(U"MainFont")(U"削除").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"けす").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
 
 	// TextBox
-	FontAsset(U"MainFont")(U"ファイル名（変更可能です）").drawAt(25, Vec2{ 1190, 80 }, Palette::Black);
+	FontAsset(U"MainFont")(U"タイトル").drawAt(25, Vec2{ 1220, 80 }, Palette::Black);
 	SimpleGUI::TextBox(te, Vec2{ 1024, 100}, 400);
 
 	/*
