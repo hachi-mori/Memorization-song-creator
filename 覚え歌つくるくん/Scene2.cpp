@@ -8,7 +8,7 @@ Scene2::Scene2(const InitData& init)
 	table{ minColumnWidths, {
 		.cellHeight = 45,
 		.variableWidth = true,
-	} }
+	}}, saved{ false }
 {
 	InitializeTable();
 	UpdateListBoxState();
@@ -137,13 +137,29 @@ void Scene2::update()
 						break;
 					}
 				}
+				SaveMassage = te.text;
+				saved = true;
 			}
 			else {
-				System::MessageBoxOK(U"", U"ファイル名を入力してから保存してください");
+				System::MessageBoxOK(U"", U"タイトルをかいてからほぞんしてください");
 			}
 		}
 		else {
-			System::MessageBoxOK(U"", U"ファイルを新規作成→選択してから保存してください");
+			System::MessageBoxOK(U"", U"ファイルをあたらしくつくってからほぞんしてください");
+		}
+	}
+	if (saved)
+	{
+		// 透明度を1.0に設定
+		MessageOpacity = 1.0;
+		saved = false;  // 一度だけ実行するためにフラグをリセット
+	}
+	// 透明度が0より大きい場合、徐々に透明度を減少させる
+	if (MessageOpacity > 0.0)
+	{
+		MessageOpacity -= Scene::DeltaTime() * 0.5;  // 減少速度を調整（0.5は速度の調整係数）
+		if (MessageOpacity < 0.0) {
+			MessageOpacity = 0.0;  // 透明度が負の値にならないようにする
 		}
 	}
 
@@ -338,14 +354,5 @@ void Scene2::draw() const
 	FontAsset(U"MainFont")(U"タイトル").drawAt(25, Vec2{ 1220, 80 }, Palette::Black);
 	SimpleGUI::TextBox(te, Vec2{ 1024, 100}, 400);
 
-	/*
-	font(U"語句(必須)")
-		.draw(30, Rect{ 1050, 100, 480, 200 }, Palette::Black);
-	font(U"読み(必須)")
-		.draw(30, Rect{ 1250, 100, 480, 200 }, Palette::Black);
-	font(U"付加１(任意)")
-		.draw(30, Rect{ 1450, 100, 480, 200 }, Palette::Black);
-	font(U"付加２(任意)")
-		.draw(30, Rect{ 1650, 100, 480, 200 }, Palette::Black);
-	*/
+	FontAsset(U"MainFont")(SaveMassage + U"をほぞんしました").drawAt(34, Vec2{1235, 985}, ColorF{0.0, 0.0, 0.0, MessageOpacity});
 }

@@ -62,5 +62,10 @@ private:
 	mutable TextEditState te;
 	s3d::Optional<uint64> previousSelectedIndex;
 
+	// 保存メッセージ
+	bool saved;
+	String SaveMassage;
+	double MessageOpacity;
+
 	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
 };
