@@ -20,6 +20,30 @@ void Scene1::update()
 	{
 		changeScene(U"CreditScene");
 	}
+
+	if (ExitButton.mouseOver() && MouseL.down())
+	{
+		System::Exit();
+	}
+	
+	if (Window::GetState().fullscreen)
+	{
+		if (FullscreenButton.mouseOver() && MouseL.down())
+		{
+				// ウィンドウモードにする
+				Window::SetFullscreen(false);
+		}
+	}
+	else
+	{
+		if (FullscreenButton.mouseOver() && MouseL.down())
+		{
+				// フルスクリーンモードにする
+				Window::SetFullscreen(true);
+		}
+
+	}
+	
 }
 
 void Scene1::draw() const {
@@ -33,4 +57,16 @@ void Scene1::draw() const {
 	// CreditButton
 	CreditButton.draw(buttonColor);
 	FontAsset(U"MainFont")(U"クレジット").drawAt(CreditButton.center(), Palette::White);
+
+	ExitButton.draw(buttonColor);
+	FontAsset(U"MainFont")(U"おわる").drawAt(ExitButton.center(), Palette::White);
+
+	FullscreenButton.draw(buttonColor);
+	FontAsset(U"MainFont")(U"screen").drawAt(FullscreenButton.center(), Palette::White);
+
+	//WindowButton.draw(buttonColor);
+	//FontAsset(U"MainFont")(U"Window").drawAt(WindowButton.center(), Palette::White);
 }
+
+	
+
