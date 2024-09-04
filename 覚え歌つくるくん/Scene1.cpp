@@ -2,6 +2,7 @@
 
 Scene1::Scene1(const InitData& init)
 	: IScene{ init }
+	, ScreenName{ U"ウィンドウ" }
 {
 }
 
@@ -32,6 +33,7 @@ void Scene1::update()
 		{
 				// ウィンドウモードにする
 				Window::SetFullscreen(false);
+				ScreenName = U"フルスクリーン";
 		}
 	}
 	else
@@ -40,6 +42,7 @@ void Scene1::update()
 		{
 				// フルスクリーンモードにする
 				Window::SetFullscreen(true);
+				ScreenName = U"ウィンドウ";
 		}
 
 	}
@@ -62,7 +65,7 @@ void Scene1::draw() const {
 	FontAsset(U"MainFont")(U"おわる").drawAt(ExitButton.center(), Palette::White);
 
 	FullscreenButton.draw(buttonColor);
-	FontAsset(U"MainFont")(U"screen").drawAt(FullscreenButton.center(), Palette::White);
+	FontAsset(U"MainFont")(ScreenName).drawAt(FullscreenButton.center(), Palette::White);
 
 	//WindowButton.draw(buttonColor);
 	//FontAsset(U"MainFont")(U"Window").drawAt(WindowButton.center(), Palette::White);
