@@ -6,3 +6,5 @@
 void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const FilePath& outputPath);
 
 Array<String> SplitToMora(const String& input);
+
+String GetVowelFromKana(const String& kana);
