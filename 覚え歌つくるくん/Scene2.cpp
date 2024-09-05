@@ -192,6 +192,7 @@ void Scene2::update()
 				break;
 			}
 		}
+		te.text = fileName;
 	}
 
 	// ファイルの削除
