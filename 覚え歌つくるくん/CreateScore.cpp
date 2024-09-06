@@ -26,24 +26,61 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 	JSON json = JSON::Load(jsonPath);
 	Print(U"lyricList.size(): ", lyricList.size());
 
-	// JSON の "notes" を更新
+	// 音符データを格納するためのリスト
+	Array<Note> notes;
+
+	// JSONの"notes"データをNoteオブジェクトに変換して格納
 	for (size_t i = 1; i < json[U"notes"].size(); ++i)
 	{
-		if (i - 1 < lyricList.size())
-		{
-			json[U"notes"][i][U"lyric"] = lyricList[i - 1];
-		}
-		else
-		{
-			json[U"notes"][i][U"lyric"] = U"ら"; // デフォルト値「ら」を設定
-		}
+		Note note;
+		note.lyric = json[U"notes"][i][U"lyric"].getString();
+		notes << note;
+	}
 
-		// デバッグ出力: 実際に何が代入されたか確認
+	// モーラ数と音符数を比較して適切に処理
+	ProcessLyrics(lyricList, notes);
+
+	// 処理後のデータを再度JSONに反映
+	for (size_t i = 1; i < notes.size(); ++i)
+	{
+		json[U"notes"][i][U"lyric"] = notes[i].lyric;
+	}
+
+	// 歌詞をデバッグ出力: 実際に何が代入されたか確認
+	for (size_t i = 1; i < json[U"notes"].size(); ++i)
+	{
 		Print(U"json[U\"notes\"][", i, U"][U\"lyric\"] = ", json[U"notes"][i][U"lyric"]);
 	}
 
 	// 編集したJSONを保存
 	json.save(outputPath);
+}
+
+// 音符とモーラの数を比較し、歌詞を割り当てる関数
+void ProcessLyrics(const s3d::Array<s3d::String>& moraList, s3d::Array<Note>& notes)
+{
+	
+}
+
+void HandleMoreMoraThanNotes(s3d::Array<s3d::String>& moraList, s3d::Array<Note>& notes)
+{
+	
+}
+
+void HandleMoreNotesThanMora(const s3d::Array<s3d::String>& moraList, s3d::Array<Note>& notes)
+{
+	for (size_t i = 0; i < moraList.size(); ++i)
+	{
+		if (moraList[i].ends_with(U"ー"))
+		{
+			String vowel = GetVowelFromKana(moraList[i]);
+			if (!vowel.isEmpty())
+			{
+				notes[i].lyric = moraList[i];
+				notes[i + 1].lyric = vowel;
+			}
+		}
+	}
 }
 
 // 文字列をモーラ単位に分割する関数
@@ -59,8 +96,8 @@ Array<String> SplitToMora(const String& input)
 		// 1文字目
 		mora += input[i];
 
-		// 次の文字が小文字のカタカナ/ひらがなか、または「っ」なら、続けて1モーラとする
-		if (i + 1 < input.size() && (U"ぁぃぅぇぉゃゅょァィゥェォャュョっ"_s.includes(input[i + 1])))
+		// 次の文字が小文字なら、続けて1モーラとする（「っ」以外）
+		if (i + 1 < input.size() && (U"ぁぃぅぇぉゃゅょァィゥェォャュョ"_s.includes(input[i + 1])))
 		{
 			mora += input[i + 1];
 			++i;
@@ -88,6 +125,8 @@ Array<String> SplitToMora(const String& input)
 
 	return moraList;
 }
+
+
 // ひらがな/カタカナから母音を取得する関数
 String GetVowelFromKana(const String& kana)
 {
