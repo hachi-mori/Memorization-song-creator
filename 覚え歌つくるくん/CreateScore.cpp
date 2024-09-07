@@ -30,7 +30,7 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 	Array<Note> notes;
 
 	// JSONの"notes"データをNoteオブジェクトに変換して格納
-	for (size_t i = 1; i < json[U"notes"].size(); ++i)
+	for (size_t i = 0; i < json[U"notes"].size(); ++i)
 	{
 		Note note;
 		note.lyric = json[U"notes"][i][U"lyric"].getString();
@@ -59,7 +59,27 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 // 音符とモーラの数を比較し、歌詞を割り当てる関数
 void ProcessLyrics(const s3d::Array<s3d::String>& moraList, s3d::Array<Note>& notes)
 {
-	
+	size_t moraCount = moraList.size();
+	size_t noteCount = notes.size() - 1;	//先頭に空の音符が含まれるため1を引く
+	Print << moraCount;
+	Print << noteCount;
+
+	if (noteCount == moraCount)
+	{
+		Print << U"noteCount == moraCount";
+		for (size_t i = 0; i < noteCount; ++i)
+		{
+			notes[i + 1].lyric = moraList[i];
+		}
+	}
+	else if (noteCount < moraCount)
+	{
+		//HandleMoreMoraThanNotes(moraList, notes);
+	}
+	else
+	{
+		//HandleMoreNotesThanMora(moraList, notes);
+	}
 }
 
 void HandleMoreMoraThanNotes(s3d::Array<s3d::String>& moraList, s3d::Array<Note>& notes)
@@ -69,18 +89,7 @@ void HandleMoreMoraThanNotes(s3d::Array<s3d::String>& moraList, s3d::Array<Note>
 
 void HandleMoreNotesThanMora(const s3d::Array<s3d::String>& moraList, s3d::Array<Note>& notes)
 {
-	for (size_t i = 0; i < moraList.size(); ++i)
-	{
-		if (moraList[i].ends_with(U"ー"))
-		{
-			String vowel = GetVowelFromKana(moraList[i]);
-			if (!vowel.isEmpty())
-			{
-				notes[i].lyric = moraList[i];
-				notes[i + 1].lyric = vowel;
-			}
-		}
-	}
+	
 }
 
 // 文字列をモーラ単位に分割する関数
