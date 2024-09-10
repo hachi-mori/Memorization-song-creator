@@ -6,7 +6,7 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 	const CSV csv(csvPath);
 
 	// 2列目のデータを格納する配列
-	Array<String> lyricList;
+	Array<Array<String>> lyricList;
 
 	// CSVの全行を走査し、2列目のデータを取得
 	for (size_t row = 0; row < csv.rows(); ++row)
@@ -15,81 +15,125 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 		// データが空でない場合にのみ処理
 		if (!word.isEmpty())
 		{
-			// 文字列をモーラ単位に分割
+			// 文字列をモーラ単位に分割し、各単語のモーラリストを作成
 			Array<String> moraList = SplitToMora(word);
-			// 各モーラをリストに追加
-			lyricList.append(moraList);
+			// 単語ごとのモーラリストをリストに追加
+			lyricList.push_back(moraList);
 		}
 	}
 
 	// JSON ファイルを読み込む
 	JSON json = JSON::Load(jsonPath);
-	Print(U"lyricList.size(): ", lyricList.size());
 
-	// 音符データを格納するためのリスト
-	Array<Note> notes;
-
-	// JSONの"notes"データをNoteオブジェクトに変換して格納
-	for (size_t i = 0; i < json[U"notes"].size(); ++i)
-	{
-		Note note;
-		note.lyric = json[U"notes"][i][U"lyric"].getString();
-		notes << note;
-	}
+	Array<Array<Note>> phrases = DeterminePhrasesFromJSON(json);
 
 	// モーラ数と音符数を比較して適切に処理
-	ProcessLyrics(lyricList, notes);
-
-	// 処理後のデータを再度JSONに反映
-	for (size_t i = 1; i < notes.size(); ++i)
-	{
-		json[U"notes"][i][U"lyric"] = notes[i].lyric;
-	}
+	ProcessLyrics(lyricList, phrases);
 
 	// 歌詞をデバッグ出力: 実際に何が代入されたか確認
-	for (size_t i = 1; i < json[U"notes"].size(); ++i)
+	for (size_t i = 0; i < phrases.size(); ++i)
 	{
-		Print(U"json[U\"notes\"][", i, U"][U\"lyric\"] = ", json[U"notes"][i][U"lyric"]);
+		for (size_t j = 0; j < phrases[i].size(); ++j)
+		{
+			json[U"notes"][i * phrases[i].size() + j][U"lyric"] = phrases[i][j].lyric;
+		}
 	}
 
 	// 編集したJSONを保存
 	json.save(outputPath);
 }
 
-// 音符とモーラの数を比較し、歌詞を割り当てる関数
-void ProcessLyrics(const s3d::Array<s3d::String>& moraList, s3d::Array<Note>& notes)
+// フレーズをJSONから判定し、フレーズごとに音符を分ける関数
+Array<Array<Note>> DeterminePhrasesFromJSON(const JSON& json)
 {
-	size_t moraCount = moraList.size();
-	size_t noteCount = notes.size() - 1;	//先頭に空の音符が含まれるため1を引く
-	Print << moraCount;
-	Print << noteCount;
+	Array<Array<Note>> phrases;
+	Array<Note> currentPhrase;
 
-	if (noteCount == moraCount)
+	for (const auto& noteData : json[U"notes"].arrayView())
 	{
-		Print << U"noteCount == moraCount";
-		for (size_t i = 0; i < noteCount; ++i)
+		Note note;
+		note.lyric = noteData[U"lyric"].getString();
+		note.frame_length = noteData[U"frame_length"].get<size_t>();
+		note.key = noteData[U"key"].isNull() ? std::nullopt : std::optional<size_t>(noteData[U"key"].get<size_t>());
+		note.notelen = noteData[U"notelen"].getString();
+
+		if (note.lyric.isEmpty())
 		{
-			notes[i + 1].lyric = moraList[i];
+			// フレーズの区切りとみなす
+			if (!currentPhrase.isEmpty())
+			{
+				phrases.push_back(currentPhrase);
+				currentPhrase.clear();
+			}
+		}
+		else
+		{
+			currentPhrase.push_back(note);
 		}
 	}
-	else if (noteCount < moraCount)
+
+	// 最後のフレーズを追加
+	if (!currentPhrase.isEmpty())
 	{
-		//HandleMoreMoraThanNotes(moraList, notes);
+		phrases.push_back(currentPhrase);
 	}
-	else
+
+	return phrases;
+}
+
+// 音符とモーラの数を比較し、歌詞を割り当てる関数
+void ProcessLyrics(const Array<Array<String>>& lyricList, Array<Array<Note>>& phrases)
+{
+	// 各フレーズに対して処理
+	for (size_t phraseIndex = 0; phraseIndex < phrases.size(); ++phraseIndex)
 	{
-		//HandleMoreNotesThanMora(moraList, notes);
+		Array<Note>& notes = phrases[phraseIndex];
+		const Array<String>& moraList = lyricList[phraseIndex];
+
+		size_t totalMora = 0;
+		size_t wordIndex = 0;
+		size_t noteCount = notes.size();
+
+		while (wordIndex < moraList.size())
+		{
+			const String& currentWordMora = moraList[wordIndex];
+			size_t currentWordMoraCount = currentWordMora.size();  // 文字数をモーラ数と仮定
+
+			size_t newTotalMora = totalMora + currentWordMoraCount;
+
+			if (newTotalMora > noteCount)
+			{
+				size_t differenceWithoutAdding = noteCount - totalMora;
+				size_t differenceWithAdding = newTotalMora - noteCount;
+
+				if (differenceWithoutAdding < differenceWithAdding)
+				{
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < currentWordMoraCount && totalMora < noteCount; ++i)
+			{
+				// 型が一致していることを確認
+				notes[totalMora].lyric = currentWordMora;  // 文字列全体を代入
+				totalMora++;
+			}
+
+			wordIndex++;
+		}
 	}
 }
 
-void HandleMoreMoraThanNotes(s3d::Array<s3d::String>& moraList, s3d::Array<Note>& notes)
+// フレーズ内にモーラを割り当てた結果、モーラ数が音符数を超えてしまった場合
+void HandleMoreMoraThanNotes(s3d::Array<Array<String>>& lyricList, s3d::Array<Note>& notes)
 {
-	
+	// この部分にモーラが音符数を超えた場合の処理を追加
 }
 
-void HandleMoreNotesThanMora(const s3d::Array<s3d::String>& moraList, s3d::Array<Note>& notes)
+// 音符数の方が多い場合の処理
+void HandleMoreNotesThanMora(const s3d::Array<Array<String>>& moraList, s3d::Array<Note>& notes)
 {
-	
+	// この部分に音符数がモーラ数を超えた場合の処理を追加
 }
 
 // 文字列をモーラ単位に分割する関数

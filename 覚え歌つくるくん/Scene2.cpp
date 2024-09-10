@@ -82,6 +82,8 @@ void Scene2::LoadCSVToTable(const String& filePath)
 
 void Scene2::update()
 {
+	
+
 	if (listBoxState.selectedItemIndex && listBoxState.selectedItemIndex != previousSelectedIndex)
 	{
 		// te の内容を選択された要素の名前に変更
@@ -279,21 +281,27 @@ void Scene2::update()
 						AddNewRow();
 					}
 				}
-
-				if ((1 < activeIndex->y) && KeyUp.down())
-				{
-					nextActiveIndex = Point{ activeIndex->x, (activeIndex->y - 1) };
-				}
-
-				if ((activeIndex->y < table.rows()) && KeyDown.down())
-				{
-					nextActiveIndex = Point{ activeIndex->x, (activeIndex->y + 1) };
-
-					if (nextActiveIndex->y == table.rows())
+				if (KeyUp.down()) {
+					KeyUp.clearInput();
+					if (1 < activeIndex->y)
 					{
-						AddNewRow();
+						nextActiveIndex = Point{ activeIndex->x, (activeIndex->y - 1) };
 					}
 				}
+				
+				if (KeyDown.down()) {
+					KeyDown.clearInput();
+					if ((activeIndex->y < table.rows()))
+					{
+						nextActiveIndex = Point{ activeIndex->x, (activeIndex->y + 1) };
+
+						if (nextActiveIndex->y == table.rows())
+						{
+							AddNewRow();
+						}
+					}
+				}
+				
 
 				if ((1 < activeIndex->x) && KeyLeft.down())
 				{
@@ -356,4 +364,17 @@ void Scene2::draw() const
 	SimpleGUI::TextBox(te, Vec2{ 1024, 100}, 400);
 
 	FontAsset(U"MainFont")(SaveMassage + U"をほぞんしました").drawAt(34, Vec2{1235, 985}, ColorF{0.0, 0.0, 0.0, MessageOpacity});
+
+	//タイトルの変換予測
+	if (te.active)
+	{
+		SimpleGUI::IMECandidateWindow(Vec2{ 1020, 150 });
+	}
+
+	//スプレッドシートの変換予測
+	if (textEditState.active)
+	{
+		SimpleGUI::IMECandidateWindow(Cursor::PosF().movedBy(0, 20));
+	}
+	
 }
