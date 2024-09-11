@@ -59,32 +59,37 @@ void Scene3::update()
 
 	if (SaveButton.mouseOver() && MouseL.down() && !task.isValid())
 	{
-		isloading = true;
+		if (listBoxState1.selectedItemIndex && listBoxState2.selectedItemIndex && listBoxState3.selectedItemIndex) {
+			isloading = true;
 
-		// 非同期タスクを開始
-		task = Async([this]()
-		{
-			Optional<int32> selectedSpeakerID;
-			if (listBoxState3.selectedItemIndex)
+			// 非同期タスクを開始
+			task = Async([this]()
 			{
-				selectedSpeakerID = speakerIDs[*listBoxState3.selectedItemIndex] + 3000;
-			}
+				Optional<int32> selectedSpeakerID;
+				if (listBoxState3.selectedItemIndex)
+				{
+					selectedSpeakerID = speakerIDs[*listBoxState3.selectedItemIndex] + 3000;
+				}
 
-			String selectedlyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
-			String selectedScoreName = OriginalScoresfileNames[listBoxState2.selectedItemIndex.value()];
-			String selectedCharacterName = speakers[listBoxState3.selectedItemIndex.value()];
+				String selectedlyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
+				String selectedScoreName = OriginalScoresfileNames[listBoxState2.selectedItemIndex.value()];
+				String selectedCharacterName = speakers[listBoxState3.selectedItemIndex.value()];
 
-			const FilePath lyricsFilePath = U"lyrics/{}.csv"_fmt(selectedlyricsName);
-			const FilePath scoreFilePath = U"OriginalScores/{}.json"_fmt(selectedScoreName);
-			const FilePath outputAudioFilePath = U"Voice/{}-{}-{}.wav"_fmt(selectedlyricsName, selectedScoreName, selectedCharacterName);
-			const FilePath createscoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedlyricsName, selectedScoreName);
+				const FilePath lyricsFilePath = U"lyrics/{}.csv"_fmt(selectedlyricsName);
+				const FilePath scoreFilePath = U"OriginalScores/{}.json"_fmt(selectedScoreName);
+				const FilePath outputAudioFilePath = U"Voice/{}-{}-{}.wav"_fmt(selectedlyricsName, selectedScoreName, selectedCharacterName);
+				const FilePath createscoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedlyricsName, selectedScoreName);
 
-			// JSONファイルを更新
-			UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
+				// JSONファイルを更新
+				UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
 
-			// 音声合成
-			return VOICEVOX::SynthesizeVoiceFromScore(createscoreFilePath, outputAudioFilePath, *selectedSpeakerID);
-		});
+				// 音声合成
+				return VOICEVOX::SynthesizeVoiceFromScore(createscoreFilePath, outputAudioFilePath, *selectedSpeakerID);
+			});
+		}
+		else {
+			System::MessageBoxOK(U"", U"「かし」と「きょく」と「キャラクター」をえらんでからほぞんしてください");
+		}
 	}
 
 	// 非同期タスクが完了したかをチェック
