@@ -218,7 +218,7 @@ void Scene2::update()
 	}
 
 	// ファイルの削除
-	if (DeleteButton.mouseOver() && MouseL.down())
+	if (DeleteButton.mouseOver() && MouseL.down() && listBoxState.selectedItemIndex)
 	{
 		const MessageBoxResult result = System::MessageBoxOKCancel(U"",U"「" + listBoxState.items[*listBoxState.selectedItemIndex] + U"」\nこのファイルを削除しますか？");
 
@@ -301,16 +301,16 @@ void Scene2::update()
 						AddNewRow();
 					}
 				}
-				if (KeyUp.down()) {
-					KeyUp.clearInput();
-					if (1 < activeIndex->y)
+				if ((KeyShift+KeyUp).down()) {
+					//KeyUp.clearInput();
+					if (1 < activeIndex->y )
 					{
 						nextActiveIndex = Point{ activeIndex->x, (activeIndex->y - 1) };
 					}
 				}
-				
-				if (KeyDown.down()) {
-					KeyDown.clearInput();
+
+				if ((KeyShift + KeyDown).down()) {
+					//KeyDown.clearInput();
 					if ((activeIndex->y < table.rows()))
 					{
 						nextActiveIndex = Point{ activeIndex->x, (activeIndex->y + 1) };
@@ -321,14 +321,13 @@ void Scene2::update()
 						}
 					}
 				}
-				
 
-				if ((1 < activeIndex->x) && KeyLeft.down())
+				if ((1 < activeIndex->x) && (KeyShift + KeyLeft).down())
 				{
 					nextActiveIndex = Point{ (activeIndex->x - 1), activeIndex->y };
 				}
 
-				if ((activeIndex->x < CellCountX) && KeyRight.down())
+				if ((activeIndex->x < CellCountX) && (KeyShift + KeyRight).down())
 				{
 					nextActiveIndex = Point{ (activeIndex->x + 1), activeIndex->y };
 				}
@@ -338,6 +337,9 @@ void Scene2::update()
 					textEditState.clear();
 					table.setText(*activeIndex, U"");
 				}
+
+				if (KeyUp.down())KeyUp.clearInput();
+				if (KeyDown.down())KeyDown.clearInput();
 			}
 		}
 	}	
