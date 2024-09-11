@@ -25,7 +25,7 @@ void Scene2::InitializeTable()
 	table.clear();
 	table.push_back_row(columnNames, Array<int32>(CellCountX + 1, 0));
 	table.setRowBackgroundColor(0, ColorF{ 0.9 });
-
+	tableScrollBar.moveTo(0);  // スクロール位置を一番上にリセット
 	for (int32 i = 1; i < (InitialCellCountY + 1); ++i)
 	{
 		AddNewRow();
@@ -82,8 +82,6 @@ void Scene2::LoadCSVToTable(const String& filePath)
 
 void Scene2::update()
 {
-	
-
 	if (listBoxState.selectedItemIndex && listBoxState.selectedItemIndex != previousSelectedIndex)
 	{
 		// te の内容を選択された要素の名前に変更
@@ -119,7 +117,28 @@ void Scene2::update()
 					throw Error{ U"Failed to open test.csv" };
 				}
 
-				for (int32 a = 1; a < table.rows(); ++a)
+				// まずはデータがある最終行を特定
+				int32 lastNonEmptyRow = 0;
+				for (int32 a = table.rows() - 1; a >= 1; --a)
+				{
+					bool isRowEmpty = true;
+					for (int32 b = 1; b < CellCountX + 1; ++b)
+					{
+						if (!table.getItem(Point{ b, a }).text.trimmed().isEmpty())
+						{
+							isRowEmpty = false;
+							break;
+						}
+					}
+					if (!isRowEmpty)
+					{
+						lastNonEmptyRow = a;
+						break;
+					}
+				}
+
+				// 最終行までを書き込み
+				for (int32 a = 1; a <= lastNonEmptyRow; ++a)
 				{
 					for (int32 b = 1; b < CellCountX + 1; ++b)
 					{
@@ -127,6 +146,7 @@ void Scene2::update()
 						writer.write(b < CellCountX ? U"," : U"\n");
 					}
 				}
+
 				writer.close();
 				UpdateListBoxState();
 
