@@ -26,19 +26,42 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 	JSON json = JSON::Load(jsonPath);
 
 	Array<Array<Note>> phrases = DeterminePhrasesFromJSON(json);
+	// フレーズごとの情報を出力
+	for (size_t i = 0; i < phrases.size(); ++i)
+	{
+		Print << U"フレーズ " << i + 1 << U": 音符数 = " << phrases[i].size();
+	}
+	Print << U"phrases"<< phrases.size() <<U"lyric" << lyricList.size() << U"\n";
 
 	// モーラ数と音符数を比較して適切に処理
 	ProcessLyrics(lyricList, phrases);
 
-	// 歌詞をデバッグ出力: 実際に何が代入されたか確認
+	size_t jsonIndex = 0;
+
 	for (size_t i = 0; i < phrases.size(); ++i)
 	{
 		for (size_t j = 0; j < phrases[i].size(); ++j)
 		{
-			json[U"notes"][i * phrases[i].size() + j][U"lyric"] = phrases[i][j].lyric;
+			if (jsonIndex < json[U"notes"].size())
+			{
+				json[U"notes"][jsonIndex][U"lyric"] = phrases[i][j].lyric;
+				++jsonIndex;
+			}
+			else
+			{
+				// JSONのインデックスが範囲を超えた場合のエラー処理
+				Print << U"Error: JSON index out of range.\n";
+				return;
+			}
 		}
 	}
 
+	// 歌詞をデバッグ出力: 実際に何が代入されたか確認
+	for (size_t i = 1; i < json[U"notes"].size(); ++i)
+	{
+		Print(U"json[U\"notes\"][", i, U"][U\"lyric\"] = ", json[U"notes"][i][U"lyric"].getString());
+	}
+	
 	// 編集したJSONを保存
 	json.save(outputPath);
 }
@@ -49,6 +72,9 @@ Array<Array<Note>> DeterminePhrasesFromJSON(const JSON& json)
 	Array<Array<Note>> phrases;
 	Array<Note> currentPhrase;
 
+	// 前回の歌詞を保存する変数
+	String previousLyric;
+
 	for (const auto& noteData : json[U"notes"].arrayView())
 	{
 		Note note;
@@ -57,19 +83,22 @@ Array<Array<Note>> DeterminePhrasesFromJSON(const JSON& json)
 		note.key = noteData[U"key"].isNull() ? std::nullopt : std::optional<size_t>(noteData[U"key"].get<size_t>());
 		note.notelen = noteData[U"notelen"].getString();
 
-		if (note.lyric.isEmpty())
+		// 最初の音符、もしくは前回と異なる歌詞の場合、フレーズを新しくする
+		if (note.lyric != previousLyric)
 		{
-			// フレーズの区切りとみなす
+			// 現在のフレーズを追加して新しいフレーズを開始
 			if (!currentPhrase.isEmpty())
 			{
 				phrases.push_back(currentPhrase);
 				currentPhrase.clear();
 			}
 		}
-		else
-		{
-			currentPhrase.push_back(note);
-		}
+
+		// 現在の音符をフレーズに追加
+		currentPhrase.push_back(note);
+
+		// 前回の歌詞を更新
+		previousLyric = note.lyric;
 	}
 
 	// 最後のフレーズを追加
@@ -85,19 +114,45 @@ Array<Array<Note>> DeterminePhrasesFromJSON(const JSON& json)
 void ProcessLyrics(const Array<Array<String>>& lyricList, Array<Array<Note>>& phrases)
 {
 	// 各フレーズに対して処理
-	for (size_t phraseIndex = 0; phraseIndex < phrases.size(); ++phraseIndex)
+	for (size_t phraseIndex = 0; phraseIndex < phrases.size() - 1; ++phraseIndex)
 	{
-		Array<Note>& notes = phrases[phraseIndex];
+		Array<Note>& notes = phrases[phraseIndex+1];
 		const Array<String>& moraList = lyricList[phraseIndex];
+
+		/*
+		// デバッグ出力: moraList の内容
+		Print(U"Phrase ", phraseIndex, U" moraList contents:");
+		for (const auto& mora : moraList)
+		{
+			Print(U"  ", mora);
+		}
+		*/
 
 		size_t totalMora = 0;
 		size_t wordIndex = 0;
 		size_t noteCount = notes.size();
 
+		// デバッグ出力: モーラ数と音符数
+		Print(U"Phrase Index: ", phraseIndex);
+		Print(U"Number of notes: ", noteCount);
+		Print(U"Number of moras: ", moraList.size());
+
+		// フレーズのモーラ数と音符数が完全に一致する場合
+		if (moraList.size() == noteCount)
+		{
+			Print(U"aaaaa");
+			for (size_t i = 0; i < noteCount; ++i)
+			{
+				notes[i].lyric = moraList[i];  // 1モーラずつ対応させる
+				Print(notes[i].lyric);
+			}
+			continue;  // 次のフレーズへ
+		}
+
 		while (wordIndex < moraList.size())
 		{
 			const String& currentWordMora = moraList[wordIndex];
-			size_t currentWordMoraCount = currentWordMora.size();  // 文字数をモーラ数と仮定
+			size_t currentWordMoraCount = currentWordMora.size();
 
 			size_t newTotalMora = totalMora + currentWordMoraCount;
 
