@@ -49,4 +49,45 @@ private:
 
 	// 非同期タスク
 	AsyncTask<bool> task;
+
+	//円グラフ
+	Array<double> ToRatios(const Array<double>& values)
+	{
+		const double sum = values.sumF();
+
+		Array<double> ratios;
+
+		for (const auto& value : values)
+		{
+			ratios << (value / sum);
+
+		}
+		return ratios;
+	}
+
+	Array<double> CumulativeSum(const Array<double>& values)
+	{
+		Array<double> sums = { 0.0 };
+
+		for (const auto& value : values)
+		{
+			sums << (sums.back() + value);
+		}
+
+		return sums;
+	}
+
+	// ラベル
+	const Array<String> labels = { U"一致率", U""};
+
+	// 数値
+	const Array<double> values = { 15.0, 10.0 };
+
+	// 円グラフで占める割合
+	const Array<double> ratios = ToRatios(values);
+
+	// 円グラフの開始位置（割合）
+	const Array<double> starts = CumulativeSum(ratios);
+
+	const Circle circle{1300,500, 160.0 };
 };

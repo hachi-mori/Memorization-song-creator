@@ -159,24 +159,58 @@ void Scene3::update()
 			break;
 		}
 	}
+	// 円グラフを描画する
+	for (size_t i = 0; i < values.size(); ++i)
+	{
+		const double startAngle = (starts[i] * 360_deg);
+		const double angle = (ratios[i] * 360_deg);
+		circle.drawPie(startAngle, angle, HSV{ (120 + 70 * i), 0.5, 0.95 });
+	}
 
+	// 境界線を描画する
+	for (size_t i = 0; i < values.size(); ++i)
+	{
+		const double startAngle = (starts[i] * 360_deg);
+		Line{ circle.center, Arg::angle = startAngle, circle.r }.draw(3);
+	}
+
+	// ラベルを描画する
+	for (size_t i = 0; i < values.size(); ++i)
+	{
+		const double startAngle = (starts[i] * 360_deg);
+		const double angle = (ratios[i] * 360_deg);
+		const double midAngle = (startAngle + angle / 2.0);
+
+		// 割合に応じてラベルの位置を調整する
+		const Vec2 pos = OffsetCircular{ circle.center, ((ratios[i] < 0.1) ? 220.0 : (ratios[i] < 0.4) ? 120.0 : 90.0), midAngle };
+
+		FontAsset(U"MainFont")(labels[i]).draw(24, Arg::bottomCenter = pos, ColorF{0.11});
+		FontAsset(U"MainFont")(U"{:.1f}%"_fmt(ratios[i] * 100.0)).draw(18, Arg::topCenter = pos, ColorF{0.11});
+	}
+	
 }
+
 
 void Scene3::draw() const
 {
 	//リストボックスを描画
-	SimpleGUI::ListBox(listBoxState1, Vec2{ 500, 250 }, 300, 600);
-	SimpleGUI::ListBox(listBoxState2, Vec2{ 1010, 250 }, 300, 600);
+	SimpleGUI::ListBox(listBoxState1, Vec2{ 400, 250 }, 300, 600);
+	SimpleGUI::ListBox(listBoxState2, Vec2{ 810, 250 }, 300, 600);
 	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
 
+
+	
+	
 	// 曲設定
 	Rect{ 0, 430, 350, 150 }.draw();
 	FontAsset(U"MainFont")(U"つくる").draw(48, Vec2{ 110, 475 }, buttonColor);
 
 	FontAsset(U"MainFont")(U"つくる").draw(70, Vec2{ 20, 20 }, Palette::White);
 
-	FontAsset(U"MainFont")(U"かし").draw(30, Vec2{ 500, 200 }, Palette::Black);
-	FontAsset(U"MainFont")(U"きょく").draw(30, Vec2{ 1010, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"かし").draw(30, Vec2{ 400, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"きょく").draw(30, Vec2{ 810, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"一致率").draw(30, Vec2{ 1210, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"60％").draw(100, Vec2{ 1220, 700 }, Palette::Black);
 	FontAsset(U"MainFont")(U"キャラクター").draw(30, Vec2{ 1520, 200 }, Palette::Black);
 
 	// Charactertexture
