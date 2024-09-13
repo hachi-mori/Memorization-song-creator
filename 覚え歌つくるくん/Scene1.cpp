@@ -46,7 +46,24 @@ void Scene1::update()
 		}
 
 	}
-	
+	//実験
+	// ボタンの上にあるマウスカーソルを手のアイコンにする
+	if (Scene2Button.mouseOver())
+	{
+	 	Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (CreditButton.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (ExitButton.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (FullscreenButton.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
 }
 
 void Scene1::draw() const {
