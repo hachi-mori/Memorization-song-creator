@@ -35,10 +35,10 @@ private:
 	Audio audio2{ U"Character/ずんだもん_ららららら.wav" };
 	Audio audio3{ U"Character/春日部つむぎ_ららららら.wav" };
 
-	s3d::Optional<uint64> previousSelectedIndex;
+	s3d::Optional<uint64> previousSelectedIndex1;
+	s3d::Optional<uint64> previousSelectedIndex3;
 
 	void InitializeLists();
-	bool Button(const Rect& rect, const String& text, bool enabled);
 
 	const Rect Scene1Button{ 0, 900, 200, 100 };
 	const Rect Scene2Button{ 0, 230, 350, 150 };

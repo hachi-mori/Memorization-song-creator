@@ -16,7 +16,7 @@ public:
 void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const FilePath& outputPath);
 
 // フレーズごとにモーラを音符に割り当てる処理
-void ProcessLyrics(const Array<Array<String>>& lyricList, Array<Array<Note>>& phrases);
+int ProcessLyrics(const Array<Array<String>>& lyricList, Array<Array<Note>>& phrases);
 
 // モーラ数が音符数を超えた場合の処理
 void HandleMoreMoraThanNotes(Array<Array<String>>& lyricList, Array<Note>& notes);

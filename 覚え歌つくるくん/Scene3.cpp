@@ -5,7 +5,8 @@ Scene3::Scene3(const InitData& init)
 	texture{ U"Character/シルエット.png" },
 	textureRect{ 1540, 390, 280, 460 },
 	selectListBox3{ false },
-	previousSelectedIndex{ s3d::none },
+	previousSelectedIndex3{ s3d::none },
+	previousSelectedIndex1{ s3d::none },
 	isloading{ false }
 {
 	// Initialize the list of files and speakers
@@ -80,9 +81,6 @@ void Scene3::update()
 				const FilePath outputAudioFilePath = U"Voice/{}-{}-{}.wav"_fmt(selectedlyricsName, selectedScoreName, selectedCharacterName);
 				const FilePath createscoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedlyricsName, selectedScoreName);
 
-				// JSONファイルを更新
-				UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
-
 				// 音声合成
 				return VOICEVOX::SynthesizeVoiceFromScore(createscoreFilePath, outputAudioFilePath, *selectedSpeakerID);
 			});
@@ -113,10 +111,27 @@ void Scene3::update()
 		angle += (Scene::DeltaTime() * angularVelocity);
 	}
 
-	if (listBoxState3.selectedItemIndex != previousSelectedIndex)
+	if (listBoxState1.selectedItemIndex != previousSelectedIndex1)
+	{
+		previousSelectedIndex1 = listBoxState1.selectedItemIndex;
+		String selectedlyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
+		const FilePath lyricsFilePath = U"lyrics/{}.csv"_fmt(selectedlyricsName);
+
+		for (size_t i = 0; i < OriginalScoresfileNames.size(); ++i)
+		{
+			String selectedScoreName = OriginalScoresfileNames[i];
+			const FilePath scoreFilePath = U"OriginalScores/{}.json"_fmt(selectedScoreName);
+			const FilePath createscoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedlyricsName, selectedScoreName);
+
+			// JSONファイルを更新
+			UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
+		}
+	}
+
+	if (listBoxState3.selectedItemIndex != previousSelectedIndex3)
 	{
 		selectListBox3 = true;
-		previousSelectedIndex = listBoxState3.selectedItemIndex;
+		previousSelectedIndex3 = listBoxState3.selectedItemIndex;
 			Character = speakerIDs[*listBoxState3.selectedItemIndex];
 			switch (Character) {
 			case 2:
