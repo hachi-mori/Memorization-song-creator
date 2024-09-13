@@ -36,7 +36,10 @@ private:
 	Audio audio3{ U"Character/春日部つむぎ_ららららら.wav" };
 
 	s3d::Optional<uint64> previousSelectedIndex1;
+	s3d::Optional<uint64> previousSelectedIndex2;
 	s3d::Optional<uint64> previousSelectedIndex3;
+
+	int Difference;	//仮の類似度（正しくは類似してない度）
 
 	void InitializeLists();
 

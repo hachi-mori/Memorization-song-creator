@@ -5,8 +5,9 @@ Scene3::Scene3(const InitData& init)
 	texture{ U"Character/シルエット.png" },
 	textureRect{ 1540, 390, 280, 460 },
 	selectListBox3{ false },
-	previousSelectedIndex3{ s3d::none },
 	previousSelectedIndex1{ s3d::none },
+	previousSelectedIndex2{ s3d::none },
+	previousSelectedIndex3{ s3d::none },
 	isloading{ false }
 {
 	// Initialize the list of files and speakers
@@ -127,6 +128,30 @@ void Scene3::update()
 			UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
 		}
 	}
+
+	if (listBoxState2.selectedItemIndex != previousSelectedIndex2)
+	{
+		previousSelectedIndex2 = listBoxState2.selectedItemIndex;
+		String selectedLyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
+		String selectedScoreName = OriginalScoresfileNames[listBoxState2.selectedItemIndex.value()];
+		const FilePath createScoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedLyricsName, selectedScoreName);
+
+		JSON json = JSON::Load(createScoreFilePath);
+
+		Print << (U"CreatedScores/" + createScoreFilePath);
+
+		// 値を文字列として取得
+		String typeValue = json[U"__type"].getString();
+
+		// "Difference:" プレフィックスを取り除く
+		String differenceStr = typeValue.substr(11); // プレフィックスの長さは10
+
+		// 数値に変換
+		int Difference = Parse<int>(differenceStr);
+		Print << U"Difference value: " << Difference;
+	}
+
+
 
 	if (listBoxState3.selectedItemIndex != previousSelectedIndex3)
 	{
