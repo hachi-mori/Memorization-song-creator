@@ -8,6 +8,7 @@ Scene3::Scene3(const InitData& init)
 	previousSelectedIndex1{ s3d::none },
 	previousSelectedIndex2{ s3d::none },
 	previousSelectedIndex3{ s3d::none },
+	Difference{0},
 	isloading{ false }
 {
 	// Initialize the list of files and speakers
@@ -147,11 +148,11 @@ void Scene3::update()
 		String differenceStr = typeValue.substr(11); // プレフィックスの長さは10
 
 		// 数値に変換
-		int Difference = Parse<int>(differenceStr);
+		Difference = Parse<int>(differenceStr);
 		Print << U"Difference value: " << Difference;
+
+
 	}
-
-
 
 	if (listBoxState3.selectedItemIndex != previousSelectedIndex3)
 	{
@@ -227,7 +228,6 @@ void Scene3::update()
 		FontAsset(U"MainFont")(labels[i]).draw(24, Arg::bottomCenter = pos, ColorF{0.11});
 		FontAsset(U"MainFont")(U"{:.1f}%"_fmt(ratios[i] * 100.0)).draw(18, Arg::topCenter = pos, ColorF{0.11});
 	}
-	
 }
 
 
