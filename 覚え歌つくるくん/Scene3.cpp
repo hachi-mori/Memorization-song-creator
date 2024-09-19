@@ -150,8 +150,6 @@ void Scene3::update()
 		// 数値に変換
 		Difference = Parse<int>(differenceStr);
 		Print << U"Difference value: " << Difference;
-
-
 	}
 
 	if (listBoxState3.selectedItemIndex != previousSelectedIndex3)
@@ -173,7 +171,6 @@ void Scene3::update()
 				texture = Texture{ U"Character/シルエット.png" };
 				break;
 			}
-
 	}
 	if (selectListBox3 && textureRect.mouseOver())
 	{
@@ -230,16 +227,12 @@ void Scene3::update()
 	}
 }
 
-
 void Scene3::draw() const
 {
 	//リストボックスを描画
 	SimpleGUI::ListBox(listBoxState1, Vec2{ 400, 250 }, 300, 600);
 	SimpleGUI::ListBox(listBoxState2, Vec2{ 810, 250 }, 300, 600);
 	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
-
-
-	
 	
 	// 曲設定
 	Rect{ 0, 430, 350, 150 }.draw();
