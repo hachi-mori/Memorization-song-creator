@@ -67,5 +67,5 @@ void Scene4::draw() const
 	Scene3Button.draw(buttonColor);
 	FontAsset(U"MainFont")(U"つくる").drawAt(Scene3Button.center(), Palette::White);
 
-	SimpleGUI::ListBox(listBoxState, Vec2{ 450, 250 }, 350, 600);
+	SimpleGUI::ListBox(listBoxState, Vec2{ 385, 250 }, 480, 600);
 }
