@@ -99,7 +99,7 @@ Array<Array<Note>> DeterminePhrasesFromJSON(const JSON& json)
 
 int ProcessLyrics(const Array<Array<String>>& lyricList, Array<Array<Note>>& phrases)
 {
-	int totalDifference = 0;// 差分を保存する変数
+	int totalDifference = 0; // 差分を保存する変数
 
 	// 各フレーズに対して処理
 	for (size_t phraseIndex = 0; phraseIndex < phrases.size() - 1; ++phraseIndex)
@@ -113,60 +113,88 @@ int ProcessLyrics(const Array<Array<String>>& lyricList, Array<Array<Note>>& phr
 		Array<Note>& notes = phrases[phraseIndex + 1];
 		const Array<String>& moraList = lyricList[phraseIndex];
 
-		size_t totalMora = 0;
-		size_t wordIndex = 0;
 		size_t noteCount = notes.size();
+		size_t moraCount = moraList.size();
 
-		if (moraList.size() == noteCount)
+		if (moraCount == noteCount)
 		{
+			// モーラ数と音符数が同じ場合
 			for (size_t i = 0; i < noteCount; ++i)
 			{
 				notes[i].lyric = moraList[i];
 			}
 			continue;
 		}
-
-		while (wordIndex < moraList.size())
+		else if (moraCount > noteCount)
 		{
-			const String& currentWordMora = moraList[wordIndex];
-			size_t currentWordMoraCount = currentWordMora.size();
-
-			size_t newTotalMora = totalMora + currentWordMoraCount;
-
-			if (newTotalMora > noteCount)
-			{
-				size_t differenceWithoutAdding = noteCount - totalMora;
-				size_t differenceWithAdding = newTotalMora - noteCount;
-
-				if (differenceWithoutAdding < differenceWithAdding)
-				{
-					totalDifference += differenceWithAdding;
-					break;
-				}
-			}
-
-			for (size_t i = 0; i < currentWordMoraCount && totalMora < noteCount; ++i)
-			{
-				notes[totalMora].lyric = currentWordMora;
-				totalMora++;
-			}
-
-			wordIndex++;
+			// モーラ数が音符数を超えている場合
+			// moraList をコピーして渡す
+			Array<String> moraListCopy = moraList;
+			HandleMoreMoraThanNotes(moraListCopy, notes);
+			totalDifference += static_cast<int>(moraCount - noteCount);
 		}
-
-		if (totalMora < noteCount)
+		else // moraCount < noteCount
 		{
-			totalDifference += (noteCount - totalMora);
-		}
-		else if (totalMora > noteCount)
-		{
-			totalDifference += (totalMora - noteCount);
+			// 音符数がモーラ数を超えている場合
+			HandleMoreNotesThanMora(moraList, notes);
+			totalDifference += static_cast<int>(noteCount - moraCount);
 		}
 	}
 
 	return totalDifference;
 }
 
+// モーラ数が音符数を超えた場合の処理
+void HandleMoreMoraThanNotes(Array<String> moraList, Array<Note>& notes)
+{
+	size_t noteCount = notes.size();
+	size_t moraCount = moraList.size();
+
+	// モーラ数を音符数に合わせるために、余分なモーラを削除または調整します
+	// ここでは単純にモーラリストを音符数にトリミングします
+	if (moraCount > noteCount)
+	{
+		moraList.resize(noteCount);
+	}
+
+	// 音符にモーラを割り当て
+	for (size_t i = 0; i < noteCount; ++i)
+	{
+		if (i < moraList.size())
+		{
+			notes[i].lyric = moraList[i];
+		}
+		else
+		{
+			notes[i].lyric = U"";
+		}
+	}
+
+	// 必要に応じて、モーラの調整ロジックを追加してください
+}
+
+// 音符数がモーラ数を超えた場合の処理
+void HandleMoreNotesThanMora(const Array<String>& moraList, Array<Note>& notes)
+{
+	size_t noteCount = notes.size();
+	size_t moraCount = moraList.size();
+
+	// モーラ数が少ない場合、余分な音符に適切な処理を行います
+	// ここでは単純に空の歌詞を割り当てます
+	for (size_t i = 0; i < noteCount; ++i)
+	{
+		if (i < moraCount)
+		{
+			notes[i].lyric = moraList[i];
+		}
+		else
+		{
+			notes[i].lyric = U"";
+		}
+	}
+
+	// 必要に応じて、音符の調整ロジックを追加してください
+}
 
 // 文字列をモーラ単位に分割する関数
 Array<String> SplitToMora(const String& input)
@@ -210,7 +238,6 @@ Array<String> SplitToMora(const String& input)
 
 	return moraList;
 }
-
 
 // ひらがな/カタカナから母音を取得する関数
 String GetVowelFromKana(const String& kana)

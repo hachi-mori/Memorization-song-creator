@@ -19,10 +19,10 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 int ProcessLyrics(const Array<Array<String>>& lyricList, Array<Array<Note>>& phrases);
 
 // モーラ数が音符数を超えた場合の処理
-void HandleMoreMoraThanNotes(Array<Array<String>>& lyricList, Array<Note>& notes);
+void HandleMoreMoraThanNotes(Array<String> moraList, Array<Note>& notes);
 
 // 音符数がモーラ数を超えた場合の処理
-void HandleMoreNotesThanMora(const Array<Array<String>>& moraList, Array<Note>& notes);
+void HandleMoreNotesThanMora(const Array<String>& moraList, Array<Note>& notes);
 
 // 文字列をモーラ単位に分割する関数
 Array<String> SplitToMora(const String& input);
