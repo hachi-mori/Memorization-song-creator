@@ -10,23 +10,28 @@
 ## 構成図 (一部省略)
 <pre>
 覚え歌つくるくん/
-├ Button.cpp
+├ Button.cpp  //ボタン
 ├ Button.hpp
-├ ScrollBar.cpp
+├ ScrollBar.cpp  //スクロールバーとスプレッドシート
 ├ ScrollBar.hpp
-├ VoiceVoxSynthesizer.cpp
+├ VoiceVoxSynthesizer.cpp  //VOICEVOXAPIを叩く
 ├ VoiceVoxSynthesizer.hpp
-├ CreateScore.cpp
-├ CreateScore.hpp
-├ CreditScene.cpp
+├ Note.hpp  //楽譜生成で使う構造体
+├ JSONHandler.cpp  //JSONファイルを操作する
+├ JSONHandler.cpp 
+├ LyricsProcessor.cpp  //歌詞の処理
+├ LyricsProcessor.cpp
+├ StringUtils.cpp  //文字列の処理
+├ StringUtils.cpp
+├ CreditScene.cpp  //クレジット画面
 ├ CreditScene.hpp
-├ Scene1.cpp
-├ Scene1.hpp
-├ Scene2.cpp
+├ Scene1.cpp  //トップ画面
+├ Scene1.hpp 
+├ Scene2.cpp  //語句入力画面
 ├ Scene2.hpp
-├ Scene3.cpp
+├ Scene3.cpp  //覚え歌生成画面
 ├ Scene3.hpp
-├ Scene4.cpp
+├ Scene4.cpp  //再生画面
 ├ Scene4.hpp
 ├ stdafx.h
 ├ Main.cpp
@@ -55,5 +60,8 @@
 
 <更新情報>
 2024.08.31 : CreditScene.cpp, CreditScene.hpp を追加
-
+2024.09.22 : 
+  CreateScore.cpp, CreateScore.hpp を削除
+  Note.hpp, JSONHandler.cpp, JSONHandler.cpp, LyricsProcessor.cpp, LyricsProcessor.cpp. StringUtils.cpp, StringUtils.cpp,を追加
+  構成図にコメント文を追加
 </pre>
