@@ -19,7 +19,8 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 		const String& word = csv[row][1];
 		if (!word.isEmpty())
 		{
-			Array<String> moraList = SplitToMora(word);
+			// 伸ばし棒の処理を行わない関数を使用
+			Array<String> moraList = SplitToMoraWithoutLongVowel(word);
 			lyricList.push_back(moraList);
 		}
 	}
@@ -35,6 +36,9 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 	Array<Array<Note>> phrases = DeterminePhrasesFromJSON(json);
 
 	int difference = ProcessLyrics(lyricList, phrases);
+
+	// ProcessLyrics の後に、伸ばし棒を母音に変換
+	ReplaceLongVowelMarks(phrases);
 
 	json[U"__type"] = U"Difference:" + ToString(difference);
 
@@ -58,11 +62,12 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 
 	for (size_t i = 1; i < json[U"notes"].size(); ++i)
 	{
-		Print(U"json[U\"notes\"][", i, U"][U\"lyric\"] = ", json[U"notes"][i][U"lyric"].getString());
+		//Print(U"json[U\"notes\"][", i, U"][U\"lyric\"] = ", json[U"notes"][i][U"lyric"].getString());
 	}
 
 	json.save(outputPath);
 }
+
 
 // DeterminePhrasesFromJSON 関数の実装
 Array<Array<Note>> DeterminePhrasesFromJSON(const JSON& json)

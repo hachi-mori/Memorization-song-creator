@@ -2,6 +2,8 @@
 //# define NO_S3D_USING
 
 # include <Siv3D.hpp>
+# include <limits>
+# include <cmath>
 # include "Button.hpp"
 # include "ScrollBar.hpp"
 # include "VoiceVoxSynthesizer.hpp"
