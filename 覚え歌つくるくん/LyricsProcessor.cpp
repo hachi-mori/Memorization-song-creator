@@ -164,26 +164,93 @@ void HandleMoreMoraThanNotes(Array<String>& moraList, Array<Note>& notes)
 
 
 // HandleMoreNotesThanMora 関数の実装
-void HandleMoreNotesThanMora(const Array<String>& moraList, Array<Note>& notes)
+void HandleMoreNotesThanMora(Array<String>& moraList, Array<Note>& notes)
 {
 	size_t noteCount = notes.size();
 	size_t moraCount = moraList.size();
 
-	// モーラ数が少ない場合、余分な音符に空の歌詞を割り当て
-	for (size_t i = 0; i < noteCount; ++i)
+	// 元の moraList を保存しておく（変更を取り消すために使う）
+	Array<String> originalMoraList = moraList;
+
+	// 音符数がモーラ数より多い場合の処理
+	while (moraCount < noteCount)
 	{
-		if (i < moraCount)
+		bool lengthened = false;
+
+		// 1. まず、長音「ー」を複製する
+		for (size_t i = 0; i < moraList.size(); ++i)
 		{
-			notes[i].lyric = moraList[i];
+			if (moraList[i] == U"ー")
+			{
+				// 前後のモーラが長音でないことを確認
+				if ((i == 0 || moraList[i - 1] != U"ー") && (i + 1 >= moraList.size() || moraList[i + 1] != U"ー"))
+				{
+					// 長音を複製する（1つの長音を2つに増やす）
+					moraList.insert(moraList.begin() + i, U"ー");
+					moraCount++; // モーラ数を更新
+
+					lengthened = true;
+					break; // 1つの長音を2つに増やしたらループを抜ける
+				}
+			}
 		}
-		else
+
+		// 2. 長音の処理が終わった後、まだモーラ数が不足している場合、母音「あ、い、う、え、お」を複製する
+		if (!lengthened)
 		{
-			notes[i].lyric = U"";
+			const Array<String> vowels = { U"あ", U"い", U"う", U"え", U"お" };
+
+			for (size_t i = 0; i < moraList.size(); ++i)
+			{
+				if (vowels.includes(moraList[i]))
+				{
+					// 前後に同じ母音がないことを確認
+					if ((i == 0 || moraList[i - 1] != moraList[i]) && (i + 1 >= moraList.size() || moraList[i + 1] != moraList[i]))
+					{
+						// 母音を複製する（1つの母音を2つに増やす）
+						moraList.insert(moraList.begin() + i, moraList[i]);
+						moraCount++; // モーラ数を更新
+
+						lengthened = true;
+						break; // 1つの母音を2つに増やしたらループを抜ける
+					}
+				}
+			}
+		}
+
+		// 3. 長音と母音の複製を行った後でも、モーラ数が足りない場合
+		if (!lengthened)
+		{
+			// 3-1. 変更を取り消して元の moraList に戻す
+			moraList = originalMoraList;
+			moraCount = moraList.size();
+
+			// 3-2. モーラ数が音符数に満たない場合は「ら」で埋める
+			while (moraCount < noteCount)
+			{
+				moraList.push_back(U"ら");
+				moraCount++;
+			}
+			break; // 処理を終了
 		}
 	}
 
-	// 必要に応じて、音符の調整ロジックを追加
+	// モーラと音符の割り当て
+	for (size_t i = 0; i < noteCount; ++i)
+	{
+		if (i < moraList.size())
+		{
+			notes[i].lyric = moraList[i]; // モーラを音符に割り当て
+		}
+		else
+		{
+			notes[i].lyric = U""; // 音符が余っている場合は空にする
+		}
+	}
 }
+
+
+
 
 void AdjustMoraAndNotes(Array<String>& moraList, Array<Note>& notes)
 {

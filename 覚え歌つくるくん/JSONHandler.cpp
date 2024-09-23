@@ -1,6 +1,5 @@
-﻿#include "JSONHandler.hpp"
-#include "LyricsProcessor.hpp" // 必要に応じてインクルード
-#include "StringUtils.hpp"     // 必要に応じてインクルード
+﻿// JSONHandler.cpp
+#include "stdafx.h"
 
 // UpdateJSONFromCSV 関数の実装
 void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const FilePath& outputPath)
@@ -67,6 +66,7 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 
 	json.save(outputPath);
 }
+
 
 
 // DeterminePhrasesFromJSON 関数の実装

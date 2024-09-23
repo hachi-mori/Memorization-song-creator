@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿// StringUtils.hpp
+#pragma once
 
 #include "stdafx.h"
 

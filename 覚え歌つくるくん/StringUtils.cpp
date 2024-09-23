@@ -1,4 +1,5 @@
-﻿#include "StringUtils.hpp"
+﻿// StringUtils.cpp
+#include "StringUtils.hpp"
 
 // 伸ばし棒の処理を行わないモーラ分割関数
 Array<String> SplitToMoraWithoutLongVowel(const String& input)

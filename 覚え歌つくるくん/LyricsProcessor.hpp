@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿// LyricsProcessor.hpp
+#pragma once
 
 #include "stdafx.h"
 
