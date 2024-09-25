@@ -148,6 +148,9 @@ void Scene2::update()
 				}
 
 				writer.close();
+				if (listBoxState.items[*listBoxState.selectedItemIndex] != te.text) {
+					FileSystem::Remove(U"lyrics/" + listBoxState.items[*listBoxState.selectedItemIndex] + U".csv");
+				}
 				UpdateListBoxState();
 
 				// リストボックスで保存したファイル名を選択している状態にする
@@ -382,19 +385,17 @@ void Scene2::draw() const
 	FontAsset(U"MainFont")(U"けす").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
 
 	// TextBox
-	FontAsset(U"MainFont")(U"タイトル").drawAt(25, Vec2{ 1220, 80 }, Palette::Black);
-	SimpleGUI::TextBox(te, Vec2{ 1024, 100}, 400);
+	FontAsset(U"MainFont")(U"タイトル\n 　→").drawAt(30, Vec2{ 1420, 80 }, Palette::Black);
+	SimpleGUI::TextBox(te, Vec2{ 1440, 82}, 370);
+	if(listBoxState.selectedItemIndex)FontAsset(U"MainFont")(listBoxState.items[*listBoxState.selectedItemIndex]).draw(24, Arg::bottomRight=Vec2{ 1389, 116.7 }, Palette::Black);
 
-	FontAsset(U"MainFont")(SaveMassage + U"をほぞんしました").drawAt(34, Vec2{1235, 985}, ColorF{0.0, 0.0, 0.0, MessageOpacity});
+	FontAsset(U"MainFont")(SaveMassage + U"をほぞんしました").draw(34, Arg::bottomRight = Vec2{1550, 1012}, ColorF{0.0, 0.0, 0.0, MessageOpacity});
 
 	//タイトルの変換予測
 	if (te.active)
 	{
-		SimpleGUI::IMECandidateWindow(Vec2{ 1020, 150 });
-	}
-
-	//スプレッドシートの変換予測
-	if (textEditState.active)
+		SimpleGUI::IMECandidateWindow(Vec2{ 1440, 120 });
+	}else if (textEditState.active) 	//スプレッドシートの変換予測
 	{
 		SimpleGUI::IMECandidateWindow(Cursor::PosF().movedBy(0, 20));
 	}
