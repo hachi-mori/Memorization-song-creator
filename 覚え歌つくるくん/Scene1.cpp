@@ -83,9 +83,6 @@ void Scene1::draw() const {
 
 	FullscreenButton.draw(buttonColor);
 	FontAsset(U"MainFont")(ScreenName).drawAt(FullscreenButton.center(), Palette::White);
-
-	//WindowButton.draw(buttonColor);
-	//FontAsset(U"MainFont")(U"Window").drawAt(WindowButton.center(), Palette::White);
 }
 
 	

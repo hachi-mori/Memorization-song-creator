@@ -33,7 +33,6 @@ void CreditScene::draw() const {
 	FontAsset(U"MainFont")(U"・ずんだもん（VOICEVOX）　　　　　　　").drawAt(50, Vec2{ 960, 880 }, Palette::Black);
 	FontAsset(U"MainFont")(U"・春日部つむぎ（VOICEVOX）　　　　　　").drawAt(50, Vec2{ 960, 950 }, Palette::Black);
 
-
 	//zunkyo
 	texture.draw(1180, 810);
 
