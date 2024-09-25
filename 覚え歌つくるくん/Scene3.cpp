@@ -238,6 +238,23 @@ void Scene3::update()
 	else {
 		b = 3;
 	}
+	//カーソル
+	if (Scene1Button.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (Scene2Button.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (Scene4Button.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (SaveButton.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
 }
 
 
