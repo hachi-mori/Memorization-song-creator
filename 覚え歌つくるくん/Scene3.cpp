@@ -235,8 +235,11 @@ void Scene3::update()
 	else if (a < 70 && a >= 40) {
 		b = 2;
 	}
-	else {
+	else if (a < 40 && a >= 0){
 		b = 3;
+	}
+	else if (a = -1){
+		b = -1;
 	}
 	//カーソル
 	if (Scene1Button.mouseOver())
@@ -273,6 +276,9 @@ void Scene3::draw() const
 	}
 	else if (b == 3) {
 		emoji3.scaled(2.0).drawAt(1320, 800);
+	}
+	else if (b == -1){
+		emoji4.scaled(2.0).drawAt(1320, 800);
 	}
 	
 	
