@@ -8,7 +8,7 @@ Scene3::Scene3(const InitData& init)
 	previousSelectedIndex1{ s3d::none },
 	previousSelectedIndex2{ s3d::none },
 	previousSelectedIndex3{ s3d::none },
-	Difference{0},
+	Difference{-1},
 	isloading{ false }
 {
 	// Initialize the list of files and speakers
