@@ -345,7 +345,32 @@ void Scene2::update()
 				if (KeyDown.down())KeyDown.clearInput();
 			}
 		}
-	}	
+	}
+	//カーソル
+	if (Scene1Button.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (Scene3Button.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (Scene4Button.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (SaveButton.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (CreateButton.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+	if (DeleteButton.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
 }
 
 void Scene2::draw() const

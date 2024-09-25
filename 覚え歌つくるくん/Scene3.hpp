@@ -84,8 +84,8 @@ private:
 	const Array<String> labels = { U"一致率", U""};
 
 	// 数値
-	Array<double> values = { 60, 100 - 60 };
-	int a = 80;
+	Array<double> values = {  60, 100-60 };
+	int a = -1;
 	int b;
 	const Texture emoji1{ U"😄"_emoji };
 
@@ -93,7 +93,7 @@ private:
 
 	const Texture emoji3{ U"😟"_emoji };
 
-
+	const Texture emoji4{ U"⚫"_emoji };
 	// 円グラフで占める割合
 	const Array<double> ratios = ToRatios(values);
 
