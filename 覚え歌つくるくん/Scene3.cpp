@@ -249,13 +249,13 @@ void Scene3::draw() const
 	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
 
 	if (b == 1) {
-		emoji1.scaled(2.0).drawAt(1320, 800);;
+		emoji1.scaled(2.0).drawAt(1320, 800);
 	}
 	else if (b == 2) {
-		emoji2.scaled(2.0).drawAt(1320, 800);;
+		emoji2.scaled(2.0).drawAt(1320, 800);
 	}
 	else if (b == 3) {
-		emoji3.scaled(2.0).drawAt(1320, 800);;
+		emoji3.scaled(2.0).drawAt(1320, 800);
 	}
 	
 	
