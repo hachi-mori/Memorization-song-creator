@@ -128,6 +128,23 @@ void Scene3::update()
 			// JSONファイルを更新
 			UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
 		}
+		if (listBoxState2.selectedItemIndex) {
+			String selectedLyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
+			String selectedScoreName = OriginalScoresfileNames[listBoxState2.selectedItemIndex.value()];
+			const FilePath createscoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedLyricsName, selectedScoreName);
+
+			JSON json = JSON::Load(createscoreFilePath);
+
+			// 値を文字列として取得
+			String typeValue = json[U"__type"].getString();
+
+			// "Difference:" プレフィックスを取り除く
+			String differenceStr = typeValue.substr(11); // プレフィックスの長さは10
+
+			// 数値に変換
+			Difference = Parse<int>(differenceStr);
+			Print << U"Difference value: " << Difference;
+		}
 	}
 
 	if (listBoxState2.selectedItemIndex != previousSelectedIndex2)
@@ -225,6 +242,18 @@ void Scene3::update()
 		FontAsset(U"MainFont")(labels[i]).draw(24, Arg::bottomCenter = pos, ColorF{0.11});
 		FontAsset(U"MainFont")(U"{:.1f}%"_fmt(ratios[i] * 100.0)).draw(18, Arg::topCenter = pos, ColorF{0.11});
 	}
+
+	// 絵文字を描画する
+	if (Difference == 0) {
+		b = 1;
+	}
+	else if (Difference < 3 && Difference >= 1) {
+		b = 2;
+	}
+	else {
+		b = 3;
+	}
+
 }
 
 void Scene3::draw() const
@@ -271,4 +300,16 @@ void Scene3::draw() const
 		loadingRect.draw(ColorF{ 0.0, 0.5 });
 		loadingtexture.rotated(angle).draw(860, 440);
 	}
+
+	// 絵文字
+	if (b == 1) {
+		emoji1.scaled(2.0).drawAt(1320, 800);
+	}
+	else if (b == 2) {
+		emoji2.scaled(2.0).drawAt(1320, 800);
+	}
+	else if (b == 3) {
+		emoji3.scaled(2.0).drawAt(1320, 800);
+	}
+
 }
