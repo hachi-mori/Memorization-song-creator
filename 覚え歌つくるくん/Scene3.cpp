@@ -228,6 +228,16 @@ void Scene3::update()
 		FontAsset(U"MainFont")(labels[i]).draw(24, Arg::bottomCenter = pos, ColorF{0.11});
 		FontAsset(U"MainFont")(U"{:.1f}%"_fmt(ratios[i] * 100.0)).draw(18, Arg::topCenter = pos, ColorF{0.11});
 	}
+	//絵文字
+	if (a >= 70) {
+		b = 1;
+	}
+	else if (a < 70 && a >= 40) {
+		b = 2;
+	}
+	else {
+		b = 3;
+	}
 }
 
 
@@ -238,7 +248,15 @@ void Scene3::draw() const
 	SimpleGUI::ListBox(listBoxState2, Vec2{ 810, 250 }, 300, 600);
 	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
 
-
+	if (b == 1) {
+		emoji1.scaled(2.0).drawAt(1320, 800);;
+	}
+	else if (b == 2) {
+		emoji2.scaled(2.0).drawAt(1320, 800);;
+	}
+	else if (b == 3) {
+		emoji3.scaled(2.0).drawAt(1320, 800);;
+	}
 	
 	
 	// 曲設定
@@ -249,8 +267,7 @@ void Scene3::draw() const
 
 	FontAsset(U"MainFont")(U"かし").draw(30, Vec2{ 400, 200 }, Palette::Black);
 	FontAsset(U"MainFont")(U"きょく").draw(30, Vec2{ 810, 200 }, Palette::Black);
-	FontAsset(U"MainFont")(U"一致率").draw(30, Vec2{ 1210, 200 }, Palette::Black);
-	FontAsset(U"MainFont")(U"60％").draw(100, Vec2{ 1220, 700 }, Palette::Black);
+	FontAsset(U"MainFont")(U"おすすめ度！").draw(30, Vec2{ 1210, 200 }, Palette::Black);
 	FontAsset(U"MainFont")(U"キャラクター").draw(30, Vec2{ 1520, 200 }, Palette::Black);
 
 	// Charactertexture
