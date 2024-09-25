@@ -8,7 +8,7 @@ Scene3::Scene3(const InitData& init)
 	previousSelectedIndex1{ s3d::none },
 	previousSelectedIndex2{ s3d::none },
 	previousSelectedIndex3{ s3d::none },
-	Difference{0},
+	Difference{-1},
 	isloading{ false }
 {
 	// Initialize the list of files and speakers
@@ -128,6 +128,26 @@ void Scene3::update()
 			// JSONファイルを更新
 			UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
 		}
+		if (listBoxState2.selectedItemIndex)
+		{
+			String selectedLyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
+			String selectedScoreName = OriginalScoresfileNames[listBoxState2.selectedItemIndex.value()];
+			const FilePath createScoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedLyricsName, selectedScoreName);
+
+			JSON json = JSON::Load(createScoreFilePath);
+
+			// 値を文字列として取得
+			String typeValue = json[U"__type"].getString();
+
+			// "Difference:" プレフィックスを取り除く
+			String differenceStr = typeValue.substr(11); // プレフィックスの長さは10
+
+			// 数値に変換
+			Difference = Parse<int>(differenceStr);
+			Print << U"Difference value: " << Difference;
+
+
+		}
 	}
 
 	if (listBoxState2.selectedItemIndex != previousSelectedIndex2)
@@ -229,18 +249,19 @@ void Scene3::update()
 		FontAsset(U"MainFont")(U"{:.1f}%"_fmt(ratios[i] * 100.0)).draw(18, Arg::topCenter = pos, ColorF{0.11});
 	}
 	//絵文字
-	if (a >= 70) {
+	if (Difference == 0) {
 		b = 1;
 	}
-	else if (a < 70 && a >= 40) {
+	else if (Difference <= 2 && Difference >= 1) {
 		b = 2;
 	}
-	else if (a < 40 && a >= 0){
+	else if (Difference >= 3){
 		b = 3;
 	}
-	else if (a = -1){
+	else if (Difference == -1){
 		b = -1;
 	}
+
 	//カーソル
 	if (Scene1Button.mouseOver())
 	{

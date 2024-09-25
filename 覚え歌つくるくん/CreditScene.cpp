@@ -15,6 +15,11 @@ void CreditScene::update()
 	{
 		changeScene(U"Scene1");
 	}
+	//カーソル
+	if (Scene1Button.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+	}
 }
 
 void CreditScene::draw() const {
