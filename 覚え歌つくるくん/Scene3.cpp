@@ -170,8 +170,6 @@ void Scene3::update()
 		// 数値に変換
 		Difference = Parse<int>(differenceStr);
 		Print << U"Difference value: " << Difference;
-
-
 	}
 
 	if (listBoxState3.selectedItemIndex != previousSelectedIndex3)

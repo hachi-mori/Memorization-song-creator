@@ -4,24 +4,14 @@
 // UpdateJSONFromCSV 関数の実装
 void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const FilePath& outputPath)
 {
+	Print << U"UpdateJSONFromCSV called. Loading CSV and JSON files...\n";
+
 	// CSVファイルからデータを読み込む
 	CSV csv(csvPath);
 	if (!csv)
 	{
 		Print << U"Failed to open CSV file: " << csvPath << U"\n";
 		return;
-	}
-
-	Array<Array<String>> lyricList;
-	for (size_t row = 0; row < csv.rows(); ++row)
-	{
-		const String& word = csv[row][1];
-		if (!word.isEmpty())
-		{
-			// 伸ばし棒の処理を行わない関数を使用
-			Array<String> moraList = SplitToMoraWithoutLongVowel(word);
-			lyricList.push_back(moraList);
-		}
 	}
 
 	// JSONファイルを読み込む
@@ -32,42 +22,70 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 		return;
 	}
 
+	Array<Array<String>> lyricList;
+	for (size_t row = 0; row < csv.rows(); ++row)
+	{
+		const String& word = csv[row][1];
+		if (!word.isEmpty())
+		{
+			Array<String> moraList = SplitToMoraWithoutLongVowel(word);
+			lyricList.push_back(moraList);
+		}
+	}
+
 	Array<Array<Note>> phrases = DeterminePhrasesFromJSON(json);
 
-	int difference = ProcessLyrics(lyricList, phrases);
+	// jsonを引数に追加してProcessLyricsを呼び出す
+	int difference = ProcessLyrics(json, lyricList, phrases);
+	Print << U"ProcessLyrics returned with difference: " << difference << U"\n";
 
 	// ProcessLyrics の後に、伸ばし棒を母音に変換
 	ReplaceLongVowelMarks(phrases);
 
+	// 類似度の追加
 	json[U"__type"] = U"Difference:" + ToString(difference);
 
+	// JSONファイルを更新
 	size_t jsonIndex = 0;
 	for (size_t i = 0; i < phrases.size(); ++i)
 	{
 		for (size_t j = 0; j < phrases[i].size(); ++j)
 		{
-			if (jsonIndex < json[U"notes"].size())
+			if (jsonIndex >= json[U"notes"].size())
 			{
-				json[U"notes"][jsonIndex][U"lyric"] = phrases[i][j].lyric;
-				++jsonIndex;
+				// jsonIndexがjson[U"notes"]の範囲外の場合は新しい要素を追加
+				JSON newNote;
+				json[U"notes"].push_back(newNote);
+				Print << U"Adding new note to JSON at index: " << jsonIndex << U"\n";
+			}
+
+			json[U"notes"][jsonIndex][U"lyric"] = phrases[i][j].lyric;
+			json[U"notes"][jsonIndex][U"frame_length"] = phrases[i][j].frame_length;
+
+			if (phrases[i][j].key.has_value())
+			{
+				json[U"notes"][jsonIndex][U"key"] = phrases[i][j].key.value();
 			}
 			else
 			{
-				Print << U"Error: JSON index out of range.\n";
-				return;
+				json[U"notes"][jsonIndex][U"key"] = nullptr;
 			}
+
+			json[U"notes"][jsonIndex][U"notelen"] = phrases[i][j].notelen;
+			++jsonIndex;
 		}
 	}
 
-	for (size_t i = 1; i < json[U"notes"].size(); ++i)
+	// JSONファイルを保存
+	if (json.save(outputPath))
 	{
-		//Print(U"json[U\"notes\"][", i, U"][U\"lyric\"] = ", json[U"notes"][i][U"lyric"].getString());
+		Print << U"JSON saved successfully to " << outputPath << U"\n";
 	}
-
-	json.save(outputPath);
+	else
+	{
+		Print << U"Failed to save JSON to " << outputPath << U"\n";
+	}
 }
-
-
 
 // DeterminePhrasesFromJSON 関数の実装
 Array<Array<Note>> DeterminePhrasesFromJSON(const JSON& json)
