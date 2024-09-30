@@ -1,11 +1,14 @@
 ﻿#include "LyricsProcessor.hpp"
 
 // ProcessLyrics 関数の実装
-int ProcessLyrics(const JSON& json, const Array<Array<String>>& lyricList, Array<Array<Note>>& phrases)
+int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricList, Array<Array<Note>>& phrases)
 {
 	int totalDifference = 0; // 差分を保存する変数
 
 	size_t lyricIndex = 0; // 単語リストの現在位置
+
+	// lyricListをコピーしておく（lyricListを変更するため）
+	Array<Array<String>> lyricList = originalLyricList;
 
 	// 最初のフレーズを飛ばすために、phraseIndexを1から開始
 	for (size_t phraseIndex = 1; phraseIndex < phrases.size(); ++phraseIndex)
@@ -20,69 +23,123 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& lyricList, Array
 			break;
 		}
 
-		// 最適な単語数を見つけるための変数を初期化
-		size_t bestK = 0;
-		size_t minimalAbsDiff = std::numeric_limits<size_t>::max();
-		size_t totalMoraCount = 0;
+		bool adjusted = false;
 
-		// 最大で残りの単語数までループ
-		size_t maxWords = lyricList.size() - lyricIndex;
-
-		totalMoraCount = 0;
-
-		for (size_t k = 1; k <= maxWords; ++k)
+		while (!adjusted)
 		{
-			// k番目の単語のモーラ数を取得し、合計に加算
-			size_t wordMoraCount = lyricList[lyricIndex + k - 1].size();
-			totalMoraCount += wordMoraCount;
+			// 最適な単語数を見つけるための変数を初期化
+			size_t bestK = 0;
+			size_t minimalAbsDiff = std::numeric_limits<size_t>::max();
+			size_t totalMoraCount = 0;
 
-			size_t absDiff = std::abs(static_cast<int>(totalMoraCount) - static_cast<int>(noteCount));
+			// 最大で残りの単語数までループ
+			size_t maxWords = lyricList.size() - lyricIndex;
 
-			if (absDiff < minimalAbsDiff)
+			totalMoraCount = 0;
+
+			for (size_t k = 1; k <= maxWords; ++k)
 			{
-				minimalAbsDiff = absDiff;
-				bestK = k;
+				// k番目の単語のモーラ数を取得し、合計に加算
+				size_t wordMoraCount = lyricList[lyricIndex + k - 1].size();
+				totalMoraCount += wordMoraCount;
+
+				size_t absDiff = std::abs(static_cast<int>(totalMoraCount) - static_cast<int>(noteCount));
+
+				if (absDiff < minimalAbsDiff)
+				{
+					minimalAbsDiff = absDiff;
+					bestK = k;
+				}
+				else if (absDiff == minimalAbsDiff)
+				{
+					// 差が同じ場合はより少ない単語数を選択するため、これ以上ループしない
+					break;
+				}
+				else
+				{
+					// 差が増加したらこれ以上ループする必要はない
+					break;
+				}
 			}
-			else if (absDiff == minimalAbsDiff)
+
+			// 選択した単語がない場合はエラー
+			if (bestK == 0)
 			{
-				// 差が同じ場合はより少ない単語数を選択するため、これ以上ループしない
+				Print << U"Error: Unable to find suitable lyrics for phrase index " << phraseIndex << U"\n";
 				break;
+			}
+
+			// 選択した単語からモーラリストを作成
+			Array<String> moraList;
+
+			for (size_t i = 0; i < bestK; ++i)
+			{
+				const Array<String>& wordMoras = lyricList[lyricIndex + i];
+				moraList.append(wordMoras); // モーラを追加
+			}
+
+			// フレーズごとの元のモーラ数を記録
+			size_t originalMoraCount = moraList.size();
+
+			// モーラと音符の調整を行う関数を呼び出す（ここで json を渡す）
+			Array<String> moraListCopy = moraList; // 後で再試行するためにコピーしておく
+			Array<Note> notesCopy = notes; // notesもコピーしておく
+
+			bool success = AdjustMoraAndNotes(json, moraList, notes);
+
+			if (success)
+			{
+				// フレーズごとの差の絶対値を計算し、totalDifferenceに加算
+				int difference = static_cast<int>(originalMoraCount) - static_cast<int>(noteCount);
+				totalDifference += std::abs(difference);
+
+				// lyricIndex を更新
+				lyricIndex += bestK;
+
+				adjusted = true; // 調整成功
+
+				break; // whileループを抜けて次のフレーズへ
 			}
 			else
 			{
-				// 差が増加したらこれ以上ループする必要はない
-				break;
+				// 調整失敗の場合、単語を分割して再試行
+				// 最後の単語を分割する
+				size_t lastWordIndex = lyricIndex + bestK - 1;
+				Array<String>& lastWordMoras = lyricList[lastWordIndex];
+
+				// フレーズに収まるモーラ数を計算
+				size_t neededMoras = notes.size();
+				size_t totalMorasSoFar = 0;
+				for (size_t i = 0; i < bestK - 1; ++i)
+				{
+					totalMorasSoFar += lyricList[lyricIndex + i].size();
+				}
+
+				size_t morasNeededFromLastWord = neededMoras - totalMorasSoFar;
+
+				// モーラ数が足りない場合はエラー
+				if (morasNeededFromLastWord == 0 || morasNeededFromLastWord >= lastWordMoras.size())
+				{
+					Print << U"Error: Unable to split word at lyric index " << lastWordIndex << U"\n";
+					break;
+				}
+
+				// 単語を分割
+				Array<String> firstPart(lastWordMoras.begin(), lastWordMoras.begin() + morasNeededFromLastWord);
+				Array<String> secondPart(lastWordMoras.begin() + morasNeededFromLastWord, lastWordMoras.end());
+
+				// lyricListを更新
+				lyricList[lastWordIndex] = firstPart;
+				lyricList.insert(lyricList.begin() + lastWordIndex + 1, secondPart);
+
+				// moraListとnotesを元に戻す
+				moraList = moraListCopy;
+				notes = notesCopy;
+
+				// 再試行するためにcontinue
+				continue;
 			}
 		}
-
-		// 選択した単語がない場合はエラー
-		if (bestK == 0)
-		{
-			Print << U"Error: Unable to find suitable lyrics for phrase index " << phraseIndex << U"\n";
-			break;
-		}
-
-		// 選択した単語からモーラリストを作成
-		Array<String> moraList;
-
-		for (size_t i = 0; i < bestK; ++i)
-		{
-			const Array<String>& wordMoras = lyricList[lyricIndex + i];
-			moraList.append(wordMoras); // モーラを追加
-		}
-
-		// フレーズごとの元のモーラ数を記録
-		size_t originalMoraCount = moraList.size();
-
-		// モーラと音符の調整を行う関数を呼び出す（ここで json を渡す）
-		AdjustMoraAndNotes(json, moraList, notes);
-
-		// フレーズごとの差の絶対値を計算し、totalDifferenceに加算
-		int difference = static_cast<int>(originalMoraCount) - static_cast<int>(noteCount);
-		totalDifference += std::abs(difference);
-
-		// lyricIndex を更新
-		lyricIndex += bestK;
 	}
 
 	// 最後まで実行されたことを確認するためのメッセージ
@@ -90,8 +147,6 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& lyricList, Array
 
 	return totalDifference;
 }
-
-
 
 // HandleMoreMoraThanNotes 関数の実装
 void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<Note>& notes)
@@ -244,11 +299,6 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 	}
 }
 
-
-
-
-
-
 // HandleMoreNotesThanMora 関数の実装
 void HandleMoreNotesThanMora(Array<String>& moraList, Array<Note>& notes)
 {
@@ -298,7 +348,7 @@ void HandleMoreNotesThanMora(Array<String>& moraList, Array<Note>& notes)
 }
 
 // AdjustMoraAndNotes 関数の実装
-void AdjustMoraAndNotes(const JSON& json, Array<String>& moraList, Array<Note>& notes)
+bool AdjustMoraAndNotes(const JSON& json, Array<String>& moraList, Array<Note>& notes)
 {
 	int maxIterations = 100; // ループ回数の上限を設定
 	int iterationCount = 0;  // 現在のループ回数
@@ -326,11 +376,11 @@ void AdjustMoraAndNotes(const JSON& json, Array<String>& moraList, Array<Note>& 
 		iterationCount++;
 	}
 
-	// ループが上限に達してもモーラ数と音符数が一致しなかった場合のエラーハンドリング
-	if (iterationCount >= maxIterations)
+	// 調整が成功したかを確認
+	if (iterationCount >= maxIterations || moraList.size() != notes.size())
 	{
-		Print << U"Error: Maximum iterations reached. Mora and notes could not be adjusted.\n";
-		return;
+		Print << U"Error: Mora and notes could not be adjusted.\n";
+		return false;
 	}
 
 	// モーラ数と音符数が一致したら、モーラを音符に割り当てる
@@ -348,7 +398,6 @@ void AdjustMoraAndNotes(const JSON& json, Array<String>& moraList, Array<Note>& 
 			<< U", key=" << (notes[i].key ? *notes[i].key : -1)
 			<< U", notelen=" << notes[i].notelen << U"\n";
 	}
+
+	return true;
 }
-
-
-
