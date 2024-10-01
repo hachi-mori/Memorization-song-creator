@@ -11,15 +11,45 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 	Array<Array<String>> lyricList = originalLyricList;
 
 	// 最初のフレーズを飛ばすために、phraseIndexを1から開始
-	for (size_t phraseIndex = 1; phraseIndex < phrases.size(); ++phraseIndex)
+	size_t phraseIndex = 1;
+	size_t maxAppendTimes = 10; // 最大で楽譜を10回まで複製
+	size_t appendCount = 0;
+
+	while (lyricIndex < lyricList.size())
 	{
+		// フレーズが足りなくなった場合、楽譜を後ろにコピーして追加
+		if (phraseIndex >= phrases.size())
+		{
+			if (appendCount >= maxAppendTimes)
+			{
+				Print << U"Error: Reached maximum number of appends. Unable to process all lyrics.\n";
+				break;
+			}
+
+			// phrasesのフレーズを後ろにコピー
+			Array<Array<Note>> newPhrases;
+			for (size_t i = 1; i < phrases.size(); ++i)
+			{
+				// ノートをディープコピー
+				Array<Note> newNotes;
+				for (const Note& note : phrases[i])
+				{
+					newNotes.push_back(note);
+				}
+				newPhrases.push_back(newNotes);
+			}
+			phrases.append(newPhrases);
+			appendCount++;
+			Print << U"Appended phrases. New total phrases: " << phrases.size() << U"\n";
+		}
+
 		Array<Note>& notes = phrases[phraseIndex];
 		size_t noteCount = notes.size();
 
 		// 単語リストが終了している場合はループを抜ける
 		if (lyricIndex >= lyricList.size())
 		{
-			Print << U"Error: No more lyrics available for phrase index " << phraseIndex << U"\n";
+			Print << U"All lyrics have been assigned.\n";
 			break;
 		}
 
@@ -52,8 +82,10 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 				}
 				else if (absDiff == minimalAbsDiff)
 				{
-					// 差が同じ場合はより少ない単語数を選択するため、これ以上ループしない
-					break;
+					// 差が同じ場合はより多い単語数を選択するため、ループを続行
+					minimalAbsDiff = absDiff;
+					bestK = k; // より多い単語数に更新
+					// ループを続けてさらに最適な解を探す
 				}
 				else
 				{
@@ -140,6 +172,36 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 				continue;
 			}
 		}
+
+		phraseIndex++;
+	}
+
+	// 歌詞の割り当てが完了した後の余分な音符やフレーズを削除する
+
+	// 最後に処理したフレーズのインデックス
+	size_t lastProcessedPhraseIndex = phraseIndex - 1;
+
+	// 最後に処理したフレーズの余分な音符を削除
+	if (lastProcessedPhraseIndex >= 1 && lastProcessedPhraseIndex < phrases.size())
+	{
+		Array<Note>& lastProcessedNotes = phrases[lastProcessedPhraseIndex];
+
+		// 歌詞が割り当てられていない音符を削除
+		size_t writeIndex = 0;
+		for (size_t i = 0; i < lastProcessedNotes.size(); ++i)
+		{
+			if (!lastProcessedNotes[i].lyric.isEmpty())
+			{
+				lastProcessedNotes[writeIndex++] = lastProcessedNotes[i];
+			}
+		}
+		lastProcessedNotes.resize(writeIndex);
+	}
+
+	// 残りのフレーズを削除
+	if (phraseIndex < phrases.size())
+	{
+		phrases.erase(phrases.begin() + phraseIndex, phrases.end());
 	}
 
 	// 最後まで実行されたことを確認するためのメッセージ
@@ -335,7 +397,7 @@ void HandleMoreNotesThanMora(Array<String>& moraList, Array<Note>& notes)
 		// それでもモーラが足りない場合は「ら」で埋める
 		while (moraCount < noteCount)
 		{
-			moraList.push_back(U"ら");
+			moraList.push_back(U"っ");
 			moraCount++;
 		}
 	}
