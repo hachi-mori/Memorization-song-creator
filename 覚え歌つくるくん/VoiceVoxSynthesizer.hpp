@@ -25,6 +25,6 @@ namespace s3d
 		bool SynthesizeFromJSONFile(const FilePath jsonFilePath, const FilePath savePath, const URL& synthesisURL, const Duration timeout = SecondsF{ 120.0 });
 
 		[[nodiscard]]
-		bool SynthesizeVoiceFromScore(const FilePath scoreFilePath, const FilePath outputAudioPath, const int32 speakerID = 3003, const Duration timeout = SecondsF{ 120.0 });
+		bool SynthesizeVoiceFromScore(const FilePath scoreFilePath, const FilePath outputAudioPath, const int32 speakerID = 3003, const Duration timeout = SecondsF{ 300.0 });
 	}
 }
