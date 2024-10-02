@@ -309,7 +309,7 @@ void Scene3::draw() const
 
 	FontAsset(U"MainFont")(U"かし").draw(30, Vec2{ 400, 200 }, Palette::Black);
 	FontAsset(U"MainFont")(U"きょく").draw(30, Vec2{ 810, 200 }, Palette::Black);
-	FontAsset(U"MainFont")(U"おすすめ度！").draw(30, Vec2{ 1210, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"おすすめ度").draw(30, Vec2{ 1210, 200 }, Palette::Black);
 	FontAsset(U"MainFont")(U"キャラクター").draw(30, Vec2{ 1520, 200 }, Palette::Black);
 
 	// Charactertexture
