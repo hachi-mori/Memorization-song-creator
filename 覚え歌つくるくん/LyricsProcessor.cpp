@@ -40,7 +40,7 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 			}
 			phrases.append(newPhrases);
 			appendCount++;
-			Print << U"Appended phrases. New total phrases: " << phrases.size() << U"\n";
+			//Print << U"Appended phrases. New total phrases: " << phrases.size() << U"\n";
 		}
 
 		Array<Note>& notes = phrases[phraseIndex];
@@ -49,7 +49,7 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 		// 単語リストが終了している場合はループを抜ける
 		if (lyricIndex >= lyricList.size())
 		{
-			Print << U"All lyrics have been assigned.\n";
+			//Print << U"All lyrics have been assigned.\n";
 			break;
 		}
 
@@ -205,7 +205,7 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 	}
 
 	// 最後まで実行されたことを確認するためのメッセージ
-	Print << U"ProcessLyrics has completed successfully.\n";
+	//Print << U"ProcessLyrics has completed successfully.\n";
 
 	return totalDifference;
 }
@@ -215,10 +215,10 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 {
 	// 16分音符のframe_lengthをJSONから読み取る
 	int frameLength16th = json[U"16thnoteframe_length"].get<int>();
-	Print << U"16th note frame length: " << frameLength16th << U"\n";
+	//Print << U"16th note frame length: " << frameLength16th << U"\n";
 
 	// デバッグ用メッセージ
-	Print << U"Before moraList.size(): " << moraList.size() << U", notes.size(): " << notes.size() << U"\n";
+	//Print << U"Before moraList.size(): " << moraList.size() << U", notes.size(): " << notes.size() << U"\n";
 
 	// 促音「っ」や長音「ー」を削除し、モーラ数を調整
 	while (moraList.size() > notes.size())
@@ -247,14 +247,14 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 				size_t targetNoteIndex = i - 1;
 				if (targetNoteIndex >= longestNoteIndex)
 				{
-					Print << U"Skipping 'ん' at moraList index: " << i << U" because it is not before the longest note.\n";
+					//Print << U"Skipping 'ん' at moraList index: " << i << U" because it is not before the longest note.\n";
 					continue;  // 最長の音符より後にある場合はスキップ
 				}
 
 				// すでに「ん」に16分音符の長さが割り当てられているか確認
 				if (notes[i].frame_length == frameLength16th)
 				{
-					Print << U"Skipping 'ん' at moraList index: " << i << U" because it already has a 16th note frame length.\n";
+					//Print << U"Skipping 'ん' at moraList index: " << i << U" because it already has a 16th note frame length.\n";
 					continue;
 				}
 
@@ -262,7 +262,7 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 				if (notes[targetNoteIndex].frame_length >= frameLength16th * 2)
 				{
 					foundSpecialCase = true;
-					Print << U"Found mora 'ん' at moraList index: " << i << U", splitting note before it at index: " << targetNoteIndex << U"\n";
+					//Print << U"Found mora 'ん' at moraList index: " << i << U", splitting note before it at index: " << targetNoteIndex << U"\n";
 
 					// 分割する音符の長さと分割後の長さを計算
 					Note& targetNote = notes[targetNoteIndex];
@@ -286,7 +286,7 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 						// 「ん」の音符を挿入
 						notes.insert(notes.begin() + targetNoteIndex + 1, nNote);
 
-						Print << U"Splitting note at index: " << targetNoteIndex << U", frame_length for 'れ': " << lengthForPreviousMora << U", frame_length for 'ん': " << lengthForN << U"\n";
+						//Print << U"Splitting note at index: " << targetNoteIndex << U", frame_length for 'れ': " << lengthForPreviousMora << U", frame_length for 'ん': " << lengthForN << U"\n";
 					}
 				}
 				break;  // 「ん」が見つかったら処理を終了
@@ -299,12 +299,12 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 			// 分割するかどうかのチェック（長さが16分音符の2倍以上かどうか）
 			if (maxFrameLength < 2 * frameLength16th)
 			{
-				Print << U"Note at index: " << longestNoteIndex << U" is too short to split. Skipping.\n";
+				//Print << U"Note at index: " << longestNoteIndex << U" is too short to split. Skipping.\n";
 				break;  // 分割できないのでループを抜ける
 			}
 
 			// 分割処理が正しく呼ばれているかデバッグ
-			Print << U"Splitting longest note at index: " << longestNoteIndex << U", frame_length: " << notes[longestNoteIndex].frame_length << U"\n";
+			//Print << U"Splitting longest note at index: " << longestNoteIndex << U", frame_length: " << notes[longestNoteIndex].frame_length << U"\n";
 
 			// 最長の音符を2つに分割
 			Note& longestNote = notes[longestNoteIndex];
@@ -333,7 +333,7 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 			notes.insert(notes.begin() + longestNoteIndex, firstHalfNote);   // 1つ目を後から挿入
 
 			// デバッグ用メッセージ
-			Print << U"After splitting, notes.size(): " << notes.size() << U"\n";
+			//Print << U"After splitting, notes.size(): " << notes.size() << U"\n";
 		}
 	}
 
@@ -351,13 +351,13 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 	}
 
 	// デバッグ用にnotesの内容を再度出力
-	Print << U"After adjusting lyrics based on moraList:" << U"\n";
+	//Print << U"After adjusting lyrics based on moraList:" << U"\n";
 	for (size_t i = 0; i < notes.size(); ++i)
 	{
-		Print << U"Note " << i << U": frame_length=" << notes[i].frame_length
-			<< U", lyric=" << notes[i].lyric
-			<< U", key=" << (notes[i].key ? *notes[i].key : -1)
-			<< U", notelen=" << notes[i].notelen << U"\n";
+		//Print << U"Note " << i << U": frame_length=" << notes[i].frame_length
+		//	<< U", lyric=" << notes[i].lyric
+		//	<< U", key=" << (notes[i].key ? *notes[i].key : -1)
+		//	<< U", notelen=" << notes[i].notelen << U"\n";
 	}
 }
 
@@ -421,7 +421,7 @@ bool AdjustMoraAndNotes(const JSON& json, Array<String>& moraList, Array<Note>& 
 		size_t moraCount = moraList.size();
 		size_t noteCount = notes.size();
 
-		Print << U"Iteration " << iterationCount << U": moraCount=" << moraCount << U", noteCount=" << noteCount << U"\n";
+		//Print << U"Iteration " << iterationCount << U": moraCount=" << moraCount << U", noteCount=" << noteCount << U"\n";
 
 		if (moraCount > noteCount)
 		{
@@ -452,13 +452,13 @@ bool AdjustMoraAndNotes(const JSON& json, Array<String>& moraList, Array<Note>& 
 	}
 
 	// デバッグ用に調整後の音符とモーラの対応を出力
-	Print << U"After adjusting, moraList and notes size are equal:\n";
+	//Print << U"After adjusting, moraList and notes size are equal:\n";
 	for (size_t i = 0; i < notes.size(); ++i)
 	{
-		Print << U"Note " << i << U": frame_length=" << notes[i].frame_length
-			<< U", lyric=" << notes[i].lyric
-			<< U", key=" << (notes[i].key ? *notes[i].key : -1)
-			<< U", notelen=" << notes[i].notelen << U"\n";
+		//Print << U"Note " << i << U": frame_length=" << notes[i].frame_length
+		//	<< U", lyric=" << notes[i].lyric
+		//	<< U", key=" << (notes[i].key ? *notes[i].key : -1)
+		//	<< U", notelen=" << notes[i].notelen << U"\n";
 	}
 
 	return true;

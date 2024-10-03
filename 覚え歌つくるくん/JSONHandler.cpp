@@ -4,13 +4,13 @@
 // UpdateJSONFromCSV 関数の実装
 void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const FilePath& outputPath)
 {
-	Print << U"UpdateJSONFromCSV called. Loading CSV and JSON files...\n";
+	//Print << U"UpdateJSONFromCSV called. Loading CSV and JSON files...\n";
 
 	// CSVファイルからデータを読み込む
 	CSV csv(csvPath);
 	if (!csv)
 	{
-		Print << U"Failed to open CSV file: " << csvPath << U"\n";
+		//Print << U"Failed to open CSV file: " << csvPath << U"\n";
 		return;
 	}
 
@@ -18,7 +18,7 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 	JSON json = JSON::Load(jsonPath);
 	if (json.isNull())
 	{
-		Print << U"Failed to load JSON file: " << jsonPath << U"\n";
+		//Print << U"Failed to load JSON file: " << jsonPath << U"\n";
 		return;
 	}
 
@@ -37,7 +37,7 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 
 	// jsonを引数に追加してProcessLyricsを呼び出す
 	int difference = ProcessLyrics(json, lyricList, phrases);
-	Print << U"ProcessLyrics returned with difference: " << difference << U"\n";
+	//Print << U"ProcessLyrics returned with difference: " << difference << U"\n";
 
 	// ProcessLyrics の後に、伸ばし棒を母音に変換
 	ReplaceLongVowelMarks(phrases);
@@ -56,7 +56,7 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 				// jsonIndexがjson[U"notes"]の範囲外の場合は新しい要素を追加
 				JSON newNote;
 				json[U"notes"].push_back(newNote);
-				Print << U"Adding new note to JSON at index: " << jsonIndex << U"\n";
+				//Print << U"Adding new note to JSON at index: " << jsonIndex << U"\n";
 			}
 
 			json[U"notes"][jsonIndex][U"lyric"] = phrases[i][j].lyric;
@@ -79,7 +79,7 @@ void UpdateJSONFromCSV(const FilePath& csvPath, const FilePath& jsonPath, const 
 	// JSONファイルを保存
 	if (json.save(outputPath))
 	{
-		Print << U"JSON saved successfully to " << outputPath << U"\n";
+		//Print << U"JSON saved successfully to " << outputPath << U"\n";
 	}
 	else
 	{
