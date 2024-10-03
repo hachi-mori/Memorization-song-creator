@@ -40,6 +40,11 @@ private:
 	s3d::Optional<uint64> previousSelectedIndex3;
 
 	int Difference;	//仮の類似度（正しくは類似してない度）
+	// Differenceの値を格納する配列
+	Array<int> differences;
+	// DifferenceとOriginalScoresfileNamesのペアを格納する配列
+	Array<std::pair<int, String>> differenceScorePairs;
+
 
 	void InitializeLists();
 
@@ -101,4 +106,7 @@ private:
 	const Array<double> starts = CumulativeSum(ratios);
 
 	const Circle circle{1300,500, 160.0 };
+
+	bool saved;
+	double MessageOpacity;
 };

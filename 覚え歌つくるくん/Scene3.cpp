@@ -9,7 +9,7 @@ Scene3::Scene3(const InitData& init)
 	previousSelectedIndex2{ s3d::none },
 	previousSelectedIndex3{ s3d::none },
 	Difference{-1},
-	isloading{ false }
+	isloading{ false }, saved{ false }
 {
 	// Initialize the list of files and speakers
 	InitializeLists();
@@ -99,7 +99,8 @@ void Scene3::update()
 		bool synthesisSuccess = task.get();
 		if (synthesisSuccess)
 		{
-			Print(U"音声合成が成功しました。");
+			saved = true;
+			//Print(U"音声合成が成功しました。");
 		}
 		else
 		{
@@ -115,10 +116,12 @@ void Scene3::update()
 
 	if (listBoxState1.selectedItemIndex != previousSelectedIndex1)
 	{
+		// 選択が変更されたときの処理
 		previousSelectedIndex1 = listBoxState1.selectedItemIndex;
 		String selectedlyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
 		const FilePath lyricsFilePath = U"lyrics/{}.csv"_fmt(selectedlyricsName);
 
+		// JSONファイルを更新する処理
 		for (size_t i = 0; i < OriginalScoresfileNames.size(); ++i)
 		{
 			String selectedScoreName = OriginalScoresfileNames[i];
@@ -128,11 +131,15 @@ void Scene3::update()
 			// JSONファイルを更新
 			UpdateJSONFromCSV(lyricsFilePath, scoreFilePath, createscoreFilePath);
 		}
-		if (listBoxState2.selectedItemIndex)
+
+		// `differenceScorePairs`をリセット
+		differenceScorePairs.clear();
+
+		// すべてのListBox2の要素に対してDifferenceを取得して、ペアを配列に格納する
+		for (size_t i = 0; i < OriginalScoresfileNames.size(); ++i)
 		{
-			String selectedLyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
-			String selectedScoreName = OriginalScoresfileNames[listBoxState2.selectedItemIndex.value()];
-			const FilePath createScoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedLyricsName, selectedScoreName);
+			String selectedScoreName = OriginalScoresfileNames[i];  // インデックスを使用して全要素を取得
+			const FilePath createScoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedlyricsName, selectedScoreName);
 
 			JSON json = JSON::Load(createScoreFilePath);
 
@@ -143,12 +150,28 @@ void Scene3::update()
 			String differenceStr = typeValue.substr(11); // プレフィックスの長さは10
 
 			// 数値に変換
-			Difference = Parse<int>(differenceStr);
-			Print << U"Difference value: " << Difference;
+			int differenceValue = Parse<int>(differenceStr);
 
-
+			// DifferenceとOriginalScoresfileNamesのペアを配列に追加
+			differenceScorePairs.push_back({ differenceValue, selectedScoreName });
 		}
+
+		// ペアをDifferenceの値でソート
+		std::sort(differenceScorePairs.begin(), differenceScorePairs.end(), [](const std::pair<int, String>& a, const std::pair<int, String>& b) {
+			return a.first < b.first;  // Differenceの値が小さい順にソート
+		});
+
+		// ソートされた結果でOriginalScoresfileNamesを再構築
+		OriginalScoresfileNames.clear();
+		for (const auto& pair : differenceScorePairs)
+		{
+			OriginalScoresfileNames.push_back(pair.second);  // ソートされたスコア名を再度格納
+		}
+
+		// 新しいリストでListBoxState2を再作成
+		listBoxState2 = ListBoxState(OriginalScoresfileNames);
 	}
+
 
 	if (listBoxState2.selectedItemIndex != previousSelectedIndex2)
 	{
@@ -171,7 +194,7 @@ void Scene3::update()
 		Difference = Parse<int>(differenceStr);
 		Print << U"Difference value: " << Difference;
 	}
-
+	
 	if (listBoxState3.selectedItemIndex != previousSelectedIndex3)
 	{
 		selectListBox3 = true;
@@ -277,6 +300,21 @@ void Scene3::update()
 	{
 		Cursor::RequestStyle(CursorStyle::Hand);
 	}
+
+	if (saved)
+	{
+		// 透明度を1.0に設定
+		MessageOpacity = 1.0;
+		saved = false;  // 一度だけ実行するためにフラグをリセット
+	}
+	// 透明度が0より大きい場合、徐々に透明度を減少させる
+	if (MessageOpacity > 0.0)
+	{
+		MessageOpacity -= Scene::DeltaTime() * 0.5;  // 減少速度を調整（0.5は速度の調整係数）
+		if (MessageOpacity < 0.0) {
+			MessageOpacity = 0.0;  // 透明度が負の値にならないようにする
+		}
+	}
 }
 
 
@@ -331,6 +369,8 @@ void Scene3::draw() const
 	//SaveButton
 	SaveButton.draw(buttonColor);
 	FontAsset(U"MainFont")(U"つくる").drawAt(Vec2{ SaveButton.center() }, Palette::White);
+
+	FontAsset(U"MainFont")(U"つくれました").draw(54, Arg::bottomRight = Vec2{ 1450, 1024 }, ColorF{ 0.0, 0.0, 0.0, MessageOpacity });
 
 	// loding
 	if (isloading) {
