@@ -182,7 +182,7 @@ void Scene3::update()
 
 		JSON json = JSON::Load(createScoreFilePath);
 
-		Print << (U"CreatedScores/" + createScoreFilePath);
+		//Print << (U"CreatedScores/" + createScoreFilePath);
 
 		// 値を文字列として取得
 		String typeValue = json[U"__type"].getString();
@@ -192,7 +192,7 @@ void Scene3::update()
 
 		// 数値に変換
 		Difference = Parse<int>(differenceStr);
-		Print << U"Difference value: " << Difference;
+		//Print << U"Difference value: " << Difference;
 	}
 	
 	if (listBoxState3.selectedItemIndex != previousSelectedIndex3)
@@ -273,10 +273,10 @@ void Scene3::update()
 	if (Difference == 0) {
 		b = 1;
 	}
-	else if (Difference <= 2 && Difference >= 1) {
+	else if (Difference <= 5 && Difference >= 1) {
 		b = 2;
 	}
-	else if (Difference >= 3){
+	else if (Difference >= 6){
 		b = 3;
 	}
 	else if (Difference == -1){
@@ -370,7 +370,7 @@ void Scene3::draw() const
 	SaveButton.draw(buttonColor);
 	FontAsset(U"MainFont")(U"つくる").drawAt(Vec2{ SaveButton.center() }, Palette::White);
 
-	FontAsset(U"MainFont")(U"つくれました").draw(54, Arg::bottomRight = Vec2{ 1450, 1024 }, ColorF{ 0.0, 0.0, 0.0, MessageOpacity });
+	FontAsset(U"MainFont")(U"つくれました").draw(54, Arg::bottomRight = Vec2{ 1400, 1026 }, ColorF{ 0.0, 0.0, 0.0, MessageOpacity });
 
 	// loding
 	if (isloading) {

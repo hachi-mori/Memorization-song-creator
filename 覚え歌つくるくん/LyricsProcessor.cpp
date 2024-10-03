@@ -152,7 +152,7 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 				// モーラ数が足りない場合はエラー
 				if (morasNeededFromLastWord == 0 || morasNeededFromLastWord >= lastWordMoras.size())
 				{
-					Print << U"Error: Unable to split word at lyric index " << lastWordIndex << U"\n";
+					//Print << U"Error: Unable to split word at lyric index " << lastWordIndex << U"\n";
 					break;
 				}
 
@@ -441,7 +441,7 @@ bool AdjustMoraAndNotes(const JSON& json, Array<String>& moraList, Array<Note>& 
 	// 調整が成功したかを確認
 	if (iterationCount >= maxIterations || moraList.size() != notes.size())
 	{
-		Print << U"Error: Mora and notes could not be adjusted.\n";
+		//Print << U"Error: Mora and notes could not be adjusted.\n";
 		return false;
 	}
 
