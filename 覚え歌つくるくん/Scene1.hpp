@@ -18,7 +18,7 @@ public:
 
 private:
 	// メンバ変数
-	const Texture texture{ U"logo4.PNG" };
+	const Texture texture{ U"logo5.PNG" };
 
 	// ボタンの矩形と色
 	const Rect Scene2Button{ 760, 880, 400, 100 };
