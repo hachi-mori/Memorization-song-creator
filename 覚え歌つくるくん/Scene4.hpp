@@ -23,5 +23,9 @@ private:
 	const Rect Scene2Button{ 0, 230, 350, 150 };
 	const Rect Scene3Button{ 0, 430, 350, 150 };
 
+	mutable TextAreaEditState textAreaEditState;
+
 	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
+
+	mutable String text;
 };
