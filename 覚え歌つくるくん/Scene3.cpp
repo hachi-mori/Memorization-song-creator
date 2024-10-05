@@ -241,6 +241,7 @@ void Scene3::update()
 			break;
 		}
 	}
+	/*
 	// 円グラフを描画する
 	for (size_t i = 0; i < values.size(); ++i)
 	{
@@ -248,6 +249,7 @@ void Scene3::update()
 		const double angle = (ratios[i] * 360_deg);
 		circle.drawPie(startAngle, angle, HSV{ (120 + 70 * i), 0.5, 0.95 });
 	}
+	
 
 	// 境界線を描画する
 	for (size_t i = 0; i < values.size(); ++i)
@@ -269,6 +271,9 @@ void Scene3::update()
 		FontAsset(U"MainFont")(labels[i]).draw(24, Arg::bottomCenter = pos, ColorF{0.11});
 		FontAsset(U"MainFont")(U"{:.1f}%"_fmt(ratios[i] * 100.0)).draw(18, Arg::topCenter = pos, ColorF{0.11});
 	}
+
+	*/
+
 	//絵文字
 	if (Difference == 0) {
 		b = 1;
@@ -326,16 +331,16 @@ void Scene3::draw() const
 	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
 
 	if (b == 1) {
-		emoji1.scaled(2.0).drawAt(1320, 800);
+		emoji1.scaled(2.0).drawAt(1320, 500);
 	}
 	else if (b == 2) {
-		emoji2.scaled(2.0).drawAt(1320, 800);
+		emoji2.scaled(2.0).drawAt(1320, 500);
 	}
 	else if (b == 3) {
-		emoji3.scaled(2.0).drawAt(1320, 800);
+		emoji3.scaled(2.0).drawAt(1320, 500);
 	}
 	else if (b == -1){
-		emoji4.scaled(2.0).drawAt(1320, 800);
+		emoji4.scaled(2.0).drawAt(1320, 500);
 	}
 	
 	
