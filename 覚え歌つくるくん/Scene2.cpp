@@ -166,11 +166,11 @@ void Scene2::update()
 				saved = true;
 			}
 			else {
-				System::MessageBoxOK(U"", U"タイトルをかいてからほぞんしてください");
+				System::MessageBoxOK(U"", U"タイトルをかいてください");
 			}
 		}
 		else {
-			System::MessageBoxOK(U"", U"ファイルをあたらしくつくってからほぞんしてください");
+			System::MessageBoxOK(U"", U"ファイルをあたらしくつくってください");
 		}
 	}
 	if (saved)
@@ -223,7 +223,7 @@ void Scene2::update()
 	// ファイルの削除
 	if (DeleteButton.mouseOver() && MouseL.down() && listBoxState.selectedItemIndex)
 	{
-		const MessageBoxResult result = System::MessageBoxOKCancel(U"",U"「" + listBoxState.items[*listBoxState.selectedItemIndex] + U"」\nこのファイルを削除しますか？");
+		const MessageBoxResult result = System::MessageBoxOKCancel(U"",U"「" + listBoxState.items[*listBoxState.selectedItemIndex] + U"」\nこのファイルをけしますか？");
 
 		// OK が選ばれたら
 		if (result == MessageBoxResult::OK)
