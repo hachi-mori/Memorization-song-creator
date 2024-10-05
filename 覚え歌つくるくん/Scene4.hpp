@@ -10,6 +10,7 @@ public:
 
 	void update() override;
 	void draw() const override;
+	
 
 private:
 
@@ -28,4 +29,12 @@ private:
 	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
 
 	mutable String text;
+
+	const Rect DeleteButton{ 680, 820, 100, 80 };
+	const Rect StopButton{ 450, 820, 150, 80 };
+	const Rect PlayButton{ 450, 820, 150, 80 };
+	const Rect RePlayButton{ 400, 920, 450, 80 };
+
+	mutable Audio audio{ U"" };
+	bool playing;
 };
