@@ -19,15 +19,18 @@ public:
 private:
 	// メンバ変数
 	const Texture texture{ U"logo5.PNG" };
+	const Texture texture2{ U"BackGround.png" };
 
 	// ボタンの矩形と色
 	const Rect Scene2Button{ 760, 880, 400, 100 };
 	const Rect CreditButton{ 1580, 930, 300, 100 };
 	const Rect ExitButton{ 1680, 50, 200, 100 };
 	const Rect FullscreenButton{ 1280, 50, 350, 100 };
-	//const Rect WindowButton{ 1580, 830, 300, 100 };
 
 	String ScreenName;
 
 	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
+
+	mutable double scale; //拡大率
+	mutable double scale2; //拡大率
 };

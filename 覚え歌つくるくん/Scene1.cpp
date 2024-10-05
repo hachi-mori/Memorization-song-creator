@@ -1,8 +1,9 @@
 ﻿#include "stdafx.h"
+#include <Siv3D.hpp>  // Siv3Dのヘッダーをインクルード
 
 Scene1::Scene1(const InitData& init)
 	: IScene{ init }
-	, ScreenName{ U"ウィンドウ" }
+	, ScreenName{ U"ウィンドウ" },scale{1}, scale2{ 1 }
 {
 }
 
@@ -26,31 +27,30 @@ void Scene1::update()
 	{
 		System::Exit();
 	}
-	
+
 	if (Window::GetState().fullscreen)
 	{
 		if (FullscreenButton.mouseOver() && MouseL.down())
 		{
-				// ウィンドウモードにする
-				Window::SetFullscreen(false);
-				ScreenName = U"フルスクリーン";
+			// ウィンドウモードにする
+			Window::SetFullscreen(false);
+			ScreenName = U"フルスクリーン";
 		}
 	}
 	else
 	{
 		if (FullscreenButton.mouseOver() && MouseL.down())
 		{
-				// フルスクリーンモードにする
-				Window::SetFullscreen(true);
-				ScreenName = U"ウィンドウ";
+			// フルスクリーンモードにする
+			Window::SetFullscreen(true);
+			ScreenName = U"ウィンドウ";
 		}
 
 	}
-	//実験
 	// ボタンの上にあるマウスカーソルを手のアイコンにする
 	if (Scene2Button.mouseOver())
 	{
-	 	Cursor::RequestStyle(CursorStyle::Hand);
+		Cursor::RequestStyle(CursorStyle::Hand);
 	}
 	if (CreditButton.mouseOver())
 	{
@@ -64,11 +64,16 @@ void Scene1::update()
 	{
 		Cursor::RequestStyle(CursorStyle::Hand);
 	}
+
+	// アニメーション：1秒周期で大きさが変化
+	scale = 1 + Periodic::Jump0_1(1s) * 0.1;
+	scale2 = 1 + Periodic::Sine0_1(4s) * 0.04;
 }
 
 void Scene1::draw() const {
-	//logo
-	texture.draw(560,50);
+	// 拡大率を反映してテクスチャを描画
+	texture2.resized(texture2.width() * scale2, texture2.height() * scale2).drawAt(1920 / 2, 1080 / 2 - 60);
+	texture.resized(texture.width() * scale, texture.height() * scale).drawAt(1920 / 2, 1080 / 2 - 60);
 
 	// Scene2Button
 	Scene2Button.draw(buttonColor);
@@ -84,6 +89,3 @@ void Scene1::draw() const {
 	FullscreenButton.draw(buttonColor);
 	FontAsset(U"MainFont")(ScreenName).drawAt(FullscreenButton.center(), Palette::White);
 }
-
-	
-
