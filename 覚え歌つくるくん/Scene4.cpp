@@ -8,7 +8,7 @@ Scene4::Scene4(const InitData& init)
 	table{ minColumnWidths, {
 		.cellHeight = 45,
 		.variableWidth = true,
-	} }, text{ U"" }, audio{ U"" }, playing{ false }
+	} }, text{ U"" }, audio{ U"" }, audio2{ U"" }, playing{ false }
 {
 	InitializeTable();
 	UpdateListBoxState();
@@ -92,6 +92,7 @@ void Scene4::update()
 
 		// 歌詞を取得
 		String firstElement = parts[0];
+		String secondElement = parts[1];
 		TextReader reader(U"lyrics/" + firstElement + U".csv");
 
 		// te の内容を選択された要素の名前に変更
@@ -100,8 +101,10 @@ void Scene4::update()
 		// スプレッドシートに内容を表示
 		LoadCSVToTable(U"lyrics/" + firstElement + U".csv");
 
-		audio = Audio{ Audio::Stream,  U"Voice/" + listBoxState.items[listBoxState.selectedItemIndex.value()] + U".wav",Loop::Yes };
+		audio = Audio{ Audio::Stream,  U"Voice/" + listBoxState.items[listBoxState.selectedItemIndex.value()] + U".wav"};
 		audio.stop();
+		audio2 = Audio{ Audio::Stream,  U"Instruments/" + secondElement + U".wav"};
+		audio2.stop();
 		playing = { false };
 	}
 
@@ -126,10 +129,13 @@ void Scene4::update()
 			// オーディオを新しいファイルで初期化
 			if (!playing) {
 				audio.play();
+				audio2.play();
+				audio2.setVolume(0.5);
 				playing = { true };
 			}
 			else {
 				audio.pause();
+				audio2.pause();
 				playing = { false };
 			}
 		}
@@ -142,7 +148,10 @@ void Scene4::update()
 	{
 		if (listBoxState.selectedItemIndex) {
 			audio.stop();
+			audio2.stop();
 			audio.play();
+			audio2.play();
+			audio2.setVolume(0.5);
 			playing = { true };
 		}
 		else {
@@ -155,6 +164,7 @@ void Scene4::update()
 	{
 		const MessageBoxResult result = System::MessageBoxOKCancel(U"", U"「" + listBoxState.items[listBoxState.selectedItemIndex.value()] + U"」\nこのファイルをけしますか？");
 		audio.stop();
+		audio2.stop();
 		playing = { false };
 
 		// OK が選ばれたら
@@ -196,6 +206,14 @@ void Scene4::update()
 	if (Scene1Button.mouseOver() || Scene2Button.mouseOver() || Scene3Button.mouseOver() || DeleteButton.mouseOver() || PlayButton.mouseOver() || RePlayButton.mouseOver())
 	{
 		Cursor::RequestStyle(CursorStyle::Hand);
+	}
+
+	if (audio.isPlaying() && !audio2.isPlaying()) {
+		audio2.play();
+		audio2.setVolume(0.5);
+	}
+	if (!audio.isPlaying() && !audio2.isPlaying()) {
+		playing = false;
 	}
 }
 

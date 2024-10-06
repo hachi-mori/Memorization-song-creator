@@ -77,5 +77,6 @@ private:
 	const Rect RePlayButton{ 400, 920, 450, 80 };
 
 	mutable Audio audio{ U"" };
+	mutable Audio audio2{ U"" };
 	bool playing;
 };
