@@ -82,10 +82,8 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 				}
 				else if (absDiff == minimalAbsDiff)
 				{
-					// 差が同じ場合はより多い単語数を選択するため、ループを続行
-					minimalAbsDiff = absDiff;
-					bestK = k; // より多い単語数に更新
-					// ループを続けてさらに最適な解を探す
+					// 差が同じ場合はより少ない単語数を選択するため、ループを抜ける
+					break;
 				}
 				else
 				{
@@ -110,21 +108,16 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 				moraList.append(wordMoras); // モーラを追加
 			}
 
-			// フレーズごとの元のモーラ数を記録
+			// フレーズごとの差の絶対値を計算し、totalDifferenceに加算
 			size_t originalMoraCount = moraList.size();
+			int difference = static_cast<int>(originalMoraCount) - static_cast<int>(noteCount);
+			totalDifference += std::abs(difference);
 
 			// モーラと音符の調整を行う関数を呼び出す（ここで json を渡す）
-			Array<String> moraListCopy = moraList; // 後で再試行するためにコピーしておく
-			Array<Note> notesCopy = notes; // notesもコピーしておく
-
 			bool success = AdjustMoraAndNotes(json, moraList, notes);
 
 			if (success)
 			{
-				// フレーズごとの差の絶対値を計算し、totalDifferenceに加算
-				int difference = static_cast<int>(originalMoraCount) - static_cast<int>(noteCount);
-				totalDifference += std::abs(difference);
-
 				// lyricIndex を更新
 				lyricIndex += bestK;
 
@@ -163,10 +156,6 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 				// lyricListを更新
 				lyricList[lastWordIndex] = firstPart;
 				lyricList.insert(lyricList.begin() + lastWordIndex + 1, secondPart);
-
-				// moraListとnotesを元に戻す
-				moraList = moraListCopy;
-				notes = notesCopy;
 
 				// 再試行するためにcontinue
 				continue;
@@ -210,26 +199,23 @@ int ProcessLyrics(const JSON& json, const Array<Array<String>>& originalLyricLis
 	return totalDifference;
 }
 
+
 // HandleMoreMoraThanNotes 関数の実装
 void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<Note>& notes)
 {
 	// 16分音符のframe_lengthをJSONから読み取る
 	int frameLength16th = json[U"16thnoteframe_length"].get<int>();
-	//Print << U"16th note frame length: " << frameLength16th << U"\n";
-
-	// デバッグ用メッセージ
-	//Print << U"Before moraList.size(): " << moraList.size() << U", notes.size(): " << notes.size() << U"\n";
 
 	// 促音「っ」や長音「ー」を削除し、モーラ数を調整
 	while (moraList.size() > notes.size())
 	{
 		bool foundSpecialCase = false;
 
-		// 最長の音符を見つける
+		// 最長の音符を見つける。ただし最後の音符は分割しないようにする。
 		size_t longestNoteIndex = 0;
 		int maxFrameLength = 0;
 
-		for (size_t i = 0; i < notes.size(); ++i)
+		for (size_t i = 0; i < notes.size() - 1; ++i)  // 最後の音符は除外
 		{
 			if (notes[i].frame_length > maxFrameLength)
 			{
@@ -243,68 +229,65 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 		{
 			if (moraList[i] == U"ん" || moraList[i] == U"ン")
 			{
-				// 「ん」の1つ前の音符が最長の音符より前にあるか確認
 				size_t targetNoteIndex = i - 1;
 				if (targetNoteIndex >= longestNoteIndex)
 				{
-					//Print << U"Skipping 'ん' at moraList index: " << i << U" because it is not before the longest note.\n";
 					continue;  // 最長の音符より後にある場合はスキップ
 				}
 
-				// すでに「ん」に16分音符の長さが割り当てられているか確認
 				if (notes[i].frame_length == frameLength16th)
 				{
-					//Print << U"Skipping 'ん' at moraList index: " << i << U" because it already has a 16th note frame length.\n";
 					continue;
 				}
 
-				// 分割するかどうかのチェック（分割する音符が16分音符の長さを考慮して分割可能かどうか）
 				if (notes[targetNoteIndex].frame_length >= frameLength16th * 2)
 				{
 					foundSpecialCase = true;
-					//Print << U"Found mora 'ん' at moraList index: " << i << U", splitting note before it at index: " << targetNoteIndex << U"\n";
 
-					// 分割する音符の長さと分割後の長さを計算
 					Note& targetNote = notes[targetNoteIndex];
 					int originalFrameLength = targetNote.frame_length;
-					int lengthForN = frameLength16th;  // 「ん」に割り当てる長さ
-					int lengthForPreviousMora = originalFrameLength - lengthForN;  // 残りの長さ
+					int lengthForN = frameLength16th;
+					int lengthForPreviousMora = originalFrameLength - lengthForN;
 
-					// 音符が16分音符の長さ以上であるか確認
 					if (lengthForPreviousMora >= frameLength16th)
 					{
-						// 新しい音符を作成し、「ん」に割り当てる
 						Note nNote;
 						nNote.frame_length = lengthForN;
 						nNote.key = targetNote.key;
 						nNote.notelen = targetNote.notelen;
-						nNote.lyric = U"ん";  // 「ん」に割り当て
+						nNote.lyric = U"ん";
 
-						// 元の音符を短くして「れ」に割り当てる
 						targetNote.frame_length = lengthForPreviousMora;
 
-						// 「ん」の音符を挿入
 						notes.insert(notes.begin() + targetNoteIndex + 1, nNote);
-
-						//Print << U"Splitting note at index: " << targetNoteIndex << U", frame_length for 'れ': " << lengthForPreviousMora << U", frame_length for 'ん': " << lengthForN << U"\n";
 					}
 				}
-				break;  // 「ん」が見つかったら処理を終了
+				break;
 			}
 		}
 
-		// 「ん」が見つからなかった場合、最長の音符を分割する
+		// 「ん」が見つからなかった場合、最長の音符を分割する。ただし、最後の音符はなるべく避ける。
 		if (!foundSpecialCase)
 		{
-			// 分割するかどうかのチェック（長さが16分音符の2倍以上かどうか）
 			if (maxFrameLength < 2 * frameLength16th)
 			{
-				//Print << U"Note at index: " << longestNoteIndex << U" is too short to split. Skipping.\n";
-				break;  // 分割できないのでループを抜ける
+				break;
 			}
 
-			// 分割処理が正しく呼ばれているかデバッグ
-			//Print << U"Splitting longest note at index: " << longestNoteIndex << U", frame_length: " << notes[longestNoteIndex].frame_length << U"\n";
+			// 最長の音符が最後の音符だった場合、他に分割可能な音符がないか確認
+			if (longestNoteIndex == notes.size() - 1)
+			{
+				// 最後の音符を分割する前に、他の音符を再チェック
+				for (size_t i = 0; i < notes.size() - 1; ++i)
+				{
+					if (notes[i].frame_length >= 2 * frameLength16th)
+					{
+						longestNoteIndex = i;
+						maxFrameLength = notes[i].frame_length;
+						break;
+					}
+				}
+			}
 
 			// 最長の音符を2つに分割
 			Note& longestNote = notes[longestNoteIndex];
@@ -312,7 +295,6 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 			int firstHalfLength = originalFrameLength / 2;
 			int secondHalfLength = originalFrameLength - firstHalfLength;
 
-			// 新しい音符を作成し、分割したデータを格納する
 			Note firstHalfNote;
 			firstHalfNote.frame_length = firstHalfLength;
 			firstHalfNote.key = longestNote.key;
@@ -323,45 +305,31 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 			secondHalfNote.key = longestNote.key;
 			secondHalfNote.notelen = longestNote.notelen;
 
-			// 分割した2つの音符をモーラリストから対応する歌詞を割り当てる
-			firstHalfNote.lyric = moraList[notes.size() - 1];  // 既存の音符に次ぐモーラ
-			secondHalfNote.lyric = moraList[notes.size()];     // 新しい音符に次ぐモーラ
+			firstHalfNote.lyric = moraList[notes.size() - 1];
+			secondHalfNote.lyric = moraList[notes.size()];
 
-			// notes配列に追加（元の音符を削除し、分割した2つの音符を挿入）
 			notes.erase(notes.begin() + longestNoteIndex);
-			notes.insert(notes.begin() + longestNoteIndex, secondHalfNote);  // 2つ目を先に挿入
-			notes.insert(notes.begin() + longestNoteIndex, firstHalfNote);   // 1つ目を後から挿入
-
-			// デバッグ用メッセージ
-			//Print << U"After splitting, notes.size(): " << notes.size() << U"\n";
+			notes.insert(notes.begin() + longestNoteIndex, secondHalfNote);
+			notes.insert(notes.begin() + longestNoteIndex, firstHalfNote);
 		}
 	}
 
-	// **モーラと音符の対応付け**
+	// モーラと音符の対応付け
 	for (size_t i = 0; i < notes.size(); ++i)
 	{
 		if (i < moraList.size())
 		{
-			notes[i].lyric = moraList[i];  // モーラリストの内容を音符に対応させる
+			notes[i].lyric = moraList[i];
 		}
 		else
 		{
-			notes[i].lyric = U"";  // 空の歌詞を設定
+			notes[i].lyric = U"";
 		}
-	}
-
-	// デバッグ用にnotesの内容を再度出力
-	//Print << U"After adjusting lyrics based on moraList:" << U"\n";
-	for (size_t i = 0; i < notes.size(); ++i)
-	{
-		//Print << U"Note " << i << U": frame_length=" << notes[i].frame_length
-		//	<< U", lyric=" << notes[i].lyric
-		//	<< U", key=" << (notes[i].key ? *notes[i].key : -1)
-		//	<< U", notelen=" << notes[i].notelen << U"\n";
 	}
 }
 
-// HandleMoreNotesThanMora 関数の実装
+
+// HandleMoreNotesThanMora 関数の修正実装
 void HandleMoreNotesThanMora(Array<String>& moraList, Array<Note>& notes)
 {
 	size_t noteCount = notes.size();
@@ -371,30 +339,115 @@ void HandleMoreNotesThanMora(Array<String>& moraList, Array<Note>& notes)
 	while (moraCount < noteCount)
 	{
 		// まずは長音「ー」を複製
-		for (size_t i = 0; i < moraList.size(); ++i)
 		{
-			if (moraList[i] == U"ー")
+			Array<std::pair<size_t, String>> insertions; // 挿入位置と挿入するモーラを記録
+
+			for (size_t i = 0; i < moraList.size(); ++i)
 			{
-				moraList.insert(moraList.begin() + i, U"ー");
-				moraCount++;
-				if (moraCount >= noteCount) break;
+				if (moraList[i] == U"ー")
+				{
+					insertions.push_back({ i, U"ー" });
+					moraCount++;
+					if (moraCount >= noteCount) break;
+				}
+			}
+
+			// 挿入を実行
+			for (const auto& insertion : insertions)
+			{
+				moraList.insert(moraList.begin() + insertion.first, insertion.second);
 			}
 		}
+
+		if (moraCount >= noteCount) break;
 
 		// それでもモーラが足りない場合は母音「あ、い、う、え、お」を複製
 		const Array<String> vowels = { U"あ", U"い", U"う", U"え", U"お" };
-
-		for (size_t i = 0; i < moraList.size(); ++i)
 		{
-			if (vowels.includes(moraList[i]))
+			Array<std::pair<size_t, String>> insertions; // 挿入位置と挿入する母音を記録
+
+			for (size_t i = 0; i < moraList.size(); ++i)
 			{
-				moraList.insert(moraList.begin() + i, moraList[i]);
-				moraCount++;
-				if (moraCount >= noteCount) break;
+				if (vowels.includes(moraList[i]))
+				{
+					// 連続する同じ母音の数をカウント
+					size_t consecutiveCount = 1;
+
+					// 前方をチェック
+					size_t j = i;
+					while (j > 0 && moraList[j - 1] == moraList[i])
+					{
+						consecutiveCount++;
+						j--;
+					}
+
+					// 後方をチェック
+					j = i + 1;
+					while (j < moraList.size() && moraList[j] == moraList[i])
+					{
+						consecutiveCount++;
+						j++;
+					}
+
+					// 連続する同じ母音が3回未満の場合のみ複製する
+					if (consecutiveCount < 3)
+					{
+						insertions.push_back({ i + 1, moraList[i] });
+						moraCount++;
+						if (moraCount >= noteCount) break;
+					}
+					// 連続する同じ母音が3回以上の場合は複製せずに次へ
+				}
+			}
+
+			// 挿入を実行
+			// インデックスが昇順になるようにソート
+			std::sort(insertions.begin(), insertions.end(), [](const auto& a, const auto& b) {
+				return a.first < b.first;
+			});
+
+			// 挿入によるインデックスずれを調整
+			size_t offset = 0;
+			for (const auto& insertion : insertions)
+			{
+				moraList.insert(moraList.begin() + insertion.first + offset, insertion.second);
+				offset++;
 			}
 		}
 
-		// それでもモーラが足りない場合は「ら」で埋める
+		if (moraCount >= noteCount) break;
+
+		// それでもモーラが足りない場合は、一番後ろのモーラの母音を追加
+		{
+			const String& lastMora = moraList.back();
+
+			String vowel = GetVowelFromKana(lastMora);
+
+			// 母音が取得できた場合
+			if (!vowel.isEmpty())
+			{
+				// 連続する同じ母音の数をカウント
+				size_t consecutiveCount = 0;
+				size_t i = moraList.size();
+				while (i > 0 && moraList[i - 1] == vowel)
+				{
+					consecutiveCount++;
+					i--;
+				}
+
+				// 連続する同じ母音が3回未満の場合のみ追加する
+				if (consecutiveCount < 3)
+				{
+					moraList.push_back(vowel);
+					moraCount++;
+					if (moraCount >= noteCount) break;
+				}
+			}
+		}
+
+		if (moraCount >= noteCount) break;
+
+		// それでもモーラが足りない場合は「っ」で埋める
 		while (moraCount < noteCount)
 		{
 			moraList.push_back(U"っ");
@@ -408,6 +461,7 @@ void HandleMoreNotesThanMora(Array<String>& moraList, Array<Note>& notes)
 		notes[i].lyric = (i < moraList.size()) ? moraList[i] : U"";
 	}
 }
+
 
 // AdjustMoraAndNotes 関数の実装
 bool AdjustMoraAndNotes(const JSON& json, Array<String>& moraList, Array<Note>& notes)
