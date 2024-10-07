@@ -116,6 +116,9 @@ void Scene3::update()
 
 	if (listBoxState1.selectedItemIndex != previousSelectedIndex1)
 	{
+		listBoxState2.selectedItemIndex = none;
+		previousSelectedIndex2 = none;
+
 		// 選択が変更されたときの処理
 		previousSelectedIndex1 = listBoxState1.selectedItemIndex;
 		String selectedlyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
@@ -175,24 +178,30 @@ void Scene3::update()
 
 	if (listBoxState2.selectedItemIndex != previousSelectedIndex2)
 	{
-		previousSelectedIndex2 = listBoxState2.selectedItemIndex;
-		String selectedLyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
-		String selectedScoreName = OriginalScoresfileNames[listBoxState2.selectedItemIndex.value()];
-		const FilePath createScoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedLyricsName, selectedScoreName);
+		if (listBoxState1.selectedItemIndex) {
+			previousSelectedIndex2 = listBoxState2.selectedItemIndex;
+			String selectedLyricsName = lyricsfileNames[listBoxState1.selectedItemIndex.value()];
+			String selectedScoreName = OriginalScoresfileNames[listBoxState2.selectedItemIndex.value()];
+			const FilePath createScoreFilePath = U"CreatedScores/{}-{}.json"_fmt(selectedLyricsName, selectedScoreName);
 
-		JSON json = JSON::Load(createScoreFilePath);
+			JSON json = JSON::Load(createScoreFilePath);
 
-		//Print << (U"CreatedScores/" + createScoreFilePath);
+			//Print << (U"CreatedScores/" + createScoreFilePath);
 
-		// 値を文字列として取得
-		String typeValue = json[U"__type"].getString();
+			// 値を文字列として取得
+			String typeValue = json[U"__type"].getString();
 
-		// "Difference:" プレフィックスを取り除く
-		String differenceStr = typeValue.substr(11); // プレフィックスの長さは10
+			// "Difference:" プレフィックスを取り除く
+			String differenceStr = typeValue.substr(11); // プレフィックスの長さは10
 
-		// 数値に変換
-		Difference = Parse<int>(differenceStr);
-		//Print << U"Difference value: " << Difference;
+			// 数値に変換
+			Difference = Parse<int>(differenceStr);
+			//Print << U"Difference value: " << Difference;
+		}
+		else {
+			listBoxState2.selectedItemIndex = s3d::none;
+			System::MessageBoxOK(U"", U"「かし」を先にえらんでください");
+		}
 	}
 	
 	if (listBoxState3.selectedItemIndex != previousSelectedIndex3)
@@ -289,19 +298,7 @@ void Scene3::update()
 	}
 
 	//カーソル
-	if (Scene1Button.mouseOver())
-	{
-		Cursor::RequestStyle(CursorStyle::Hand);
-	}
-	if (Scene2Button.mouseOver())
-	{
-		Cursor::RequestStyle(CursorStyle::Hand);
-	}
-	if (Scene4Button.mouseOver())
-	{
-		Cursor::RequestStyle(CursorStyle::Hand);
-	}
-	if (SaveButton.mouseOver())
+	if (Scene1Button.mouseOver()|| Scene2Button.mouseOver()|| Scene4Button.mouseOver()|| SaveButton.mouseOver())
 	{
 		Cursor::RequestStyle(CursorStyle::Hand);
 	}
@@ -351,9 +348,11 @@ void Scene3::draw() const
 	FontAsset(U"MainFont")(U"つくる").draw(70, Vec2{ 20, 20 }, Palette::White);
 
 	FontAsset(U"MainFont")(U"かし").draw(30, Vec2{ 400, 200 }, Palette::Black);
+
 	FontAsset(U"MainFont")(U"きょく").draw(30, Vec2{ 810, 200 }, Palette::Black);
 	FontAsset(U"MainFont")(U"おすすめ度").draw(30, Vec2{ 1210, 200 }, Palette::Black);
 	FontAsset(U"MainFont")(U"キャラクター").draw(30, Vec2{ 1520, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"→").draw(60, Vec2{ 723, 500 }, Palette::Black);
 
 	// Charactertexture
 	textureRect.draw(ColorF{ 0.0, 0.0, 0.0, 0.0 });
