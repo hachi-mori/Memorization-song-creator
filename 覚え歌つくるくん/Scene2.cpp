@@ -94,17 +94,17 @@ void Scene2::update()
 	// ボタンの処理
 	if (Scene1Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene1");
+		changeScene(U"Scene1", 0.5s);
 	}
 
 	if (Scene3Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene3");
+		changeScene(U"Scene3", 0.5s);
 	}
 
 	if (Scene4Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene4");
+		changeScene(U"Scene4", 0.5s);
 	}
 
 	if (SaveButton.mouseOver() && MouseL.down())

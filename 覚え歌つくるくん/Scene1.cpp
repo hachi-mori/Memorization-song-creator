@@ -15,12 +15,12 @@ void Scene1::update()
 {
 	if (Scene2Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene2");
+		changeScene(U"Scene2", 0.5s);
 	}
 
 	if (CreditButton.mouseOver() && MouseL.down())
 	{
-		changeScene(U"CreditScene");
+		changeScene(U"CreditScene", 0.5s);
 	}
 
 	if (ExitButton.mouseOver() && MouseL.down())

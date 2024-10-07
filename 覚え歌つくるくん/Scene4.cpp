@@ -111,15 +111,15 @@ void Scene4::update()
 	// ボタンの処理
 	if (Scene1Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene1");
+		changeScene(U"Scene1", 0.5s);
 	}
 	if (Scene2Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene2");
+		changeScene(U"Scene2", 0.5s);
 	}
 	if (Scene3Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene3");
+		changeScene(U"Scene3", 0.5s);
 	}
 
 	// ファイルの再生

@@ -13,7 +13,7 @@ void CreditScene::update()
 {
 	if (Scene1Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene1");
+		changeScene(U"Scene1", 0.5s);
 	}
 	//カーソル
 	if (Scene1Button.mouseOver())

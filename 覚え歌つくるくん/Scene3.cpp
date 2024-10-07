@@ -49,15 +49,15 @@ void Scene3::update()
 {
 	if (Scene1Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene1");
+		changeScene(U"Scene1", 0.5s);
 	}
 	if (Scene2Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene2");
+		changeScene(U"Scene2", 0.5s);
 	}
 	if (Scene4Button.mouseOver() && MouseL.down())
 	{
-		changeScene(U"Scene4");
+		changeScene(U"Scene4", 0.5s);
 	}
 
 	if (SaveButton.mouseOver() && MouseL.down() && !task.isValid())
