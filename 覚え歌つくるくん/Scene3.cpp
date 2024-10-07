@@ -375,11 +375,12 @@ void Scene3::draw() const
 	SaveButton.draw(buttonColor);
 	FontAsset(U"MainFont")(U"つくる").drawAt(Vec2{ SaveButton.center() }, Palette::White);
 
-	FontAsset(U"MainFont")(U"つくれました").draw(54, Arg::bottomRight = Vec2{ 1400, 1026 }, ColorF{ 0.0, 0.0, 0.0, MessageOpacity });
+	FontAsset(U"MainFont")(U"作れました").draw(54, Arg::bottomRight = Vec2{ 1400, 1026 }, ColorF{ 0.0, 0.0, 0.0, MessageOpacity });
 
 	// loding
 	if (isloading) {
 		loadingRect.draw(ColorF{ 0.0, 0.5 });
 		loadingtexture.rotated(angle).draw(860, 440);
+		FontAsset(U"MainFont")(U"おぼえうたを作っています・・・").drawAt(Vec2{ 1920 / 2,1080 / 2 + 180 }, Palette::White);
 	}
 }
