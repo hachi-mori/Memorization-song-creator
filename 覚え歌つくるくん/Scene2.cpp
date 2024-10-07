@@ -111,6 +111,29 @@ void Scene2::update()
 	{
 		if (listBoxState.selectedItemIndex) {
 			if (te.text) {
+				// 2列目のデータがひらがなのみであるか確認
+				bool invalidCharacterFound = false;
+
+				for (int32 a = 1; a < table.rows(); ++a)
+				{
+					String column2Text = table.getItem(Point{ 2, a }).text.trimmed();
+
+					// 文字列の各文字がひらがなかを確認
+					for (const char32 ch : column2Text)
+					{
+						if (!InRange<uint32>(ch, 0x3040, 0x309F))  // ひらがなのUnicode範囲か確認
+						{
+							invalidCharacterFound = true;
+							break;
+						}
+					}
+				}
+
+				if (invalidCharacterFound) {
+					System::MessageBoxOK(U"エラー", U"「よみ」にひらがな以外の文字が含まれています。");
+					return; // 保存処理を中止
+				}
+
 				TextWriter writer(U"lyrics/" + te.text + U".csv");
 				if (!writer)
 				{
