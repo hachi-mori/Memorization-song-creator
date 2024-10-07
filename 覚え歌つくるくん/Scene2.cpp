@@ -335,12 +335,6 @@ void Scene2::update()
 					nextActiveIndex = Point{ (activeIndex->x + 1), activeIndex->y };
 				}
 
-				if (KeyDelete.down())
-				{
-					textEditState.clear();
-					table.setText(*activeIndex, U"");
-				}
-
 				if (KeyUp.down())KeyUp.clearInput();
 				if (KeyDown.down())KeyDown.clearInput();
 			}
