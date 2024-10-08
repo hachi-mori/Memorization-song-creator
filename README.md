@@ -1,5 +1,11 @@
 # 高専プロコン2024 自由部門「覚え歌つくるくん」リポジトリ
 
+「覚え歌つくるくん」ソフトのプログラム一覧  
+→[覚え歌つくるくん](/覚え歌つくるくん)
+
+ソフトに同封する楽譜を生成するために使用するプログラム  
+→[XmlToJsonConverter.cpp](XmlToJsonConverter.cpp)
+
 ## 構成図 (一部省略)
 <pre>
 覚え歌つくるくん/
@@ -57,4 +63,5 @@
   CreateScore.cpp, CreateScore.hpp を削除
   Note.hpp, JSONHandler.cpp, JSONHandler.cpp, LyricsProcessor.cpp, LyricsProcessor.cpp. StringUtils.cpp, StringUtils.cpp,を追加
   構成図にコメント文を追加
+2024.10.08 : READMEの体裁を整える
 </pre>
