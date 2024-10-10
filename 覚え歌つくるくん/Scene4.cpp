@@ -233,7 +233,7 @@ void Scene4::draw() const
 
 	// Scene2Button
 	Scene2Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"かく").drawAt(Scene2Button.center(), Palette::White);
+	FontAsset(U"MainFont")(U"かしをかく").drawAt(Scene2Button.center(), Palette::White);
 
 	// Scene3Button
 	Scene3Button.draw(buttonColor);
