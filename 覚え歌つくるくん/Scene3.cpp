@@ -118,6 +118,7 @@ void Scene3::update()
 	{
 		listBoxState2.selectedItemIndex = none;
 		previousSelectedIndex2 = none;
+		Difference = -1;
 
 		// 選択が変更されたときの処理
 		previousSelectedIndex1 = listBoxState1.selectedItemIndex;
@@ -284,13 +285,13 @@ void Scene3::update()
 	*/
 
 	//絵文字
-	if (Difference == 0) {
+	if (Difference < 10 && Difference >= 0) {
 		b = 1;
 	}
-	else if (Difference <= 5 && Difference >= 1) {
+	else if (Difference <= 10 && Difference >= 20) {
 		b = 2;
 	}
-	else if (Difference >= 6){
+	else if (Difference > 20){
 		b = 3;
 	}
 	else if (Difference == -1){
@@ -328,16 +329,27 @@ void Scene3::draw() const
 	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
 
 	if (b == 1) {
-		emoji1.scaled(2.0).drawAt(1320, 500);
+		emoji1.scaled(1.5).drawAt(1220, 350);
+		emoji4.scaled(1.5).drawAt(1220, 550);
+		emoji4.scaled(1.5).drawAt(1220, 750);
+		FontAsset(U"MainFont")(U"いいね！").drawAt(Vec2{1420, 350}, Palette::White);
 	}
 	else if (b == 2) {
-		emoji2.scaled(2.0).drawAt(1320, 500);
+		emoji4.scaled(1.5).drawAt(1220, 350);
+		emoji2.scaled(1.5).drawAt(1220, 550);
+		emoji4.scaled(1.5).drawAt(1220, 750);
+		FontAsset(U"MainFont")(U"ふつう").drawAt(Vec2{ 1420, 550 }, Palette::White);
 	}
 	else if (b == 3) {
-		emoji3.scaled(2.0).drawAt(1320, 500);
+		emoji4.scaled(1.5).drawAt(1220, 350);
+		emoji4.scaled(1.5).drawAt(1220, 550);
+		emoji3.scaled(1.5).drawAt(1220, 750);
+		FontAsset(U"MainFont")(U"びみょう").drawAt(Vec2{ 1420, 750 }, Palette::White);
 	}
 	else if (b == -1){
-		emoji4.scaled(2.0).drawAt(1320, 500);
+		emoji4.scaled(1.5).drawAt(1220, 350);
+		emoji4.scaled(1.5).drawAt(1220, 550);
+		emoji4.scaled(1.5).drawAt(1220, 750);
 	}
 	
 	
@@ -364,7 +376,7 @@ void Scene3::draw() const
 
 	// Scene2Button
 	Scene2Button.draw(buttonColor);
-	FontAsset(U"MainFont")(U"かく").drawAt(Scene2Button.center(), Palette::White);
+	FontAsset(U"MainFont")(U"かしをかく").drawAt(Scene2Button.center(), Palette::White);
 
 	//Scene4Button
 	Scene4Button.draw(buttonColor);
