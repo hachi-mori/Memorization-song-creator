@@ -396,11 +396,11 @@ void Scene2::draw() const
 
 	// 語句入力
 	Rect{ 0, 230, 350, 150 }.draw();
-	FontAsset(U"MainFont")(U"かく").draw(48, Vec2{ 135, 275 }, buttonColor);
+	FontAsset(U"MainFont")(U"かしをかく").draw(48, Vec2{ 65, 275 }, buttonColor);
 
 	tableScrollBar.draw();
-	FontAsset(U"MainFont")(U"かしのリスト").draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
-	FontAsset(U"MainFont")(U"かく")	.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
+	FontAsset(U"MainFont")(U"かし").draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"かしをかく")	.draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 
 	//Scene1Button
 	Scene1Button.draw(Palette::Gray);
@@ -424,7 +424,7 @@ void Scene2::draw() const
 
 	//DeleteButton
 	DeleteButton.draw(buttonColor);
-	FontAsset(U"MainFont")(U"けす").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"ファイルをけす").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
 
 	// TextBox
 	FontAsset(U"MainFont")(U"タイトル\n 　→").drawAt(30, Vec2{ 1420, 80 }, Palette::Black);
