@@ -64,6 +64,10 @@ void Scene1::update()
 	{
 		Cursor::RequestStyle(CursorStyle::Hand);
 		scale = 1.1;
+		if (MouseL.down())
+		{
+			changeScene(U"Scene2", 0.5s);
+		}
 	}
 	else if (Scene::Time() > 6) {
 		scale = 1;
@@ -90,7 +94,7 @@ void Scene1::update()
 		if (scale > 1)scale = 1;
 	}
 
-	if (audioplay) {
+	if (audioplay&&Scene::Time()<5) {
 		audioplay = false;
 		audio.play();
 	}
