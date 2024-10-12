@@ -92,11 +92,11 @@ private:
 	Array<double> values = {  60, 100-60 };
 	int a = -1;
 	int b;
-	const Texture emoji1{ U"😄"_emoji };
+	const Texture emoji1{ U"🥰"_emoji };
 
-	const Texture emoji2{ U"😐"_emoji };
+	const Texture emoji2{ U"😊"_emoji };
 
-	const Texture emoji3{ U"😟"_emoji };
+	const Texture emoji3{ U"🙂"_emoji };
 
 	const Texture emoji4{ U"⚫"_emoji };
 	// 円グラフで占める割合

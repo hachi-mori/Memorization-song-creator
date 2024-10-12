@@ -251,47 +251,15 @@ void Scene3::update()
 			break;
 		}
 	}
-	/*
-	// 円グラフを描画する
-	for (size_t i = 0; i < values.size(); ++i)
-	{
-		const double startAngle = (starts[i] * 360_deg);
-		const double angle = (ratios[i] * 360_deg);
-		circle.drawPie(startAngle, angle, HSV{ (120 + 70 * i), 0.5, 0.95 });
-	}
-	
-
-	// 境界線を描画する
-	for (size_t i = 0; i < values.size(); ++i)
-	{
-		const double startAngle = (starts[i] * 360_deg);
-		Line{ circle.center, Arg::angle = startAngle, circle.r }.draw(3);
-	}
-
-	// ラベルを描画する
-	for (size_t i = 0; i < values.size(); ++i)
-	{
-		const double startAngle = (starts[i] * 360_deg);
-		const double angle = (ratios[i] * 360_deg);
-		const double midAngle = (startAngle + angle / 2.0);
-
-		// 割合に応じてラベルの位置を調整する
-		const Vec2 pos = OffsetCircular{ circle.center, ((ratios[i] < 0.1) ? 220.0 : (ratios[i] < 0.4) ? 120.0 : 90.0), midAngle };
-
-		FontAsset(U"MainFont")(labels[i]).draw(24, Arg::bottomCenter = pos, ColorF{0.11});
-		FontAsset(U"MainFont")(U"{:.1f}%"_fmt(ratios[i] * 100.0)).draw(18, Arg::topCenter = pos, ColorF{0.11});
-	}
-
-	*/
 
 	//絵文字
-	if (Difference < 10 && Difference >= 0) {
+	if (listBoxState2.selectedItemIndex == 0|| listBoxState2.selectedItemIndex == 1) {
 		b = 1;
 	}
-	else if (Difference <= 10 && Difference >= 20) {
+	else if (listBoxState2.selectedItemIndex == 2 || listBoxState2.selectedItemIndex == 3) {
 		b = 2;
 	}
-	else if (Difference > 20){
+	else if (listBoxState2.selectedItemIndex == 4 || listBoxState2.selectedItemIndex == 5){
 		b = 3;
 	}
 	else if (Difference == -1){
@@ -327,31 +295,29 @@ void Scene3::draw() const
 	SimpleGUI::ListBox(listBoxState1, Vec2{ 400, 250 }, 300, 600);
 	SimpleGUI::ListBox(listBoxState2, Vec2{ 810, 250 }, 300, 600);
 	SimpleGUI::ListBox(listBoxState3, Vec2{ 1520, 250 }, 300, 100);
-
 	if (b == 1) {
 		emoji1.scaled(1.5).drawAt(1220, 350);
 		emoji4.scaled(1.5).drawAt(1220, 550);
 		emoji4.scaled(1.5).drawAt(1220, 750);
-		FontAsset(U"MainFont")(U"いいね！").drawAt(Vec2{1420, 350}, Palette::White);
+		FontAsset(U"MainFont")(U"すごく\nいいね！").drawAt(Vec2{1420, 350}, Palette::Black);
 	}
 	else if (b == 2) {
 		emoji4.scaled(1.5).drawAt(1220, 350);
 		emoji2.scaled(1.5).drawAt(1220, 550);
 		emoji4.scaled(1.5).drawAt(1220, 750);
-		FontAsset(U"MainFont")(U"ふつう").drawAt(Vec2{ 1420, 550 }, Palette::White);
+		FontAsset(U"MainFont")(U"これも\nいいね！").drawAt(Vec2{ 1420, 550 }, Palette::Black);
 	}
 	else if (b == 3) {
 		emoji4.scaled(1.5).drawAt(1220, 350);
 		emoji4.scaled(1.5).drawAt(1220, 550);
 		emoji3.scaled(1.5).drawAt(1220, 750);
-		FontAsset(U"MainFont")(U"びみょう").drawAt(Vec2{ 1420, 750 }, Palette::White);
+		FontAsset(U"MainFont")(U" ありだね！").drawAt(Vec2{ 1420, 750 }, Palette::Black);
 	}
 	else if (b == -1){
 		emoji4.scaled(1.5).drawAt(1220, 350);
 		emoji4.scaled(1.5).drawAt(1220, 550);
 		emoji4.scaled(1.5).drawAt(1220, 750);
 	}
-	
 	
 	// 曲設定
 	Rect{ 0, 430, 350, 150 }.draw();
