@@ -1,9 +1,13 @@
 ﻿#include "stdafx.h"
-#include <Siv3D.hpp>  // Siv3Dのヘッダーをインクルード
+#include "Scene1.hpp"
 
 Scene1::Scene1(const InitData& init)
 	: IScene{ init }
-	, ScreenName{ U"ウィンドウ" },scale{1}, scale2{ 1 }
+	, ScreenName{ U"ウィンドウ" }
+	, scale{ 0 }
+	, scale2{ 1 }
+	, rotationAngle{ 0 }  // 初期回転角度を 0 に設定
+	, audioplay{true}
 {
 }
 
@@ -45,41 +49,70 @@ void Scene1::update()
 			Window::SetFullscreen(true);
 			ScreenName = U"ウィンドウ";
 		}
-
 	}
+
 	// ボタンの上にあるマウスカーソルを手のアイコンにする
-	if (Scene2Button.mouseOver())
-	{
-		Cursor::RequestStyle(CursorStyle::Hand);
-	}
-	if (CreditButton.mouseOver())
-	{
-		Cursor::RequestStyle(CursorStyle::Hand);
-	}
-	if (ExitButton.mouseOver())
-	{
-		Cursor::RequestStyle(CursorStyle::Hand);
-	}
-	if (FullscreenButton.mouseOver())
+	if (Scene2Button.mouseOver()
+		|| CreditButton.mouseOver()
+		|| ExitButton.mouseOver()
+		|| FullscreenButton.mouseOver())
 	{
 		Cursor::RequestStyle(CursorStyle::Hand);
 	}
 
-	// アニメーション：1秒周期で大きさが変化
-	scale = 1 + Periodic::Jump0_1(1s) * 0.1;
-	scale2 = 1 + Periodic::Sine0_1(4s) * 0.04;
+	if (Scene::Time() > 6 && textureRect.mouseOver())
+	{
+		Cursor::RequestStyle(CursorStyle::Hand);
+		scale = 1.1;
+	}
+	else if (Scene::Time() > 6) {
+		scale = 1;
+	}
+
+	// Scene::Time() を使用して経過時間を取得
+	double t = Scene::Time();
+
+	if (t <= 6.0)
+	{
+		// 回転速度（1秒間に1回転）
+		const double rotationsPerSecond = 2.0;
+		// 回転角度を更新（ラジアン単位）
+		rotationAngle = t * 2.0 * Math::Pi * rotationsPerSecond;
+	}
+	else
+	{
+		// 回転を停止
+		rotationAngle = 0.0;
+	}
+	if (scale <= 1.0)
+	{
+		scale += Scene::DeltaTime() * 0.3;  // 速度を調整（0.3は速度の調整係数）
+		if (scale > 1)scale = 1;
+	}
+
+	if (audioplay) {
+		audioplay = false;
+		audio.play();
+	}
 }
 
-void Scene1::draw() const {
-	// 拡大率を反映してテクスチャを描画
-	texture2.resized(texture2.width() * scale2, texture2.height() * scale2).drawAt(1920 / 2, 1080 / 2 - 60);
-	texture.resized(texture.width() * scale, texture.height() * scale).drawAt(1920 / 2, 1080 / 2 - 60);
+void Scene1::draw() const
+{
+	// texture2 を描画
+	texture2.resized(texture2.width() * scale2, texture2.height() * scale2)
+		.drawAt(Scene::Center().x, Scene::Center().y - 60);
+	if (Scene::Time() >= 1.5)
+	{
+		// texture を回転させて描画
+		texture.resized(texture.width() * scale, texture.height() * scale)
+			.rotated(rotationAngle)
+			.drawAt(Scene::Center().x, Scene::Center().y - 60);
+	}
 
-	// Scene2Button
+	// ボタンとテキストの描画
 	Scene2Button.draw(buttonColor);
 	FontAsset(U"MainFont")(U"タップではじめる").drawAt(Scene2Button.center(), Palette::White);
 
-	// CreditButton
 	CreditButton.draw(buttonColor);
 	FontAsset(U"MainFont")(U"クレジット").drawAt(CreditButton.center(), Palette::White);
 

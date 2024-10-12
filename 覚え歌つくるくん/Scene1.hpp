@@ -31,6 +31,14 @@ private:
 
 	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
 
-	mutable double scale; //拡大率
-	mutable double scale2; //拡大率
+	mutable double scale;   // 拡大率
+	mutable double scale2;  // 拡大率
+
+	// 追加：回転角度を管理するメンバ変数
+	mutable double rotationAngle; // 回転角度
+
+	mutable Audio audio{ U"ジングル.wav" };
+	bool audioplay;
+
+	Rect textureRect{ 560, 260, 800, 440 };
 };
