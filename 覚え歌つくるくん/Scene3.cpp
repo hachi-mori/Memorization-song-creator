@@ -112,6 +112,15 @@ void Scene3::update()
 	if (isloading)
 	{
 		angle += (Scene::DeltaTime() * angularVelocity);
+
+		accumulate += Scene::DeltaTime();
+
+		if (interval <= accumulate)
+		{
+			accumulate -= interval;
+
+			state = (state + 1) % 4;
+		}
 	}
 
 	if (listBoxState1.selectedItemIndex != previousSelectedIndex1)
@@ -357,7 +366,25 @@ void Scene3::draw() const
 	// loding
 	if (isloading) {
 		loadingRect.draw(ColorF{ 0.0, 0.5 });
-		loadingtexture.rotated(angle).draw(860, 440);
+		if (interval <= accumulate)
+		{
+			accumulate -= interval;
+
+			state = (state + 1) % 4;
+		}
+		if (1 <= state)
+		{
+			note.draw(860, 440);
+		}
+		if (2 <= state)
+		{
+			note.draw(800, 440);
+		}
+		if (3 <= state)
+		{
+			note.draw(740, 440);
+		}
+		texture.resized(texture.width() * 0.6, texture.height() * 0.6).draw(900, 400);
 		FontAsset(U"MainFont")(U"おぼえうたを作っています・・・").drawAt(Vec2{ 1920 / 2,1080 / 2 + 180 }, Palette::White);
 	}
 }

@@ -109,4 +109,12 @@ private:
 
 	bool saved;
 	double MessageOpacity;
+
+	const Texture note{ 0xF0388_icon, 60 };
+
+	const double interval = 0.5;
+
+	mutable double accumulate = 0.0;
+
+	mutable int state = 0;
 };
