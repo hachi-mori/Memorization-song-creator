@@ -71,9 +71,9 @@ private:
 
 	mutable String text;
 
-	const Rect DeleteButton{ 680, 820, 100, 80 };
-	const Rect StopButton{ 450, 820, 150, 80 };
-	const Rect PlayButton{ 450, 820, 150, 80 };
+	const Rect DeleteButton{ 650, 820, 200, 80 };
+	const Rect StopButton{ 400, 820, 150, 80 };
+	const Rect PlayButton{ 400, 820, 150, 80 };
 	const Rect RePlayButton{ 400, 920, 450, 80 };
 
 	mutable Audio audio{ U"" };

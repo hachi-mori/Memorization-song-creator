@@ -244,7 +244,7 @@ void Scene4::draw() const
 
 	//DeleteButton
 	DeleteButton.draw(buttonColor);
-	FontAsset(U"MainFont")(U"けす").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
+	FontAsset(U"MainFont")(U"曲をけす").drawAt(Vec2{ DeleteButton.center() }, Palette::White);
 
 	if (!playing) {
 		//PlayButton
