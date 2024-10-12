@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 
 const Array<double> Scene4::minColumnWidths = { 50, 200, 200, 200, 200 };
-const Array<String> Scene4::columnNames = { U"番号", U"ことば", U"よみ*", U"つけたし1", U"つけたし2" };
+const Array<String> Scene4::columnNames = { U"番号", U"ことば", U"よみ", U"つけたし1", U"つけたし2" };
 
 Scene4::Scene4(const InitData& init)
 	: IScene{ init }, previousSelectedIndex{ s3d::none },
