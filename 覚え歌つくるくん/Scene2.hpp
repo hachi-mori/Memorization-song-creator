@@ -68,4 +68,6 @@ private:
 	double MessageOpacity;
 
 	const ColorF buttonColor{ 0.3, 0.7, 1.0 };  // ボタンの共通色
+
+	mutable Array<int32> invalidRows;
 };

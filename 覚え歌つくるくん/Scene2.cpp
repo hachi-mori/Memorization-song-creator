@@ -121,16 +121,23 @@ void Scene2::update()
 					// 文字列の各文字がひらがなかを確認
 					for (const char32 ch : column2Text)
 					{
-						if (!InRange<uint32>(ch, 0x3040, 0x309F))  // ひらがなのUnicode範囲か確認
+						if (!(InRange<uint32>(ch, 0x3040, 0x309F) || ch == 0x30FC))  // ひらがなか、伸ばし棒かを確認
 						{
 							invalidCharacterFound = true;
+							invalidRows.push_back(a);  // 問題のある行を記録
 							break;
 						}
 					}
 				}
 
 				if (invalidCharacterFound) {
-					System::MessageBoxOK(U"エラー", U"「よみ」にひらがな以外の文字が含まれています。");
+					// エラー行の情報をメッセージに表示
+					String errorMessage = U"「よみ」にひらがな以外の文字が含まれています。\n";
+					for (int32 row : invalidRows)
+					{
+						errorMessage += Format(row) + U"行目, ";
+					}
+					System::MessageBoxOK(U"エラー", errorMessage.trimmed());
 					return; // 保存処理を中止
 				}
 
