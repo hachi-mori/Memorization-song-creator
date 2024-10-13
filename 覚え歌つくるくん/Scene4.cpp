@@ -8,7 +8,7 @@ Scene4::Scene4(const InitData& init)
 	table{ minColumnWidths, {
 		.cellHeight = 45,
 		.variableWidth = true,
-	} }, text{ U"" }, audio{ U"" }, audio2{ U"" }, playing{ false }
+	} }, text{ U"" }, audio{ U"" }, audio2{ U"" }, playing{ false },checked{true},checked2{true}, value1{10.0}
 {
 	InitializeTable();
 	UpdateListBoxState();
@@ -215,6 +215,19 @@ void Scene4::update()
 	if (!audio.isPlaying() && !audio2.isPlaying()) {
 		playing = false;
 	}
+	// 音量
+	if (checked) {
+		audio.setVolume(1 * value1/5);
+	}
+	else {
+		audio.setVolume(0);
+	}
+	if (checked2) {
+		audio2.setVolume(0.5 * value1/5);
+	}
+	else {
+		audio2.setVolume(0);
+	}
 }
 
 void Scene4::draw() const
@@ -265,4 +278,9 @@ void Scene4::draw() const
 	tableScrollBar.draw();
 
 	if (listBoxState.selectedItemIndex)FontAsset(U"MainFont")(te.text +U"の覚え歌").drawAt(44, Vec2{1389, 116.7}, Palette::Black);
+
+	SimpleGUI::CheckBox(checked, U"うたごえ", Vec2{ 965, 940 });
+	SimpleGUI::CheckBox(checked2, U"ばんそう", Vec2{ 965, 973 });
+
+	SimpleGUI::Slider(U"音量：{:.2f}"_fmt(value1), value1, 0.0, 10.0, Vec2{ 1100, 940 }, 120, 150);
 }

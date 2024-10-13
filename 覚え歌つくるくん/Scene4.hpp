@@ -79,4 +79,10 @@ private:
 	mutable Audio audio{ U"" };
 	mutable Audio audio2{ U"" };
 	bool playing;
+
+	mutable bool checked;
+	mutable bool checked2;
+
+	// スライダー用
+	mutable double value1;
 };
