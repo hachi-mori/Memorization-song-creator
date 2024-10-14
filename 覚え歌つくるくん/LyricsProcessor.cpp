@@ -207,6 +207,49 @@ void HandleMoreMoraThanNotes(const JSON& json, Array<String>& moraList, Array<No
 	int frameLength16th = json[U"16thnoteframe_length"].get<int>();
 
 	// 促音「っ」や長音「ー」を削除し、モーラ数を調整
+	// まず、促音「っ」を削除してモーラ数を調整
+	while (moraList.size() > notes.size())
+	{
+		bool sokuonFound = false;
+		// モーラを先頭から見て、促音「っ」を探す
+		for (size_t i = 0; i < moraList.size(); ++i)
+		{
+			if (moraList[i] == U"っ" || moraList[i] == U"ッ")
+			{
+				// 促音「っ」を削除
+				moraList.erase(moraList.begin() + i);
+				sokuonFound = true;
+				break; // 最初に見つけた促音を削除したらループを抜ける
+			}
+		}
+		if (!sokuonFound)
+		{
+			// 促音「っ」が見つからない場合はループを抜ける
+			break;
+		}
+	}
+	// 促音を削除してもまだモーラ数が多い場合、長音符「ー」を削除
+	while (moraList.size() > notes.size())
+	{
+		bool chouonFound = false;
+		// モーラを先頭から見て、長音符「ー」を探す
+		for (size_t i = 0; i < moraList.size(); ++i)
+		{
+			if (moraList[i] == U"ー")
+			{
+				// 長音符「ー」を削除
+				moraList.erase(moraList.begin() + i);
+				chouonFound = true;
+				break; // 最初に見つけた長音符を削除したらループを抜ける
+			}
+		}
+		if (!chouonFound)
+		{
+			// 長音符「ー」が見つからない場合はループを抜ける
+			break;
+		}
+	}
+
 	while (moraList.size() > notes.size())
 	{
 		bool foundSpecialCase = false;
