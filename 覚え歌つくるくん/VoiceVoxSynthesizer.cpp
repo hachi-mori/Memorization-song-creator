@@ -131,6 +131,7 @@ namespace s3d
 			}
 
 			Print(U"Voice synthesis succeeded.");
+			ClearPrint();
 			return true;
 		}
 	}
