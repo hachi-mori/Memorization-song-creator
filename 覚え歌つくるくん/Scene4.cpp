@@ -237,7 +237,7 @@ void Scene4::draw() const
 	FontAsset(U"MainFont")(U"ながす").draw(48, Vec2{ 100, 675 }, buttonColor);
 
 	//Rect{ 900, 315, 800, 450 }.draw();
-	FontAsset(U"MainFont")(U"おぼえうた").draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
+	FontAsset(U"MainFont")(U"学習ソング").draw(30, Rect{ 450, 150, 480, 200 }, Palette::Black);
 	FontAsset(U"MainFont")(U"ながす").draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 
 	//Scene1Button
@@ -277,7 +277,7 @@ void Scene4::draw() const
 
 	tableScrollBar.draw();
 
-	if (listBoxState.selectedItemIndex)FontAsset(U"MainFont")(te.text +U"の覚え歌").drawAt(44, Vec2{1389, 116.7}, Palette::Black);
+	if (listBoxState.selectedItemIndex)FontAsset(U"MainFont")(te.text +U"の学習ソング").drawAt(44, Vec2{1389, 116.7}, Palette::Black);
 
 	SimpleGUI::CheckBox(checked, U"うたごえ", Vec2{ 965, 940 });
 	SimpleGUI::CheckBox(checked2, U"ばんそう", Vec2{ 965, 973 });

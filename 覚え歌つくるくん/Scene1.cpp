@@ -96,15 +96,15 @@ void Scene1::update()
 
 	if (audioplay&&Scene::Time()<5) {
 		audioplay = false;
-		audio.play();
+		//audio.play();
 	}
 }
 
 void Scene1::draw() const
 {
 	// texture2 を描画
-	texture2.resized(texture2.width() * scale2, texture2.height() * scale2)
-		.drawAt(Scene::Center().x, Scene::Center().y - 60);
+	//texture2.resized(texture2.width() * scale2, texture2.height() * scale2)
+		//.drawAt(Scene::Center().x, Scene::Center().y - 60);
 	if (Scene::Time() >= 1.5)
 	{
 		// texture を回転させて描画

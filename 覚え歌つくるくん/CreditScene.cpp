@@ -26,7 +26,7 @@ void CreditScene::draw() const {
 
 	FontAsset(U"MainFont")(U"クレジット").draw(70, Rect{ 20, 20, 480, 200 }, Palette::White);
 
-	FontAsset(U"MainFont")(U"制作：仙台高専広瀬キャンパスプログラミング部").drawAt(Vec2{ 960, 150 }, Palette::Black);
+	FontAsset(U"MainFont")(U"制作：@hachi-mori ").drawAt(Vec2{ 960, 150 }, Palette::Black);
 	FontAsset(U"MainFont")(U"開発：C++／Siv3D").drawAt(Vec2{ 960, 250 }, Palette::Black);
 	FontAsset(U"MainFont")(U"イラスト　　　　　　　　　　　　　　　　").drawAt(Vec2{ 960, 340 }, Palette::Black);
 	FontAsset(U"MainFont")(U"・いろいろな人のシルエット（いらすとや）").drawAt(50, Vec2{ 960, 410 }, Palette::Black);

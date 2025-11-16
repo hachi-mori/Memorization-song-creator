@@ -385,6 +385,6 @@ void Scene3::draw() const
 			note.draw(740, 440);
 		}
 		texture.resized(texture.width() * 0.6, texture.height() * 0.6).draw(900, 400);
-		FontAsset(U"MainFont")(U"おぼえうたを作っています・・・").drawAt(Vec2{ 1920 / 2,1080 / 2 + 180 }, Palette::White);
+		FontAsset(U"MainFont")(U"学習ソングを作っています・・・").drawAt(Vec2{ 1920 / 2,1080 / 2 + 180 }, Palette::White);
 	}
 }
