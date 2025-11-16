@@ -1,4 +1,4 @@
-# 高専プロコン2024 自由部門「覚え歌つくるくん」リポジトリ
+# 「覚え歌つくるくん」リポジトリ
 
 「覚え歌つくるくん」ソフトのプログラム一覧  
 →[覚え歌つくるくん](/覚え歌つくるくん)
@@ -58,10 +58,5 @@
 　└ 覚え歌つくるくん.exe
 
 <更新情報>
-2024.08.31 : CreditScene.cpp, CreditScene.hpp を追加
-2024.09.22 : 
-  CreateScore.cpp, CreateScore.hpp を削除
-  Note.hpp, JSONHandler.cpp, JSONHandler.cpp, LyricsProcessor.cpp, LyricsProcessor.cpp. StringUtils.cpp, StringUtils.cpp,を追加
-  構成図にコメント文を追加
-2024.10.08 : READMEの体裁を整える
+2025.11.16 : リポジトリを現リポジトリへ移動
 </pre>
