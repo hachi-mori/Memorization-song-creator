@@ -46,9 +46,13 @@ jobs:
 
             // オープンIssue 10件
             const issues = (await github.rest.issues.listForRepo({
-              owner, repo, state: 'open', per_page: 10
+              owner,
+              repo,
+              state: 'open',
+              per_page: 10,
+              mediaType: { format: 'html' }   // ★ これを追加
             })).data;
-
+            
             // リリース5件
             const releases = (await github.rest.repos.listReleases({
               owner, repo, per_page: 5
@@ -64,6 +68,17 @@ jobs:
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
             }
+            function issueBodyHtml(issue) {
+               if (issue.body_html) {
+               return issue.body_html;
+               }
+               if (issue.body) {
+               return `<pre>${escapeHtml(issue.body)}</pre>`;
+                }
+               return '<p>(本文なし)</p>';
+            }
+
+
             let html = `
             <!doctype html>
             <html lang="ja">
@@ -228,7 +243,23 @@ jobs:
                     .issue-body {
                         margin-top: 8px;
                         font-size: 0.9rem;
-                        white-space: pre-wrap;
+                        line-height: 1.6;
+                        overflow-wrap: break-word; /* ← 長い単語やURLを折り返す */
+                    }
+
+                    .issue-body pre,
+                    .issue-body code {
+                        white-space: pre-wrap;      /* ← コードブロックも折り返し */
+                        word-break: break-all;      /* ← 長いコードで横はみ出し防止 */
+                        overflow-x: auto;           /* ← 必要なら横スクロール */
+                        max-width: 100%;            /* ← 親カード内に収める */
+                        box-sizing: border-box;     /* ← パディング込みで幅管理 */
+                    }
+
+                    .issue-body img {
+                        max-width: 100%;            /* ← 画像がはみ出すのを防ぐ */
+                        height: auto;
+                        display: block;
                     }
 
                     .small-link {
@@ -308,7 +339,7 @@ jobs:
                                         <details class="issue-details">
                                             <summary class="item-title" title="${escapeHtml(i.title)}">#${i.number} ${escapeHtml(i.title)}</summary>
                                             <div class="issue-body">
-                                                ${escapeHtml(i.body || '(本文なし)')}
+                                                ${issueBodyHtml(i)}
                                             </div>
                                             <a href="${i.html_url}" target="_blank" rel="noopener" class="small-link">GitHubで開く</a>
                                         </details>
