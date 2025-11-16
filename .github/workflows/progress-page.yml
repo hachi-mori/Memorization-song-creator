@@ -69,15 +69,38 @@ jobs:
                 .replace(/'/g, '&#39;');
             }
             function issueBodyHtml(issue) {
-               if (issue.body_html) {
-               return issue.body_html;
-               }
-               if (issue.body) {
-               return `<pre>${escapeHtml(issue.body)}</pre>`;
-                }
-               return '<p>(本文なし)</p>';
-            }
+              let html = "";
 
+              if (issue.body_html) {
+                html = issue.body_html;     // Markdown → HTML された内容
+              } else if (issue.body) {
+                html = `<pre>${escapeHtml(issue.body)}</pre>`;
+              } else {
+                html = '<p>(本文なし)</p>';
+              }
+
+              // ★ 画像URL修正  ← これを追加
+              return fixImageUrls(html, owner, repo);
+            }
+            function fixImageUrls(html, owner, repo) {
+              if (!html) return html;
+
+              // 1) blob URL → raw URL に変換
+              html = html.replace(
+                /https:\/\/github\.com\/[^\/]+\/[^\/]+\/blob\/([^"]+)/g,
+                (match, p1) => `https://raw.githubusercontent.com/${owner}/${repo}/${p1}`
+              );
+
+              // 2) 相対パスの img src="./images/..." を raw URL に
+              html = html.replace(
+                /<img\s+[^>]*src="([^":]+)"/g,
+                (match, p1) =>
+                  `<img src="https://raw.githubusercontent.com/${owner}/${repo}/main/${p1}">`
+              );
+
+              return html;
+            }
+            const readmeHtml = fixImageUrls(readme.data, owner, repo);
 
             let html = `
             <!doctype html>
@@ -322,7 +345,7 @@ jobs:
                         <div class="card">
                             <h2>📖 README <a href="${readmeUrl}" class="section-link" target="_blank" rel="noopener">🔗</a></h2>
                             <div class="readme-content">
-                                    ${readme.data}
+                                    ${readmeHtml}
                             </div>
                         </div>
                     </div>
