@@ -359,7 +359,10 @@ jobs:
                                 <li>
                                     <span class="icon">🧑‍💻</span>
                                     <div class="content">
-                                        <span class="date">${new Date(c.commit.author.date).toLocaleDateString('ja-JP')}</span>
+                                        <span class="date">${
+                                        new Date(c.commit.committer.date).toLocaleDateString('ja-JP', {
+                                          timeZone: 'Asia/Tokyo'})
+                                          }</span>
                                         <div class="commit-message" title="${escapeHtml(c.commit.message)}">${escapeHtml(c.commit.message)}</div>
                                     </div>
                                 </li>
