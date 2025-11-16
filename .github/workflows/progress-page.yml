@@ -1,4 +1,4 @@
-name: Generate progress page
+﻿name: Generate progress page
 
 on:
   push:
@@ -26,59 +26,260 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
 
-            // README (HTML) ���擾
+            // README (HTML) を取得
             const readme = await github.rest.repos.getReadme({
               owner, repo, mediaType: { format: 'html' }
             });
 
-            // �ŐV�R�~�b�g5��
+            // 最新コミット5件
             const commits = (await github.rest.repos.listCommits({
               owner, repo, per_page: 5
             })).data;
 
-            // �I�[�v��Issue 10��
+            // オープンIssue 10件
             const issues = (await github.rest.issues.listForRepo({
               owner, repo, state: 'open', per_page: 10
             })).data;
 
-            // �����[�X5��
+            // リリース5件
             const releases = (await github.rest.repos.listReleases({
               owner, repo, per_page: 5
             })).data;
 
-            // �i���y�[�W�p��HTML��g�ݗ���
+            // 進捗ページ用のHTMLを組み立て
             let html = `
-            <!doctype html>
-            <html lang="ja">
-            <head>
-              <meta charset="utf-8">
-              <title>${repo} �i���_�b�V���{�[�h</title>
-            </head>
-            <body>
-              <h1>${repo} �i���_�b�V���{�[�h</h1>
+            
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${repo} 進捗ダッシュボード</title>
+    <style>
+        /* --- 基本スタイル --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", Meiryo, sans-serif;
+            /* 方針: 水色〜青のグラデーション */
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%);
+            margin: 0;
+            padding: 24px;
+            color: #333;
+        }
 
-              <h2>README</h2>
-              <div>${readme.data}</div>
+        h1 {
+            text-align: center;
+            color: #01579b; /* 濃い青 */
+            margin-bottom: 32px;
+        }
 
-              <h2>�ŋ߂̃R�~�b�g</h2>
-              <ul>
-                ${commits.map(c => `<li>${c.commit.author.date} : ${c.commit.message}</li>`).join('')}
-              </ul>
+        /* --- 方針: 2カラムレイアウト --- */
+        .container {
+            display: flex;
+            flex-wrap: wrap; /* 画面が狭い場合は折り返す */
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-              <h2>�I�[�v��Issue�i���10���j</h2>
-              <ul>
-                ${issues.map(i => `<li>#${i.number} ${i.title}</li>`).join('')}
-              </ul>
+        .main-content {
+            flex: 2; /* 左カラム (README) */
+            min-width: 300px; /* 折り返し最小幅 */
+        }
 
-              <h2>�����[�X</h2>
-              <ul>
-                ${releases.map(r => `<li>${r.name || r.tag_name}</li>`).join('')}
-              </ul>
-            </body>
-            </html>
+        .sidebar {
+            flex: 1; /* 右カラム (その他) */
+            min-width: 300px; /* 折り返し最小幅 */
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* --- 方針: カードUI（白背景＋影＋角丸） --- */
+        .card {
+            background: #ffffff;
+            border-radius: 12px; /* 角丸 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 影 */
+            padding: 20px 24px;
+            overflow: hidden; /* READMEのスタイル崩れ防止 */
+        }
+
+            .card h2 {
+                margin-top: 0;
+                color: #0277bd; /* カードのヘッダー色 */
+                border-bottom: 2px solid #b2ebf2;
+                padding-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+        /* --- 方針: README 要約版（<details> タグで実現） --- */
+        .readme-summary summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #0288d1;
+            padding: 8px 0;
+        }
+
+            .readme-summary summary:hover {
+                opacity: 0.8;
+            }
+
+        .readme-content {
+            margin-top: 16px;
+            /* READMEから来るスタイルをリセット/調整 */
+            max-width: 100%;
+            line-height: 1.7;
+        }
+
+            .readme-content img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+            }
+
+            .readme-content pre {
+                background-color: #f4f4f4;
+                padding: 1em;
+                border-radius: 8px;
+                overflow-x: auto;
+            }
+
+            .readme-content blockquote {
+                border-left: 4px solid #ddd;
+                padding-left: 1em;
+                color: #555;
+                margin-left: 0;
+            }
+
+        /* --- 方針: 一覧性最大化 (コミット/Issue/リリース) --- */
+        .activity-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+            .activity-list li {
+                display: flex;
+                align-items: flex-start; /* 上揃え */
+                gap: 12px;
+                padding: 12px 0;
+                border-bottom: 1px solid #eee;
+            }
+
+                .activity-list li:last-child {
+                    border-bottom: none;
+                }
+
+            .activity-list .icon {
+                font-size: 1.2em;
+                flex-shrink: 0;
+                margin-top: 2px;
+            }
+
+            .activity-list .content {
+                flex-grow: 1;
+                overflow: hidden; /* メッセージが長すぎる場合のため */
+            }
+        /* コミットメッセージ (複数行対応) */
+        .commit-message {
+            font-size: 0.95em;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* 2行まで表示 */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal; /* 折り返しを許可 */
+            line-height: 1.4;
+            margin-top: 4px;
+        }
+        /* Issue / リリースタイトル (1行) */
+        .item-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .activity-list .date {
+            font-size: 0.85em;
+            color: #777;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>${repo} 進捗ダッシュボード</h1>
+
+    <div class="container">
+
+        <div class="main-content">
+            <div class="card">
+                <h2>📖 README</h2>
+                <details class="readme-summary">
+                    <summary>概要を表示... (クリックで全文表示)</summary>
+                    <div class="readme-content">
+                        ${readme.data}
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <div class="sidebar">
+
+            <div class="card">
+                <h2>📝 最近のコミット</h2>
+                <ul class="activity-list">
+                    ${commits.slice(0, 5).map(c => `
+                    <li>
+                        <span class="icon">🧑‍💻</span>
+                        <div class="content">
+                            <span class="date">${new Date(c.commit.author.date).toLocaleDateString('ja-JP')}</span>
+                            <div class="commit-message" title="${c.commit.message}">${c.commit.message}</div>
+                        </div>
+                    </li>
+                    `).join('')}
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🐛 オープンIssue</h2>
+                <ul class="activity-list">
+                    ${issues.slice(0, 5).map(i => `
+                    <li>
+                        <span class="icon">⚠️</span>
+                        <div class="content">
+                            <div class="item-title" title="${i.title}">#${i.number} ${i.title}</div>
+                        </div>
+                    </li>
+                    `).join('')}
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🚀 リリース</h2>
+                <ul class="activity-list">
+                    ${releases.slice(0, 5).map(r => `
+                    <li>
+                        <span class="icon">🏷️</span>
+                        <div class="content">
+                            <div class="item-title" title="${r.name || r.tag_name}">${r.name || r.tag_name}</div>
+                        </div>
+                    </li>
+                    `).join('')}
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
+            
             `;
 
-            // docs/index.html �Ƃ��ď����o��
+            // docs/index.html として書き出す
             fs.mkdirSync('docs', { recursive: true });
             fs.writeFileSync(path.join('docs', 'index.html'), html);
 
