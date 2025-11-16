@@ -85,7 +85,8 @@ jobs:
             <head>
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <title>${repo} 進捗ダッシュボード</title>
+                <title>進捗 - 覚え歌つくるくん</title>
+                <link rel="icon" href="https://raw.githubusercontent.com/hachi-mori/Memorization-song-creator/d0fff79c991ed7d471319eea26d11bc84a3b941d/%E8%A6%9A%E3%81%88%E6%AD%8C%E3%81%A4%E3%81%8F%E3%82%8B%E3%81%8F%E3%82%93/App/icon.ico" type="image/x-icon">
                 <style>
                     /* --- 基本スタイル --- */
                     body {
@@ -114,7 +115,7 @@ jobs:
                     }
 
                     .main-content {
-                        flex: 2; /* 左カラム (README) */
+                        flex: 1; /* 左カラム (README) */
                         min-width: 300px; /* 折り返し最小幅 */
                     }
 
@@ -234,6 +235,10 @@ jobs:
                     .issue-details summary {
                         cursor: pointer;
                         list-style: none;
+                        display: block;        /* ← ブロック化して幅を100%に */
+                        padding-left: 0;       /* ← 完全左揃え */
+                        margin-left: 0;
+                        text-align: left;
                     }
 
                     .issue-details summary::-webkit-details-marker {
@@ -245,6 +250,7 @@ jobs:
                         font-size: 0.9rem;
                         line-height: 1.6;
                         overflow-wrap: break-word; /* ← 長い単語やURLを折り返す */
+                        padding-left: 0;           /* ← タイトルと同じ位置に揃える */
                     }
 
                     .issue-body pre,
@@ -262,6 +268,15 @@ jobs:
                         display: block;
                     }
 
+                    /* アイコンとタイトルのズレを揃える */
+                    .activity-list li {
+                        align-items: flex-start;
+                    }
+
+                    .activity-list .icon {
+                        margin-top: 4px;  /* ← アイコンとテキスト位置を揃える */
+                    }
+                    
                     .small-link {
                         display: inline-block;
                         margin-top: 8px;
@@ -299,7 +314,7 @@ jobs:
                 </style>
             </head>
             <body>
-                <h1>${repo} 進捗ダッシュボード</h1>
+                <h1>🎵覚え歌つくるくん 進捗ダッシュボード</h1>
 
                 <div class="container">
 
