@@ -1,6 +1,7 @@
 # 「覚え歌つくるくん」リポジトリ
-進捗確認ページ
-→[進捗 - 覚え歌つくるくん](https://hachi-mori.github.io/Memorization-song-creator/)
+
+ソフトのダウンロードはこちらから⬇️  
+https://github.com/hachi-mori/Memorization-song-creator/releases/tag/v0.1
 ___
 「覚え歌つくるくん」ソフトのプログラム一覧  
 →[覚え歌つくるくん](/覚え歌つくるくん)
