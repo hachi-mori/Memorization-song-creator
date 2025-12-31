@@ -38,7 +38,7 @@ private:
 	mutable double rotationAngle; // 回転角度
 
 	mutable Audio audio{ U"ジングル.wav" };
-	bool audioplay;
+	mutable bool audioplay;
 
 	Rect textureRect{ 560, 260, 800, 440 };
 };

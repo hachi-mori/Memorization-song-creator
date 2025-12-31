@@ -75,13 +75,20 @@ void Scene1::update()
 
 	// Scene::Time() を使用して経過時間を取得
 	double t = Scene::Time();
-
+	if (t > 2.0)
+	{
+		if (audioplay) {
+			audio.play();
+			audioplay = false;
+		}
+	}
 	if (t <= 6.0)
 	{
 		// 回転速度（1秒間に1回転）
 		const double rotationsPerSecond = 2.0;
 		// 回転角度を更新（ラジアン単位）
-		rotationAngle = t * 2.0 * Math::Pi * rotationsPerSecond;
+		rotationAngle = 0;
+		// rotationAngle = t * 2.0 * Math::Pi * rotationsPerSecond;
 	}
 	else
 	{
@@ -102,9 +109,7 @@ void Scene1::update()
 
 void Scene1::draw() const
 {
-	// texture2 を描画
-	//texture2.resized(texture2.width() * scale2, texture2.height() * scale2)
-		//.drawAt(Scene::Center().x, Scene::Center().y - 60);
+	
 	if (Scene::Time() >= 1.5)
 	{
 		// texture を回転させて描画
