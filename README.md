@@ -9,6 +9,25 @@ ___
 ソフトに同封する楽譜を生成するために使用するプログラム  
 →[XmlToJsonConverter.cpp](XmlToJsonConverter.cpp)
 
+## 📚 設計ドキュメント
+
+### アーキテクチャ
+- [プロジェクト構成図](docs/architecture/tree.md) - フォルダ・ファイル構成の全体像
+- [モジュール/ファイル責務一覧](docs/architecture/modules.md) - 各ソースファイルの役割と依存関係
+
+### 設計
+- [Scene（画面）設計](docs/design/scenes.md) - 画面一覧・遷移・UI設計
+- [データ設計](docs/design/data.md) - データ形式・フロー・永続化方式
+
+### VOICEVOX API
+- [概要](docs/voicevox/overview.md) - VOICEVOX APIライブラリの全体像
+- [関数仕様](docs/voicevox/api.md) - 各関数の詳細仕様
+- [エラー処理](docs/voicevox/errors.md) - エラー分類と処理方針
+- [使用例](docs/voicevox/examples.md) - 実装例とトラブルシューティング
+
+### 開発
+- [開発ガイドライン](docs/dev/guidelines.md) - コーディング規約・開発ルール
+
 ## 構成図 (一部省略)
 <pre>
 覚え歌つくるくん/
