@@ -42,9 +42,9 @@ Array<Speaker> GetSpeakers(const Duration timeout = SecondsF{ 50.0 })
 ### エラー処理
 | エラー種別 | 戻り値 | 備考 |
 |-----------|--------|------|
-| タイムアウト | 空配列 `{}` | タスクをキャンセル |
-| HTTPエラー | 空配列 `{}` | ステータスコードが200番台以外 |
-| JSON解析エラー | 空配列 `{}` | JSONパースエラー |
+| タイムアウト | 空配列 `Array<Speaker>{}` を返す | タスクをキャンセル |
+| HTTPエラー | 空配列 `Array<Speaker>{}` を返す | ステータスコードが200番台以外 |
+| JSON解析エラー | 空配列 `Array<Speaker>{}` を返す | JSONパースエラー |
 
 ### 使用例
 ```cpp

@@ -326,7 +326,7 @@ void CheckVoicevoxConnection()
 {
     Print << U"VOICEVOX接続チェック...";
     
-    // タイムアウトを短く設定（5秒）
+    // タイムアウトを短く設定（5秒）- デフォルト50秒を上書き
     Array<VOICEVOX::Speaker> speakers = VOICEVOX::GetSpeakers(SecondsF{ 5.0 });
     
     if (speakers.isEmpty())
