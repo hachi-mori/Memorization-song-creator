@@ -122,6 +122,11 @@ while (not task.isReady())
 - `VOICEVOX::SynthesizeVoiceFromScore()` が `false` を返した場合
 - メッセージボックスで通知（実装内容はコードから確認可能）
 
+### リトライ方針
+- **現状**: リトライなし
+- 失敗時は即座に `false` を返す
+- 再試行はユーザーが手動で実行
+
 ## 主要データ構造
 
 ### Speaker構造体

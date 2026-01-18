@@ -20,9 +20,8 @@ ___
 - [データ設計](docs/design/data.md) - データ形式・フロー・永続化方式
 
 ### VOICEVOX API
-- [概要](docs/voicevox/overview.md) - VOICEVOX APIライブラリの全体像
+- [概要](docs/voicevox/overview.md) - VOICEVOX APIライブラリの全体像・エラー処理
 - [関数仕様](docs/voicevox/api.md) - 各関数の詳細仕様
-- [エラー処理](docs/voicevox/errors.md) - エラー分類と処理方針
 - [使用例](docs/voicevox/examples.md) - 実装例とトラブルシューティング
 
 ### 開発
